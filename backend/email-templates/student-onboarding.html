@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to {{schoolName}}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f7ff; font-family: 'Poppins', sans-serif;">
+    <div style="font-family: 'Poppins', sans-serif; max-width: 600px; margin: 40px auto; padding: 40px; border: 1px solid #e2e8f0; border-radius: 24px; background: #ffffff; color: #1e293b; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+        <div style="text-align: center; margin-bottom: 36px;">
+            <h2 style="color: #2563eb; margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">Welcome to {{schoolName}}</h2>
+            <p style="color: #64748b; margin-top: 8px; font-size: 15px;">Your Student Portal Account is Ready</p>
+        </div>
+        
+        <p style="font-size: 16px; line-height: 1.5;">Dear <strong>{{firstName}} {{lastName}}</strong>,</p>
+        <p style="color: #475569; line-height: 1.6; font-size: 15px;">We're excited to have you! Your academic account has been set up on our institution's portal. Use the credentials below to log in and start your journey.</p>
+        
+        <div style="background: #f1f5f9; padding: 28px; border-radius: 20px; margin: 32px 0; border: 1px dashed #cbd5e1;">
+            <div style="margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px;">
+                <span style="display: block; color: #64748b; font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px;">Login Email</span>
+                <span style="color: #1e293b; font-size: 16px; font-weight: 600;">{{email}}</span>
+            </div>
+            <div>
+                <span style="display: block; color: #64748b; font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px;">Temporary Password</span>
+                <span style="color: #2563eb; font-size: 20px; font-weight: 800; font-family: monospace;">{{password}}</span>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="http://{{hostname}}:5173/login" style="background: #2563eb; color: #ffffff; padding: 16px 40px; text-decoration: none; border-radius: 12px; font-weight: 700; display: inline-block; font-size: 15px; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.25);">Login to Portal</a>
+        </div>
+        
+        <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid #f1f5f9; text-align: center;">
+            <p style="font-size: 12px; color: #94a3b8; margin: 0;">For your security, please change your password immediately after your first login.</p>
+        </div>
+        
+        <footer style="margin-top: 32px; text-align: center;">
+            <p style="margin: 0; font-size: 14px; font-weight: 700; color: #1e293b;">Edunex Global Solutions</p>
+            <p style="margin: 0; margin-top: 4px; color: #64748b; font-size: 12px;">Intelligent School Management System</p>
+        </footer>
+    </div>
+</body>
+</html>

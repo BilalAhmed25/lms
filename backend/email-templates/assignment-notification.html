@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New {{itemType}} Published</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f7ff; font-family: 'Poppins', sans-serif;">
+    <div style="max-width: 600px; margin: 40px auto; padding: 40px; border: 1px solid #e2e8f0; border-radius: 24px; background: #ffffff; color: #1e293b; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+        <div style="text-align: center; margin-bottom: 36px;">
+            <h2 style="color: #2563eb; margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">New {{itemType}} Published</h2>
+            <p style="color: #64748b; margin-top: 8px; font-size: 15px;">{{subjectName}} - {{schoolName}}</p>
+        </div>
+        
+        <p style="font-size: 16px; line-height: 1.5;">Hello <strong>Students</strong>,</p>
+        <p style="color: #475569; line-height: 1.6; font-size: 15px;">A new academic {{itemType}} has been posted on your Edunex portal. Please review the details below and ensure you submit your work before the deadline.</p>
+        
+        <div style="background: #f8fafc; padding: 28px; border-radius: 20px; margin: 32px 0; border: 1px solid #f1f5f9;">
+            <div style="margin-bottom: 16px;">
+                <span style="display: block; color: #64748b; font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px;">Title</span>
+                <span style="color: #1e293b; font-size: 17px; font-weight: 700;">{{title}}</span>
+            </div>
+            <div style="margin-bottom: 16px;">
+                <span style="display: block; color: #64748b; font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px;">Subject</span>
+                <span style="color: #475569; font-size: 15px; font-weight: 600;">{{subjectName}}</span>
+            </div>
+            <div>
+                <span style="display: block; color: #ef4444; font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px;">Deadline</span>
+                <span style="color: #ef4444; font-size: 15px; font-weight: 700;">{{deadline}}</span>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="http://{{hostname}}:5173/login" style="background: #2563eb; color: #ffffff; padding: 16px 40px; text-decoration: none; border-radius: 12px; font-weight: 700; display: inline-block; font-size: 15px;">View on Portal</a>
+        </div>
+        
+        <footer style="margin-top: 48px; border-top: 1px solid #f1f5f9; padding-top: 24px; text-align: center;">
+            <p style="margin: 0; font-size: 14px; font-weight: 700; color: #1e293b;">Edunex Global Solutions</p>
+            <p style="margin: 0; margin-top: 4px; color: #64748b; font-size: 12px;">Intelligent School Management System</p>
+        </footer>
+    </div>
+</body>
+</html>

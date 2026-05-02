@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results Published</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f7ff; font-family: 'Poppins', sans-serif;">
+    <div style="max-width: 600px; margin: 40px auto; padding: 40px; border: 1px solid #e2e8f0; border-radius: 24px; background: #ffffff; color: #1e293b; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+        <div style="text-align: center; margin-bottom: 36px;">
+            <h2 style="color: #22c55e; margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Results Published</h2>
+            <p style="color: #64748b; margin-top: 8px; font-size: 15px;">{{itemName}} - {{schoolName}}</p>
+        </div>
+        
+        <p style="font-size: 16px; line-height: 1.5;">Dear <strong>{{studentName}}</strong>,</p>
+        <p style="color: #475569; line-height: 1.6; font-size: 15px;">Your results for the following activity have been published. Great job on completing your work!</p>
+        
+        <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 32px; border-radius: 24px; margin: 32px 0; text-align: center; border: 1px solid #e2e8f0;">
+            <span style="display: block; color: #64748b; font-size: 12px; text-transform: uppercase; font-weight: 700; letter-spacing: 2px; margin-bottom: 12px;">Your Final Score</span>
+            <div style="color: #1e293b; font-size: 48px; font-weight: 800; line-height: 1;">
+                {{score}}<span style="font-size: 24px; color: #94a3b8; font-weight: 600;"> / {{totalMarks}}</span>
+            </div>
+            <p style="color: #64748b; margin-top: 16px; font-size: 14px; font-style: italic;">{{feedback}}</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="http://{{hostname}}:5173/login" style="background: #2563eb; color: #ffffff; padding: 16px 40px; text-decoration: none; border-radius: 12px; font-weight: 700; display: inline-block; font-size: 15px;">Check performance</a>
+        </div>
+        
+        <footer style="margin-top: 48px; border-top: 1px solid #f1f5f9; padding-top: 24px; text-align: center;">
+            <p style="margin: 0; font-size: 14px; font-weight: 700; color: #1e293b;">Edunex Global Solutions</p>
+            <p style="margin: 0; margin-top: 4px; color: #64748b; font-size: 12px;">Intelligent School Management System</p>
+        </footer>
+    </div>
+</body>
+</html>
