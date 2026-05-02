@@ -2456,45 +2456,6 @@ textarea {
 }
 
 
-/* --- Skeleton Loading Styles --- */
-.skeleton {
-    background: linear-gradient(90deg, #f0f0f0 25%, #f8f8f8 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: skeleton-loading 1.5s infinite;
-    border-radius: 8px;
-}
-
-@keyframes skeleton-loading {
-    0% {
-        background-position: 200% 0;
-    }
-
-    100% {
-        background-position: -200% 0;
-    }
-}
-
-.skeleton-card {
-    height: 120px;
-    border-radius: 24px;
-}
-
-.skeleton-text {
-    height: 16px;
-    margin-bottom: 10px;
-}
-
-.skeleton-title {
-    height: 24px;
-    width: 60%;
-    margin-bottom: 15px;
-}
-
-.skeleton-table-row {
-    height: 60px;
-    margin-bottom: 10px;
-    border-radius: 12px;
-}
 
 /* Button Loading State */
 .btn:disabled,
@@ -2800,4 +2761,27 @@ textarea {
     border-radius: 24px !important;
     box-shadow: 0 40px 100px rgba(0, 0, 0, 0.05) !important;
     border: none !important;
+}
+
+/* --- Loading Spinner --- */
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    width: 100%;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(26, 182, 157, 0.1);
+    border-top: 3px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

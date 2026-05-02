@@ -5,6 +5,12 @@ import {
 } from 'lucide-react';
 import FloatingLabelInput from '../components/FloatingLabelInput';
 
+const Loader = () => (
+    <div className="loader-container">
+        <div className="spinner"></div>
+    </div>
+);
+
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('overview');
     const [stats, setStats] = useState({ totalUsers: 0, totalStudents: 0, totalTeachers: 0, pendingEnrollments: 0 });
@@ -197,63 +203,65 @@ const AdminDashboard = () => {
                 <div className="admin-content">
                     {activeTab === 'overview' && (
                         <div className="animate-slide-up">
-                            <div className="stats-grid mb-12">
-                                {[1, 2, 3, 4].map(i => (
-                                    loading ? (
-                                        <div key={i} className="stat-card skeleton skeleton-card"></div>
-                                    ) : (
-                                        <div key={i} className="stat-card">
-                                            <div className={`stat-icon ${i === 1 ? 'purple' : i === 2 ? 'blue' : i === 3 ? 'green' : 'orange'}`}>
-                                                {i === 1 ? <Users size={28} /> : i === 2 ? <UserCheck size={28} /> : i === 3 ? <TrendingUp size={28} /> : <DollarSign size={28} />}
+                            {loading ? (
+                                <Loader />
+                            ) : (
+                                <>
+                                    <div className="stats-grid mb-12">
+                                        {[1, 2, 3, 4].map(i => (
+                                            <div key={i} className="stat-card">
+                                                <div className={`stat-icon ${i === 1 ? 'purple' : i === 2 ? 'blue' : i === 3 ? 'green' : 'orange'}`}>
+                                                    {i === 1 ? <Users size={28} /> : i === 2 ? <UserCheck size={28} /> : i === 3 ? <TrendingUp size={28} /> : <DollarSign size={28} />}
+                                                </div>
+                                                <div className="stat-info">
+                                                    <p>{i === 1 ? 'Total Users' : i === 2 ? 'Students' : i === 3 ? 'Teachers' : 'Pending Apps'}</p>
+                                                    <h3>{i === 1 ? stats.totalUsers : i === 2 ? stats.totalStudents : i === 3 ? stats.totalTeachers : stats.pendingEnrollments}</h3>
+                                                </div>
                                             </div>
-                                            <div className="stat-info">
-                                                <p>{i === 1 ? 'Total Users' : i === 2 ? 'Students' : i === 3 ? 'Teachers' : 'Pending Apps'}</p>
-                                                <h3>{i === 1 ? stats.totalUsers : i === 2 ? stats.totalStudents : i === 3 ? stats.totalTeachers : stats.pendingEnrollments}</h3>
-                                            </div>
-                                        </div>
-                                    )
-                                ))}
-                            </div>
-
-                            <div className="quick-actions-grid">
-                                <div className="action-group-card">
-                                    <h3>Quick Actions</h3>
-                                    <div className="inner-grid">
-                                        <button className="action-tile" onClick={() => setActiveTab('add-course')}>
-                                            <div className="tile-icon">
-                                                <PlusCircle size={20} />
-                                            </div>
-                                            <strong>Add Course</strong>
-                                            <span>Announce new class</span>
-                                        </button>
-                                        <button className="action-tile secondary-tile" onClick={() => setActiveTab('enrollments')}>
-                                            <div className="tile-icon">
-                                                <DollarSign size={20} />
-                                            </div>
-                                            <strong>Review Fees</strong>
-                                            <span>Check pending receipts</span>
-                                        </button>
+                                        ))}
                                     </div>
-                                </div>
 
-                                <div className="action-group-card">
-                                    <h3>System Status</h3>
-                                    <div className="status-list">
-                                        <div className="status-item">
-                                            <span>Database Connection</span>
-                                            <span className="status-badge-active">ACTIVE</span>
+                                    <div className="quick-actions-grid">
+                                        <div className="action-group-card">
+                                            <h3>Quick Actions</h3>
+                                            <div className="inner-grid">
+                                                <button className="action-tile" onClick={() => setActiveTab('add-course')}>
+                                                    <div className="tile-icon">
+                                                        <PlusCircle size={20} />
+                                                    </div>
+                                                    <strong>Add Course</strong>
+                                                    <span>Announce new class</span>
+                                                </button>
+                                                <button className="action-tile secondary-tile" onClick={() => setActiveTab('enrollments')}>
+                                                    <div className="tile-icon">
+                                                        <DollarSign size={20} />
+                                                    </div>
+                                                    <strong>Review Fees</strong>
+                                                    <span>Check pending receipts</span>
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div className="status-item">
-                                            <span>Storage API</span>
-                                            <span className="status-badge-active">ACTIVE</span>
-                                        </div>
-                                        <div className="status-item">
-                                            <span>Email Server</span>
-                                            <span className="status-badge-active">ACTIVE</span>
+
+                                        <div className="action-group-card">
+                                            <h3>System Status</h3>
+                                            <div className="status-list">
+                                                <div className="status-item">
+                                                    <span>Database Connection</span>
+                                                    <span className="status-badge-active">ACTIVE</span>
+                                                </div>
+                                                <div className="status-item">
+                                                    <span>Storage API</span>
+                                                    <span className="status-badge-active">ACTIVE</span>
+                                                </div>
+                                                <div className="status-item">
+                                                    <span>Email Server</span>
+                                                    <span className="status-badge-active">ACTIVE</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                                </>
+                            )}
                         </div>
                     )}
 
@@ -266,9 +274,7 @@ const AdminDashboard = () => {
 
                             <div className="payments-table">
                                 {loading ? (
-                                    <div className="p-8 space-y-4">
-                                        {[1, 2, 3, 4, 5].map(i => <div key={i} className="skeleton skeleton-table-row"></div>)}
-                                    </div>
+                                    <Loader />
                                 ) : enrollments.length === 0 ? (
                                     <div className="admin-empty-state">
                                         <div className="empty-state-icon">
@@ -310,9 +316,7 @@ const AdminDashboard = () => {
                             <h2 className="text-2xl font-bold tracking-tight mb-8">{activeTab === 'teachers' ? 'Teacher' : 'Student'} Directory</h2>
                             <div className="payments-table">
                                 {loading ? (
-                                    <div className="p-8 space-y-4">
-                                        {[1, 2, 3, 4, 5].map(i => <div key={i} className="skeleton skeleton-table-row"></div>)}
-                                    </div>
+                                    <Loader />
                                 ) : (
                                     <table>
                                         <thead>
@@ -352,7 +356,7 @@ const AdminDashboard = () => {
                             </div>
                             <div className="admin-course-grid">
                                 {loading ? (
-                                    [1, 2, 3].map(i => <div key={i} className="course-admin-card skeleton" style={{ height: '240px' }}></div>)
+                                    <Loader />
                                 ) : classes.map(cls => (
                                     <div key={cls.ID} className={`course-admin-card ${cls.Status === 'inactive' ? 'status-inactive' : ''}`}>
                                         <div className="course-card-top">
