@@ -31,8 +31,8 @@ const Navbar = () => {
           {user ? (
             <div className="user-nav-group">
               <Link to={
-                user.RoleName === 'Admin' || user.RoleName === 'SuperAdmin' ? '/admin-dashboard' :
-                user.RoleName === 'Teacher' ? '/teacher-dashboard' : '/student-dashboard'
+                user.Role === 'Admin' ? '/admin-dashboard' :
+                user.Role === 'Teacher' ? '/teacher-dashboard' : '/student-dashboard'
               } className="btn btn-secondary btn-sm">
                 Dashboard
               </Link>

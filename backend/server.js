@@ -1,29 +1,23 @@
 require('dotenv').config();
-var express = require('express'),
-    cors = require('cors'),
-    http = require('http');
+const express = require('express');
+const cors = require('cors');
+const http = require('http');
 
 const app = express();
 const server = http.createServer(app);
-const { con } = require('./database');
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+// --- Minimal LMS Routes ---
 app.use('/auth', require('./routes/authRoutes'));
-app.use('/superadmin', require('./routes/superAdminRoutes'));
-app.use('/academic', require('./routes/academicRoutes'));
-app.use('/roles', require('./routes/roleRoutes'));
 app.use('/users', require('./routes/userRoutes'));
-app.use('/activity', require('./routes/activityRoutes'));
-app.use('/finance', require('./routes/financeRoutes'));
-app.use('/lms',     require('./routes/lmsRoutes'));
-app.use('/payroll', require('./routes/payrollRoutes'));
+app.use('/lms', require('./routes/lmsRoutes'));
 app.use('/enrollment', require('./routes/enrollmentRoutes'));
 app.use('/admin', require('./routes/adminRoutes'));
 
-// Socket.IO
+// Socket.IO for real-time interactions (Cleaned up)
 const io = require('socket.io')(server, {
     cors: {
         origin: '*',
@@ -34,18 +28,14 @@ const io = require('socket.io')(server, {
 global.io = io;
 
 io.on('connection', (socket) => {
-    socket.on('join', (schoolID) => {
-        socket.join(`school:${schoolID}`);
-        socket.schoolID = schoolID;
+    socket.on('join', (userId) => {
+        socket.join(`user:${userId}`);
     });
 
     socket.on('disconnect', () => {
-        if (socket.userID) {
-            // console.log(`User ${socket.userID} disconnected`);
-        }
+        // Disconnected
     });
-
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`Edunex server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Minimal LMS server running on port ${PORT}`));

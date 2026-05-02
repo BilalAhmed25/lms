@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Lock, Hash, ShieldCheck } from 'lucide-react';
+import { Lock, Hash, ShieldCheck, Mail } from 'lucide-react';
 import FloatingLabelInput from '../components/FloatingLabelInput';
 
 const ResetPassword = () => {
@@ -61,6 +61,7 @@ const ResetPassword = () => {
           <FloatingLabelInput 
             label="Email Address"
             type="email"
+            icon={Mail}
             readOnly
             value={formData.email}
             className="read-only-input mb-6"

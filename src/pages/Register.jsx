@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../App';
-import { User, Briefcase, Mail, Lock, UserPlus } from 'lucide-react';
+import { User, Briefcase, Mail, Lock, UserPlus, FileText } from 'lucide-react';
 import FloatingLabelInput from '../components/FloatingLabelInput';
+import LandingHero from '../components/LandingHero';
 
 const Register = () => {
   const [role, setRole] = useState('student');
   const [formData, setFormData] = useState({ name: '', email: '', password: '', profile: '' });
+  const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
     try {
       const response = await fetch('http://localhost:3000/auth/register', {
         method: 'POST',
@@ -19,7 +22,7 @@ const Register = () => {
         body: JSON.stringify({ 
           email: formData.email, 
           password: formData.password, 
-          role: role.charAt(0).toUpperCase() + role.slice(1), // 'Student' or 'Teacher'
+          role: role.charAt(0).toUpperCase() + role.slice(1), 
           name: formData.name 
         }),
       });
@@ -36,22 +39,19 @@ const Register = () => {
     } catch (err) {
       console.error(err);
       alert('Failed to register');
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="auth-page animate-fade-in">
-      <div className="auth-split-layout glass">
-        <div className="auth-hero">
-          <div className="hero-overlay"></div>
-          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1000" alt="Register Hero" />
-          <div className="hero-text">
-            <h2>Join Our Global Community</h2>
-            <p>Empower your future with industry-leading courses and expert-led mentorship.</p>
-          </div>
-        </div>
-
-        <div className="auth-container">
+    <div className="register-page animate-fade-in">
+      <LandingHero 
+        title={<>Experience the <br/> <span className="text-primary">Future</span> of Education.</>}
+        description="Join thousands of students and teachers in our world-class educational ecosystem. Start your journey today with our industry-leading platform."
+        image="/lms_hero_modern_space_1777730333880.png"
+      >
+        <div className="auth-container glass">
           <div className="auth-header">
             <h2>Create Account</h2>
             <p>Join our learning community today</p>
@@ -106,23 +106,27 @@ const Register = () => {
             />
 
             {role === 'teacher' && (
-              <div className="floating-input-group mb-6">
-                <div className="input-wrapper">
-                  <textarea 
-                    placeholder=" " 
-                    required
-                    rows="3"
-                    value={formData.profile}
-                    onChange={(e) => setFormData({...formData, profile: e.target.value})}
-                  ></textarea>
-                  <label className="floating-label">Professional Bio / Expertise</label>
-                </div>
-              </div>
+              <FloatingLabelInput 
+                label="Professional Bio / Expertise"
+                type="textarea"
+                icon={FileText}
+                required
+                rows="3"
+                value={formData.profile}
+                onChange={(e) => setFormData({...formData, profile: e.target.value})}
+                className="mb-6"
+              />
             )}
 
-            <button type="submit" className="btn btn-primary w-full">
-              <UserPlus size={20} />
-              Sign Up as {role.charAt(0).toUpperCase() + role.slice(1)}
+            <button type="submit" className="btn btn-primary w-full" disabled={submitting}>
+              {submitting ? (
+                'Please wait...'
+              ) : (
+                <>
+                  <UserPlus size={20} />
+                  Sign Up
+                </>
+              )}
             </button>
           </form>
 
@@ -130,7 +134,7 @@ const Register = () => {
             Already have an account? <Link to="/login" className="text-primary">Log In</Link>
           </p>
         </div>
-      </div>
+      </LandingHero>
     </div>
   );
 };
