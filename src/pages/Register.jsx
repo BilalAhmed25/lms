@@ -49,7 +49,7 @@ const Register = () => {
       <LandingHero 
         title={<>Experience the <br/> <span className="text-primary">Future</span> of Education.</>}
         description="Join thousands of students and teachers in our world-class educational ecosystem. Start your journey today with our industry-leading platform."
-        image="/lms_hero_modern_space_1777730333880.png"
+        image="/hero_banner.png"
       >
         <div className="auth-container glass">
           <div className="auth-header">

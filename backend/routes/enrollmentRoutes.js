@@ -4,12 +4,33 @@ const { con } = require('../database');
 const authenticateToken = require('../authenticateToken');
 const { uploadToCloudinary } = require('../cloudinaryHelper');
 
-router.use(authenticateToken);
-
-// List available courses
+// List available courses (Public)
 router.get('/classes', async (req, res) => {
     try {
-        const [rows] = await con.execute('SELECT ID, Name, Fee FROM LMS_Courses WHERE Status = "active"');
+        const [rows] = await con.execute(`
+            SELECT c.ID, c.Name, c.Fee, c.Description, u.Name as TeacherName
+            FROM LMS_Courses c
+            LEFT JOIN Users u ON c.TeacherID = u.ID
+            WHERE c.Status = "active"
+        `);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json('Fetch failed');
+    }
+});
+
+router.use(authenticateToken);
+
+// Student enrollment history
+router.get('/my-history', async (req, res) => {
+    try {
+        const [rows] = await con.execute(`
+            SELECT e.*, c.Name as ClassName 
+            FROM LMS_Enrollments e
+            JOIN LMS_Courses c ON e.CourseID = c.ID
+            WHERE e.UserID = ?
+            ORDER BY e.CreatedAt DESC
+        `, [req.user.ID]);
         res.json(rows);
     } catch (err) {
         res.status(500).json('Fetch failed');

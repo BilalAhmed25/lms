@@ -1,13 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../App';
 import { 
   Users, BookOpen, Star, ArrowRight, Play, CheckCircle, 
-  Calculator, Lightbulb, Beaker, BarChart, Code, Mail, Shield, Monitor
+  Calculator, Lightbulb, Beaker, BarChart, Code, Mail, Shield, Monitor,
+  Clock, LogIn
 } from 'lucide-react';
 
 const Home = () => {
+  const { user } = useAuth();
+  const [courses, setCourses] = useState([]);
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      // Fetch public courses
+      const coursesRes = await fetch('http://localhost:3000/enrollment/classes');
+      const coursesData = await coursesRes.json();
+      setCourses(coursesData.slice(0, 4));
+
+      // Fetch history if logged in
+      const token = localStorage.getItem('token');
+      if (token && user?.Role === 'Student') {
+        const historyRes = await fetch('http://localhost:3000/enrollment/my-history', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const historyData = await historyRes.json();
+        setHistory(historyData);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getCourseStatus = (courseId) => {
+    const record = history.find(h => h.CourseID === courseId);
+    if (!record) return null;
+    return record.Status;
+  };
+
   return (
-    <div className="home-page">
+    <div className="home-page animate-fade-in">
       {/* Hero Section */}
       <section className="hero-section">
         <div className="container">
@@ -22,7 +62,9 @@ const Home = () => {
                 Start your education journey for a better future. Join millions of learners worldwide and unlock your full potential today.
               </p>
               <div className="flex gap-4">
-                <Link to="/register" className="btn btn-primary" style={{ padding: '15px 35px' }}>Start Learning Now</Link>
+                <Link to={user ? "/student-dashboard" : "/register"} className="btn btn-primary" style={{ padding: '15px 35px' }}>
+                    {user ? 'Go to Dashboard' : 'Start Learning Now'}
+                </Link>
               </div>
             </div>
             <div className="hero-image-container">
@@ -81,7 +123,7 @@ const Home = () => {
                 <span className="text-primary font-bold">Learn together with</span>
                 <h3>Expert Teacher</h3>
                 <p className="text-muted mb-6">Gain access to top-tier expertise and personalized mentorship.</p>
-                <Link to="/register" className="btn btn-primary">View All Courses</Link>
+                <Link to="/register" className="btn btn-primary">Join as Teacher</Link>
               </div>
               <div className="cta-image-group">
                 <img src="https://images.unsplash.com/photo-1544717297-fa154da09f9b?auto=format&fit=crop&q=80&w=300" alt="Teacher" />
@@ -92,7 +134,7 @@ const Home = () => {
                 <span className="text-primary font-bold">Get the skills</span>
                 <h3>For Individuals</h3>
                 <p className="text-muted mb-6">Build your path with courses tailored for personal growth.</p>
-                <Link to="/register" className="btn btn-primary">Find Your Course</Link>
+                <Link to="/register" className="btn btn-primary">Browse Catalog</Link>
               </div>
               <div className="cta-image-group">
                 <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=300" alt="Student" />
@@ -109,37 +151,57 @@ const Home = () => {
             <div className="section-header" style={{ textAlign: 'left', margin: 0 }}>
               <h2>Popular Courses</h2>
             </div>
-            <Link to="/register" className="btn btn-secondary">View All Courses</Link>
+            <Link to="/student-dashboard" className="btn btn-secondary">View My Portal</Link>
           </div>
 
           <div className="category-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
-            {[
-              { title: 'Therapeutic Approaches in Mental Health', cat: 'DEVELOPMENT', price: 'Free', img: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=500' },
-              { title: "Building Chatbots with OpenAI's GPT", cat: 'LANGUAGE', price: '$29', img: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=500' },
-              { title: 'Mobile App Development with React Native', cat: 'DEVELOPMENT', price: 'Free', img: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=500' },
-              { title: '30-Day Fitness Challenge, Get Fit Fast', cat: 'FITNESS', price: 'Free', img: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=500' }
-            ].map((course, i) => (
-              <div key={i} className="course-card">
-                <div className="course-thumb">
-                  <img src={course.img} alt={course.title} />
-                  <span className="badge badge-primary" style={{ position: 'absolute', top: 20, left: 20 }}>{course.cat}</span>
-                </div>
-                <div className="course-meta">
-                  <div className="course-instructor">
-                    <img src={`https://i.pravatar.cc/100?u=${i+10}`} alt="Avatar" />
-                    <span className="text-muted text-sm">Instructor Name</span>
+            {loading ? (
+                [1,2,3,4].map(i => <div key={i} className="course-card skeleton" style={{ height: 350 }}></div>)
+            ) : courses.map((course, i) => {
+              const status = getCourseStatus(course.ID);
+              return (
+                <div key={course.ID} className="course-card">
+                  <div className="course-thumb">
+                    <img 
+                        src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?auto=format&fit=crop&q=80&w=500" 
+                        alt={course.Name} 
+                    />
+                    <span className="badge badge-primary" style={{ position: 'absolute', top: 20, left: 20 }}>COURSE</span>
                   </div>
-                  <h4 style={{ fontSize: '1.1rem', minHeight: '3rem' }}>{course.title}</h4>
-                  <div className="flex items-center gap-2 mt-4 text-muted text-sm">
-                    <BookOpen size={16} /> 14 Lessons
+                  <div className="course-meta">
+                    <div className="course-instructor">
+                      <img src={`https://i.pravatar.cc/100?u=${course.ID}`} alt="Avatar" />
+                      <span className="text-muted text-sm">{course.TeacherName || 'LMS Instructor'}</span>
+                    </div>
+                    
+                    <h4 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0, width: '100%', lineHeight: 1.4 }}>
+                        {course.Name}
+                    </h4>
+
+                    <div className="course-extra-info pt-4 border-t border-gray-100" style={{ marginTop: 'auto' }}>
+                        <div className="flex items-center gap-2 text-muted text-sm">
+                            <BookOpen size={16} /> 
+                            <span>Standard Curriculum</span>
+                        </div>
+                    </div>
+                  </div>
+                  <div className="course-footer">
+                    <span className="course-price">${course.Fee}</span>
+                    {status === 'approved' ? (
+                        <Link to="/student-dashboard" className="btn-status enrolled">
+                            <CheckCircle size={16} /> Enrolled
+                        </Link>
+                    ) : status === 'pending' ? (
+                        <div className="btn-status pending">
+                            <Clock size={16} /> Pending
+                        </div>
+                    ) : (
+                        <Link to={`/course/${course.ID}`} className="btn-icon">Enroll Now</Link>
+                    )}
                   </div>
                 </div>
-                <div className="course-footer">
-                  <span className={`course-price ${course.price === 'Free' ? 'free' : ''}`}>{course.price}</span>
-                  <Link to="/register" className="btn-icon">View Details</Link>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

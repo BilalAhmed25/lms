@@ -37,7 +37,7 @@ const Login = () => {
       <LandingHero 
         title={<>Find out the <br/> <span className="text-primary">Best</span> Way to Learn.</>}
         description="Unlock your potential with our award-winning curriculum and expert-led mentorship programs. Join a community of over 50,000 successful students worldwide."
-        image="/lms_hero_modern_space_1777730333880.png"
+        image="/hero_banner.png"
       >
         <div className="auth-container glass">
           <div className="auth-header">

@@ -58,11 +58,13 @@ export const useAuth = () => useContext(AuthContext);
 
 const AppContent = () => {
   const location = useLocation();
-  const isDashboard = location.pathname.includes('dashboard');
+  const isDashboardFull = location.pathname.includes('admin-dashboard') || 
+                          location.pathname.includes('teacher-dashboard') ||
+                          location.pathname.includes('student-dashboard');
 
   return (
     <div className="app-container">
-      {!isDashboard && <Navbar />}
+      {!isDashboardFull && <Navbar />}
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -76,7 +78,7 @@ const AppContent = () => {
           <Route path="/course/:id" element={<CourseDetails />} />
         </Routes>
       </main>
-      {!isDashboard && <Footer />}
+      {!isDashboardFull && <Footer />}
     </div>
   );
 };

@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../App';
-import { Book, CreditCard, Clock, Star, Search, AlertCircle } from 'lucide-react';
-import StudentEnrollment from '../components/StudentEnrollment';
+import { Book, CreditCard, Clock, Star, Search, AlertCircle, PlusCircle, CheckCircle, ChevronRight, Layout, XCircle } from 'lucide-react';
+
+const Loader = () => (
+    <div className="loader-container">
+        <div className="spinner"></div>
+    </div>
+);
 
 const StudentDashboard = () => {
-  const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('courses');
-  const [studentData, setStudentData] = useState(null);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('overview');
+  const [availableCourses, setAvailableCourses] = useState([]);
   const [enrollmentHistory, setEnrollmentHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -17,14 +24,12 @@ const StudentDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       const token = localStorage.getItem('token');
-      // Fetch student profile to check ClassId
-      const profileRes = await fetch('http://localhost:3000/users/me', {
+      const coursesRes = await fetch('http://localhost:3000/enrollment/classes', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      const profile = await profileRes.json();
-      setStudentData(profile);
+      const courses = await coursesRes.json();
+      setAvailableCourses(courses);
 
-      // Fetch history
       const historyRes = await fetch('http://localhost:3000/enrollment/my-history', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -37,118 +42,187 @@ const StudentDashboard = () => {
     }
   };
 
-  if (loading) return <div className="p-12 text-center">Loading dashboard...</div>;
+  const enrolled = enrollmentHistory.filter(h => h.Status === 'approved');
+  const pending = enrollmentHistory.filter(h => h.Status === 'pending');
+  const trulyAvailable = availableCourses.filter(c => !enrollmentHistory.some(h => h.CourseID === c.ID));
 
-  // If student is not enrolled in any class
-  if (!studentData?.ClassId) {
-    const pendingRequest = enrollmentHistory.find(h => h.Status === 'pending');
-    
-    if (pendingRequest) {
-      return (
-        <div className="dashboard-container container py-20 text-center">
-          <div className="glass p-12 rounded-3xl max-w-2xl mx-auto">
-            <Clock size={60} className="mx-auto text-primary animate-pulse" />
-            <h2 className="mt-8">Enrollment Pending</h2>
-            <p className="text-muted mt-4">
-              Your request for <strong>{pendingRequest.ClassName}</strong> is currently being verified by our admin.
-              Please check back later.
-            </p>
-            <div className="mt-8 p-4 bg-blue-50 text-blue-700 rounded-xl flex items-center gap-3 justify-center">
-              <AlertCircle size={20} />
-              Verification usually takes 24 hours.
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    return <StudentEnrollment onEnrolled={fetchDashboardData} />;
-  }
+  if (loading) return <Loader />;
 
   return (
-    <div className="dashboard-container container animate-fade-in">
-      <header className="dashboard-header">
-        <div>
-          <h1>Welcome back, {user.Name}!</h1>
-          <p className="text-muted">You are enrolled in {studentData.ClassName}</p>
+    <div className="admin-layout animate-fade-in">
+      {/* Sidebar */}
+      <aside className="admin-sidebar">
+        <div className="sidebar-header">
+          <div className="logo-box">L</div>
+          <h2>Student Portal</h2>
         </div>
-        <div className="search-bar glass">
-          <Search size={20} className="text-muted" />
-          <input type="text" placeholder="Search lessons..." />
+
+        <nav className="sidebar-nav">
+          <button className={activeTab === 'overview' ? 'active' : ''} onClick={() => setActiveTab('overview')}>
+            <Layout size={20} /> Overview
+          </button>
+          <button className={activeTab === 'my-courses' ? 'active' : ''} onClick={() => setActiveTab('my-courses')}>
+            <Book size={20} /> My Learning
+            {enrolled.length > 0 && <span>{enrolled.length}</span>}
+          </button>
+          <button className={activeTab === 'browse' ? 'active' : ''} onClick={() => setActiveTab('browse')}>
+            <PlusCircle size={20} /> Browse Courses
+          </button>
+          <button className={activeTab === 'payments' ? 'active' : ''} onClick={() => setActiveTab('payments')}>
+            <CreditCard size={20} /> Billing
+          </button>
+        </nav>
+
+        <div className="sidebar-footer">
+          <button className="exit-btn" onClick={() => { logout(); navigate('/login'); }}>
+            <XCircle size={20} /> Sign Out
+          </button>
         </div>
-      </header>
+      </aside>
 
-      <div className="dashboard-tabs">
-        <button 
-          className={`tab-btn ${activeTab === 'courses' ? 'active' : ''}`}
-          onClick={() => setActiveTab('courses')}
-        >
-          <Book size={18} /> My Learning
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'payments' ? 'active' : ''}`}
-          onClick={() => setActiveTab('payments')}
-        >
-          <CreditCard size={18} /> Payment History
-        </button>
-      </div>
+      {/* Main Content */}
+      <main className="admin-main">
+        <header className="admin-header">
+          <div className="header-title">
+            <h1>Hello, {user.Name}</h1>
+            <p>Ready to continue your learning journey?</p>
+          </div>
+          <div className="admin-profile-nav">
+            <div className="search-bar">
+              <Search size={18} />
+              <input type="text" placeholder="Search lessons..." />
+            </div>
+            <div className="admin-avatar">{user.Name.charAt(0)}</div>
+          </div>
+        </header>
 
-      <div className="tab-content">
-        {activeTab === 'courses' ? (
-          <div className="courses-grid">
-            {/* Real course content would be fetched here based on ClassId */}
-            <div className="course-card glass">
-              <div className="course-img-placeholder">
-                <span className="badge badge-primary">Active Class</span>
-              </div>
-              <div className="course-info">
-                <h3>{studentData.ClassName} Curriculum</h3>
-                <p className="teacher-name">Access your lessons, assignments and assessments here.</p>
-                <div className="progress-container">
-                  <div className="progress-bar-bg">
-                    <div className="progress-bar-fill" style={{ width: `45%` }}></div>
+        <div className="admin-content">
+          {activeTab === 'overview' && (
+            <div className="animate-slide-up">
+              <div className="stats-grid mb-12">
+                <div className="stat-card">
+                  <div className="stat-icon purple"><Book size={28} /></div>
+                  <div className="stat-info">
+                    <p>Enrolled Courses</p>
+                    <h3>{enrolled.length}</h3>
                   </div>
-                  <span className="progress-text">45% Course Complete</span>
                 </div>
-                <button className="btn btn-primary w-full">Enter Classroom</button>
+                <div className="stat-card">
+                  <div className="stat-icon orange"><Clock size={28} /></div>
+                  <div className="stat-info">
+                    <p>Pending Review</p>
+                    <h3>{pending.length}</h3>
+                  </div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-icon blue"><Star size={28} /></div>
+                  <div className="stat-info">
+                    <p>Avg. Progress</p>
+                    <h3>45%</h3>
+                  </div>
+                </div>
+              </div>
+
+              {enrolled.length > 0 && (
+                <div className="mb-12">
+                  <h3 className="mb-6">Continue Learning</h3>
+                  <div className="courses-grid-modern">
+                    {enrolled.slice(0, 2).map(course => (
+                      <div key={course.ID} className="enrolled-course-card" onClick={() => navigate(`/lms-dashboard/${course.CourseID}`)}>
+                        <div className="card-badge">ACTIVE</div>
+                        <h3>{course.ClassName}</h3>
+                        <div className="progress-info">
+                          <div className="progress-bar-minimal"><div className="fill" style={{ width: '45%' }}></div></div>
+                          <span>45% Complete</span>
+                        </div>
+                        <div className="card-footer">
+                          <span>Resume Lesson</span>
+                          <ChevronRight size={18} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'my-courses' && (
+            <div className="animate-slide-up">
+              <h2 className="mb-8">My Enrolled Courses</h2>
+              {enrolled.length > 0 ? (
+                <div className="courses-grid-modern">
+                  {enrolled.map(course => (
+                    <div key={course.ID} className="enrolled-course-card" onClick={() => navigate(`/lms-dashboard/${course.CourseID}`)}>
+                      <div className="card-badge">ACTIVE</div>
+                      <h3>{course.ClassName}</h3>
+                      <div className="progress-info">
+                        <div className="progress-bar-minimal"><div className="fill" style={{ width: '45%' }}></div></div>
+                        <span>45% Complete</span>
+                      </div>
+                      <div className="card-footer">
+                        <span>Go to Classroom</span>
+                        <ChevronRight size={18} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="admin-empty-state">
+                  <div className="empty-state-icon"><Book size={40} /></div>
+                  <p>You haven't enrolled in any courses yet.</p>
+                  <button className="btn btn-primary mt-4" onClick={() => setActiveTab('browse')}>Browse Catalog</button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'browse' && (
+            <div className="animate-slide-up">
+              <h2 className="mb-8">Course Catalog</h2>
+              <div className="available-courses-grid">
+                {trulyAvailable.map(course => (
+                  <Link to={`/course/${course.ID}`} key={course.ID} className="available-card">
+                    <div className="available-icon"><Book size={24} /></div>
+                    <div className="available-info">
+                      <h3>{course.Name}</h3>
+                      <p className="price">${course.Fee}</p>
+                    </div>
+                    <div className="enroll-cta">Details</div>
+                  </Link>
+                ))}
               </div>
             </div>
-          </div>
-        ) : (
-          <div className="payments-table glass">
-            <table>
-              <thead>
-                <tr>
-                  <th>Request ID</th>
-                  <th>Class Name</th>
-                  <th>Amount Paid</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {enrollmentHistory.map(pay => (
-                  <tr key={pay.ID}>
-                    <td><span className="txn-id">REQ-{pay.ID}</span></td>
-                    <td>{pay.ClassName}</td>
-                    <td className="amount">${pay.AmountPaid}</td>
-                    <td>{new Date(pay.CreatedAt).toLocaleDateString()}</td>
-                    <td>
-                      <span className={`badge ${
-                        pay.Status === 'approved' ? 'badge-success' : 
-                        pay.Status === 'pending' ? 'badge-primary' : 'badge-danger'
-                      }`}>
-                        {pay.Status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+          )}
 
+          {activeTab === 'payments' && (
+            <div className="animate-slide-up">
+              <h2 className="mb-8">Billing & Receipts</h2>
+              <div className="billing-table-card">
+                <table>
+                  <thead>
+                    <tr><th>Course</th><th>Amount</th><th>Date</th><th>Status</th></tr>
+                  </thead>
+                  <tbody>
+                    {enrollmentHistory.map(h => (
+                      <tr key={h.ID}>
+                        <td>{h.ClassName}</td>
+                        <td className="font-bold text-primary">${h.AmountPaid}</td>
+                        <td>{new Date(h.CreatedAt).toLocaleDateString()}</td>
+                        <td>
+                          <span className={`badge-minimal ${h.Status}`}>
+                            {h.Status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 };
