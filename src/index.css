@@ -461,10 +461,14 @@
         display: flex;
         /* Ensure visible on mobile */
         align-items: center;
-        padding: 25px 30px;
+        padding: 20px 30px;
         width: 100%;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         justify-content: space-between;
+    }
+
+    .mobile-menu-header .logo-img {
+        max-height: 40px;
+        width: auto;
     }
 
     .mobile-close {
