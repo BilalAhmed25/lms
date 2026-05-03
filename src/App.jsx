@@ -14,6 +14,7 @@ import ResetPassword from './pages/ResetPassword';
 import Courses from './pages/Courses';
 import ContactUs from './pages/ContactUs';
 import AboutUs from './pages/AboutUs';
+import NotFound from './pages/NotFound';
 import './index.css';
 
 // Context for Auth
@@ -79,9 +80,10 @@ const AppContent = () => {
           <Route path="/student-dashboard" element={<StudentDashboard />} />
           <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/course/:id" element={<CourseDetails />} />
+          <Route path="/course/:slug" element={<CourseDetails />} />
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/about-us" element={<AboutUs />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       {!isDashboardFull && <Footer />}

@@ -192,6 +192,39 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
+/* --- Course Details Specific Transparent Header --- */
+.navbar.is-course-details:not(.scrolled) .nav-link {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.navbar.is-course-details:not(.scrolled) .nav-link:hover {
+    color: var(--accent);
+}
+
+.navbar.is-course-details:not(.scrolled) .nav-link.active {
+    color: var(--accent);
+}
+
+.navbar.is-course-details:not(.scrolled) .nav-link.active::before {
+    background: var(--accent);
+}
+
+.navbar.is-course-details:not(.scrolled) .logo-img {
+    filter: brightness(0) invert(1);
+}
+
+.navbar.is-course-details:not(.scrolled) .nav-icon {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.navbar.is-course-details:not(.scrolled) .auth-link span {
+    color: white;
+}
+
+.navbar.is-course-details:not(.scrolled) .nav-separator {
+    background: rgba(255, 255, 255, 0.3);
+}
+
 .nav-content {
     display: flex;
     justify-content: space-between;

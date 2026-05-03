@@ -11,6 +11,7 @@ router.get('/classes', async (req, res) => {
             SELECT 
                 c.ID, 
                 c.Name, 
+                c.Slug,
                 c.ShortIntro,
                 c.Fee, 
                 c.Thumbnail,
@@ -23,6 +24,39 @@ router.get('/classes', async (req, res) => {
             WHERE c.Status = "active"
         `);
         res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Fetch failed');
+    }
+});
+
+// Get single course details by SLUG (Public)
+router.get('/classes/:slug', async (req, res) => {
+    try {
+        const [courseRows] = await con.execute(`
+            SELECT 
+                c.*, 
+                u.Name as TeacherName,
+                u.ProfileImage as TeacherImage,
+                u.Email as TeacherEmail,
+                (SELECT COUNT(*) FROM LMS_Enrollments WHERE CourseID = c.ID AND Status = "approved") as EnrolledCount
+            FROM LMS_Courses c
+            LEFT JOIN Users u ON c.TeacherID = u.ID
+            WHERE c.Slug = ?
+        `, [req.params.slug]);
+
+        if (courseRows.length === 0) return res.status(404).json('Course not found');
+
+        const [moduleRows] = await con.execute(`
+            SELECT * FROM LMS_Modules 
+            WHERE CourseID = ? 
+            ORDER BY OrderIndex ASC
+        `, [courseRows[0].ID]);
+
+        const course = courseRows[0];
+        course.Modules = moduleRows;
+
+        res.json(course);
     } catch (err) {
         console.error(err);
         res.status(500).json('Fetch failed');

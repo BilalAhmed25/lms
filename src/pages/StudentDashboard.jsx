@@ -181,7 +181,7 @@ const StudentDashboard = () => {
               <h2 className="mb-8">Course Catalog</h2>
               <div className="available-courses-grid">
                 {trulyAvailable.map(course => (
-                  <Link to={`/course/${course.ID}`} key={course.ID} className="available-card">
+                  <Link to={`/course/${course.Slug}`} key={course.ID} className="available-card">
                     <div className="available-icon"><Book size={24} /></div>
                     <div className="available-info">
                       <h3>{course.Name}</h3>

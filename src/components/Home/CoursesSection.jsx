@@ -54,7 +54,7 @@ const CoursesSection = ({ limit = 6, showHeader = true }) => {
                         Array(limit > 0 ? limit : 8).fill(0).map((_, i) => <CourseSkeleton key={i} />)
                     ) : (
                         displayedCourses.map((course, index) => (
-                            <Link to={`/course/${course.ID}`} key={course.ID} className="course-card-link">
+                            <Link to={`/course/${course.Slug}`} key={course.ID} className="course-card-link">
                                 <div className="course-card">
                                     <div className="course-image">
                                         <img
