@@ -43,8 +43,8 @@ router.get('/classes/:slug', async (req, res) => {
                 (SELECT COUNT(*) FROM LMS_Enrollments WHERE CourseID = c.ID AND Status = "approved") as EnrolledCount
             FROM LMS_Courses c
             LEFT JOIN Users u ON c.TeacherID = u.ID
-            WHERE c.Slug = ?
-        `, [req.params.slug]);
+            WHERE c.Slug = ? OR c.ID = ?
+        `, [req.params.slug, req.params.slug]);
 
         if (courseRows.length === 0) return res.status(404).json('Course not found');
 
@@ -70,7 +70,7 @@ router.use(authenticateToken);
 router.get('/my-history', async (req, res) => {
     try {
         const [rows] = await con.execute(`
-            SELECT e.*, c.Name as ClassName 
+            SELECT e.*, c.Name as ClassName, c.Slug
             FROM LMS_Enrollments e
             JOIN LMS_Courses c ON e.CourseID = c.ID
             WHERE e.UserID = ?

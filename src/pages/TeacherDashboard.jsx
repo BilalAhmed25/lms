@@ -1,146 +1,330 @@
-import React, { useState } from 'react';
-import { PlusCircle, Users, BookOpen, Settings, BarChart3 } from 'lucide-react';
-import FloatingLabelInput from '../components/FloatingLabelInput';
+import React, { useState, useEffect } from 'react';
+import { 
+    PlusCircle, Users, BookOpen, Clock, Layout, Play, 
+    MessageSquare, Award, CheckCircle, XCircle, Eye, 
+    TrendingUp, ExternalLink, Menu, X, Plus, Calendar, Settings
+} from 'lucide-react';
+import api from '../utils/api';
 import SEO from '../components/SEO';
 
-const TeacherDashboard = () => {
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [newCourse, setNewCourse] = useState({ title: '', price: '', category: '' });
-  const [courses, setCourses] = useState([
-    { id: 1, title: 'Advanced React Patterns', students: 124, rating: 4.8, status: 'Active' },
-    { id: 2, title: 'Modern Backend Architecture', students: 89, rating: 4.9, status: 'Draft' }
-  ]);
-
-  const students = [
-    { id: 1, name: 'Alex Thompson', course: 'Advanced React Patterns', joined: 'Oct 12, 2025' },
-    { id: 2, name: 'Sarah Miller', course: 'Advanced React Patterns', joined: 'Oct 15, 2025' },
-    { id: 3, name: 'James Wilson', course: 'Modern Backend Architecture', joined: 'Nov 01, 2025' }
-  ];
-
-  return (
-    <div className="dashboard-container container animate-fade-in">
-      <SEO 
-        title="Teacher Dashboard" 
-        description="Manage your courses, track student performance, and grow your teaching business on Deenova Learning Hub's Teacher Dashboard."
-      />
-      <header className="dashboard-header">
-        <div>
-          <h1>Teacher Dashboard</h1>
-          <p className="text-muted">Manage your courses and interact with students.</p>
-        </div>
-        <button onClick={() => setShowCreateModal(true)} className="btn btn-primary">
-          <PlusCircle size={20} /> Create New Course
-        </button>
-      </header>
-
-      <div className="stats-grid">
-        <div className="stat-card glass">
-          <Users className="text-primary" size={24} />
-          <div className="stat-info">
-            <span className="stat-value">213</span>
-            <span className="stat-label">Total Students</span>
-          </div>
-        </div>
-        <div className="stat-card glass">
-          <BookOpen className="text-secondary" size={24} />
-          <div className="stat-info">
-            <span className="stat-value">5</span>
-            <span className="stat-label">Total Courses</span>
-          </div>
-        </div>
-        <div className="stat-card glass">
-          <BarChart3 className="text-accent" size={24} />
-          <div className="stat-info">
-            <span className="stat-value">$12.4k</span>
-            <span className="stat-label">Total Earnings</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="dashboard-sections">
-        <section className="courses-section">
-          <div className="section-header">
-            <h3>Your Courses</h3>
-            <button className="btn-text">View All</button>
-          </div>
-          <div className="courses-list">
-            {courses.map(course => (
-              <div key={course.id} className="course-item glass">
-                <div className="course-main">
-                  <h4>{course.title}</h4>
-                  <div className="course-meta">
-                    <span><Users size={14} /> {course.students} Students</span>
-                    <span><Settings size={14} /> {course.status}</span>
-                  </div>
-                </div>
-                <div className="course-actions">
-                  <button className="btn-icon-bg"><Settings size={18} /></button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="students-section">
-          <div className="section-header">
-            <h3>Recent Students</h3>
-            <button className="btn-text">Manage</button>
-          </div>
-          <div className="students-list glass">
-            {students.map(student => (
-              <div key={student.id} className="student-item">
-                <div className="student-avatar">{student.name.charAt(0)}</div>
-                <div className="student-info">
-                  <span className="student-name">{student.name}</span>
-                  <span className="student-course">{student.course}</span>
-                </div>
-                <span className="student-date">{student.joined}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
-
-      {showCreateModal && (
-        <div className="modal-overlay">
-          <div className="modal-content glass">
-            <h3>Create New Course</h3>
-            <form className="modal-form">
-              <FloatingLabelInput 
-                label="Course Title"
-                type="text"
-                required
-                value={newCourse.title}
-                onChange={(e) => setNewCourse({...newCourse, title: e.target.value})}
-                className="mb-6"
-              />
-              <FloatingLabelInput 
-                label="Category"
-                type="text"
-                required
-                value={newCourse.category}
-                onChange={(e) => setNewCourse({...newCourse, category: e.target.value})}
-                className="mb-6"
-              />
-              <FloatingLabelInput 
-                label="Price ($)"
-                type="number"
-                required
-                value={newCourse.price}
-                onChange={(e) => setNewCourse({...newCourse, price: e.target.value})}
-                className="mb-6"
-              />
-              <div className="modal-btns">
-                <button type="button" onClick={() => setShowCreateModal(false)} className="btn btn-secondary">Cancel</button>
-                <button type="button" className="btn btn-primary">Create Course</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
+const Loader = () => (
+    <div className="loader-container">
+        <div className="spinner"></div>
     </div>
-  );
+);
+
+const TeacherDashboard = () => {
+    const [activeTab, setActiveTab] = useState('overview');
+    const [courses, setCourses] = useState([]);
+    const [submissions, setSubmissions] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    
+    // Form states
+    const [showSessionModal, setShowSessionModal] = useState(false);
+    const [showAssignmentModal, setShowAssignmentModal] = useState(false);
+    const [selectedCourseId, setSelectedCourseId] = useState('');
+    
+    const [sessionForm, setSessionForm] = useState({
+        title: '', date: '', duration: '', zoomLink: '', description: ''
+    });
+
+    const [assignmentForm, setAssignmentForm] = useState({
+        title: '', type: 'assignment', dueDate: '', maxMarks: '', description: '',
+        questions: [{ text: '', type: 'text', options: [] }]
+    });
+
+    useEffect(() => {
+        fetchDashboardData();
+    }, []);
+
+    const fetchDashboardData = async () => {
+        setLoading(true);
+        try {
+            const coursesData = await api.get('/enrollment/classes');
+            setCourses(coursesData);
+            
+            const subs = await api.get('/lms/submissions/pending');
+            setSubmissions(subs);
+        } catch (err) {
+            console.error(err);
+        }
+        setLoading(false);
+    };
+
+    const handleCreateSession = async (e) => {
+        e.preventDefault();
+        try {
+            await api.post('/lms/sessions', { ...sessionForm, courseId: selectedCourseId });
+            setShowSessionModal(false);
+            setSessionForm({ title: '', date: '', duration: '', zoomLink: '', description: '' });
+            alert('Session scheduled successfully!');
+        } catch (err) {
+            alert('Failed to schedule session.');
+        }
+    };
+
+    const handleCreateAssignment = async (e) => {
+        e.preventDefault();
+        try {
+            await api.post('/lms/assignments', { ...assignmentForm, courseId: selectedCourseId });
+            setShowAssignmentModal(false);
+            setAssignmentForm({ title: '', type: 'assignment', dueDate: '', maxMarks: '', description: '', questions: [{ text: '', type: 'text', options: [] }] });
+            alert('Assignment/Quiz created successfully!');
+        } catch (err) {
+            alert('Failed to create assignment.');
+        }
+    };
+
+    const handleAddQuestion = () => {
+        setAssignmentForm({
+            ...assignmentForm,
+            questions: [...assignmentForm.questions, { text: '', type: 'text', options: [] }]
+        });
+    };
+
+    if (loading) return <Loader />;
+
+    return (
+        <div className="admin-layout animate-fade-in">
+            <SEO title="Teacher Dashboard | LMS" />
+            
+            {/* Mobile Header */}
+            <header className="mobile-dashboard-header">
+                <img src="/logo.png" alt="Deenova" className="mobile-logo" />
+                <button className="menu-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                    {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+            </header>
+
+            {/* Sidebar */}
+            <aside className={`admin-sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+                <div className="sidebar-header">
+                    <img src="/logo.png" alt="Deenova Logo" className="logo-img sidebar-logo" />
+                </div>
+
+                <nav className="sidebar-nav">
+                    <button className={activeTab === 'overview' ? 'active' : ''} onClick={() => { setActiveTab('overview'); setMobileMenuOpen(false); }}>
+                        <Layout size={20} /> Overview
+                    </button>
+                    <button className={activeTab === 'courses' ? 'active' : ''} onClick={() => { setActiveTab('courses'); setMobileMenuOpen(false); }}>
+                        <BookOpen size={20} /> My Courses
+                    </button>
+                    <button className={activeTab === 'grading' ? 'active' : ''} onClick={() => { setActiveTab('grading'); setMobileMenuOpen(false); }}>
+                        <Award size={20} /> Grading
+                        {submissions.length > 0 && <span>{submissions.length}</span>}
+                    </button>
+                </nav>
+
+                <div className="sidebar-footer">
+                    <button className="exit-btn" onClick={() => window.location.href = '/'}>
+                        <XCircle size={20} /> Sign Out
+                    </button>
+                </div>
+            </aside>
+
+            {/* Main Content */}
+            <main className="admin-main">
+                <header className="admin-header">
+                    <div className="header-title">
+                        <h1>Teacher Control Center</h1>
+                        <p>Manage your classes, sessions, and student evaluations.</p>
+                    </div>
+                    <div className="header-actions">
+                        <button className="btn btn-primary" onClick={() => setShowSessionModal(true)}>
+                            <Plus size={18} /> Schedule Class
+                        </button>
+                        <button className="btn btn-secondary ml-4" onClick={() => setShowAssignmentModal(true)}>
+                            <Plus size={18} /> Create Task
+                        </button>
+                    </div>
+                </header>
+
+                {activeTab === 'overview' && (
+                    <div className="dashboard-overview animate-slide-up">
+                        <div className="stats-grid">
+                            <div className="stat-card glass">
+                                <div className="stat-icon purple"><Users size={24} /></div>
+                                <div className="stat-info">
+                                    <p>Active Students</p>
+                                    <h3>248</h3>
+                                </div>
+                            </div>
+                            <div className="stat-card glass">
+                                <div className="stat-icon blue"><BookOpen size={24} /></div>
+                                <div className="stat-info">
+                                    <p>Your Courses</p>
+                                    <h3>{courses.length}</h3>
+                                </div>
+                            </div>
+                            <div className="stat-card glass">
+                                <div className="stat-icon orange"><Award size={24} /></div>
+                                <div className="stat-info">
+                                    <p>Pending Grading</p>
+                                    <h3>{submissions.length}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'courses' && (
+                    <div className="courses-management animate-slide-up">
+                        <div className="admin-table-container glass">
+                            <table className="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Course Name</th>
+                                        <th>Fee</th>
+                                        <th>Students</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {courses.map(course => (
+                                        <tr key={course.ID}>
+                                            <td className="font-bold">{course.Name}</td>
+                                            <td>PKR {course.Fee}</td>
+                                            <td>{course.StudentCount || 0}</td>
+                                            <td>
+                                                <button className="btn-icon" title="View Students"><Users size={18} /></button>
+                                                <button className="btn-icon ml-2" title="Course Settings"><Settings size={18} /></button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'grading' && (
+                    <div className="grading-management animate-slide-up">
+                        {submissions.length > 0 ? (
+                            <div className="admin-table-container glass">
+                                <table className="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Student</th>
+                                            <th>Course</th>
+                                            <th>Assignment</th>
+                                            <th>Submitted At</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {submissions.map(sub => (
+                                            <tr key={sub.ID}>
+                                                <td>{sub.StudentName}</td>
+                                                <td>{sub.CourseName}</td>
+                                                <td>{sub.AssignmentTitle}</td>
+                                                <td>{new Date(sub.SubmittedAt).toLocaleDateString()}</td>
+                                                <td>
+                                                    <button className="btn btn-primary btn-sm">Grade Now</button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ) : (
+                            <div className="admin-empty-state">
+                                <CheckCircle size={40} className="text-primary" />
+                                <p>All submissions have been graded! Great job.</p>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </main>
+
+            {/* Schedule Session Modal */}
+            {showSessionModal && (
+                <div className="modal-overlay" onClick={() => setShowSessionModal(false)}>
+                    <div className="modal-content animate-scale-up" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Schedule Live Session</h2>
+                            <button className="btn-close" onClick={() => setShowSessionModal(false)}><X size={24} /></button>
+                        </div>
+                        <form onSubmit={handleCreateSession} className="admin-form-container" style={{maxWidth: '100%'}}>
+                            <div className="form-grid">
+                                <div className="form-group full-width">
+                                    <label>Target Course</label>
+                                    <select className="admin-select" value={selectedCourseId} onChange={e => setSelectedCourseId(e.target.value)} required>
+                                        <option value="">Select a Course</option>
+                                        {courses.map(c => <option key={c.ID} value={c.ID}>{c.Name}</option>)}
+                                    </select>
+                                </div>
+                                <div className="form-group full-width">
+                                    <label>Session Title</label>
+                                    <input className="admin-input" value={sessionForm.title} onChange={e => setSessionForm({...sessionForm, title: e.target.value})} required />
+                                </div>
+                                <div className="form-group">
+                                    <label>Date & Time</label>
+                                    <input type="datetime-local" className="admin-input" value={sessionForm.date} onChange={e => setSessionForm({...sessionForm, date: e.target.value})} required />
+                                </div>
+                                <div className="form-group">
+                                    <label>Duration (Minutes)</label>
+                                    <input type="number" className="admin-input" value={sessionForm.duration} onChange={e => setSessionForm({...sessionForm, duration: e.target.value})} required />
+                                </div>
+                                <div className="form-group full-width">
+                                    <label>Zoom / Meeting Link</label>
+                                    <input className="admin-input" value={sessionForm.zoomLink} onChange={e => setSessionForm({...sessionForm, zoomLink: e.target.value})} required />
+                                </div>
+                            </div>
+                            <div className="form-actions">
+                                <button type="button" className="btn btn-secondary" onClick={() => setShowSessionModal(false)}>Cancel</button>
+                                <button type="submit" className="btn btn-primary">Schedule Session</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Create Assignment Modal */}
+            {showAssignmentModal && (
+                <div className="modal-overlay" onClick={() => setShowAssignmentModal(false)}>
+                    <div className="modal-content animate-scale-up" style={{maxWidth: '800px'}} onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Create Assignment/Quiz</h2>
+                            <button className="btn-close" onClick={() => setShowAssignmentModal(false)}><X size={24} /></button>
+                        </div>
+                        <form onSubmit={handleCreateAssignment} className="admin-form-container" style={{maxWidth: '100%'}}>
+                            <div className="form-grid">
+                                <div className="form-group full-width">
+                                    <label>Target Course</label>
+                                    <select className="admin-select" value={selectedCourseId} onChange={e => setSelectedCourseId(e.target.value)} required>
+                                        <option value="">Select a Course</option>
+                                        {courses.map(c => <option key={c.ID} value={c.ID}>{c.Name}</option>)}
+                                    </select>
+                                </div>
+                                <div className="form-group full-width">
+                                    <label>Title</label>
+                                    <input className="admin-input" value={assignmentForm.title} onChange={e => setAssignmentForm({...assignmentForm, title: e.target.value})} required />
+                                </div>
+                                <div className="form-group">
+                                    <label>Type</label>
+                                    <select className="admin-select" value={assignmentForm.type} onChange={e => setAssignmentForm({...assignmentForm, type: e.target.value})}>
+                                        <option value="assignment">Assignment</option>
+                                        <option value="quiz">Quiz (MCQs)</option>
+                                        <option value="exam">Final Exam</option>
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Due Date</label>
+                                    <input type="date" className="admin-input" value={assignmentForm.dueDate} onChange={e => setAssignmentForm({...assignmentForm, dueDate: e.target.value})} required />
+                                </div>
+                            </div>
+
+                            <div className="form-actions mt-6">
+                                <button type="button" className="btn btn-secondary" onClick={() => setShowAssignmentModal(false)}>Cancel</button>
+                                <button type="submit" className="btn btn-primary">Create Task</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default TeacherDashboard;

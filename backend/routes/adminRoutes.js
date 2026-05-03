@@ -72,22 +72,57 @@ router.get('/classes', isAdmin, async (req, res) => {
 
 router.post('/classes', isAdmin, async (req, res) => {
     try {
-        const { name, fee, description, teacherId } = req.body;
-        await con.execute('INSERT INTO LMS_Courses (Name, Fee, Description, TeacherID) VALUES (?, ?, ?, ?)', 
-            [name, fee, description, teacherId || null]);
+        const {
+            name, slug, fee, originalFee, description, shortIntro,
+            teacherId, thumbnail, whatWillILearn, targetAudience,
+            prerequisites, duration, totalLessons
+        } = req.body;
+
+        const finalSlug = slug || name.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+
+        await con.execute(`
+            INSERT INTO LMS_Courses 
+            (Name, Slug, Fee, OriginalFee, Description, ShortIntro, TeacherID, Thumbnail, WhatWillILearn, TargetAudience, Prerequisites, Duration, TotalLessons) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                name, finalSlug, fee, originalFee || null, description, shortIntro || null,
+                teacherId || null, thumbnail || null,
+                typeof whatWillILearn === 'string' ? whatWillILearn : JSON.stringify(whatWillILearn || []),
+                targetAudience || null, prerequisites || null, duration || null, totalLessons || 0
+            ]
+        );
         res.json('Course created');
     } catch (err) {
+        console.error(err);
         res.status(500).json('Creation failed');
     }
 });
 
 router.put('/courses/:id/update', isAdmin, async (req, res) => {
     try {
-        const { status, teacherId } = req.body;
-        await con.execute('UPDATE LMS_Courses SET Status = ?, TeacherID = ? WHERE ID = ?', 
-            [status, teacherId || null, req.params.id]);
-        res.json('Course updated');
+        const { 
+            name, slug, fee, originalFee, shortIntro, description, 
+            teacherId, thumbnail, targetAudience, prerequisites, 
+            duration, totalLessons, status, whatWillILearn 
+        } = req.body;
+
+        await con.execute(
+            `UPDATE LMS_Courses SET 
+                Name = ?, Slug = ?, Fee = ?, OriginalFee = ?, ShortIntro = ?, Description = ?, 
+                TeacherID = ?, Thumbnail = ?, TargetAudience = ?, Prerequisites = ?, 
+                Duration = ?, TotalLessons = ?, Status = ?, WhatWillILearn = ? 
+             WHERE ID = ?`,
+            [
+                name, slug, fee, originalFee || null, shortIntro, description, 
+                teacherId || null, thumbnail, targetAudience, prerequisites, 
+                duration, totalLessons, status || 'active', 
+                JSON.stringify(whatWillILearn || []), 
+                req.params.id
+            ]
+        );
+        res.json('Course updated successfully');
     } catch (err) {
+        console.error(err);
         res.status(500).json('Update failed');
     }
 });

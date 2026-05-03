@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../App';
-import { Book, CreditCard, Clock, Star, Search, AlertCircle, PlusCircle, CheckCircle, ChevronRight, Layout, XCircle, Eye } from 'lucide-react';
+import { Book, CreditCard, Clock, Star, Search, AlertCircle, PlusCircle, CheckCircle, ChevronRight, Layout, XCircle, Eye, Menu, X } from 'lucide-react';
 
 import api from '../utils/api';
 import SEO from '../components/SEO';
@@ -22,6 +22,7 @@ const StudentDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [courseFilter, setCourseFilter] = useState('all');
     const [selectedReceipt, setSelectedReceipt] = useState(null);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         fetchDashboardData();
@@ -64,24 +65,32 @@ const StudentDashboard = () => {
                 title="Student Dashboard"
                 description="Manage your enrolled courses, track your learning progress, and explore new educational opportunities on your Deenova Student Dashboard."
             />
+            {/* Mobile Header */}
+            <header className="mobile-dashboard-header">
+                <img src="/logo.png" alt="Deenova" className="mobile-logo" />
+                <button className="menu-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                    {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+            </header>
+
             {/* Sidebar */}
-            <aside className="admin-sidebar">
+            <aside className={`admin-sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
                 <div className="sidebar-header">
                     <img src="/logo.png" alt="Deenova Logo" className="logo-img sidebar-logo" />
                 </div>
 
                 <nav className="sidebar-nav">
-                    <button className={activeTab === 'overview' ? 'active' : ''} onClick={() => setActiveTab('overview')}>
+                    <button className={activeTab === 'overview' ? 'active' : ''} onClick={() => { setActiveTab('overview'); setMobileMenuOpen(false); }}>
                         <Layout size={20} /> Overview
                     </button>
-                    <button className={activeTab === 'my-courses' ? 'active' : ''} onClick={() => setActiveTab('my-courses')}>
+                    <button className={activeTab === 'my-courses' ? 'active' : ''} onClick={() => { setActiveTab('my-courses'); setMobileMenuOpen(false); }}>
                         <Book size={20} /> My Learning
                         {(enrolled.length + pending.length) > 0 && <span>{enrolled.length + pending.length}</span>}
                     </button>
-                    <button className={activeTab === 'browse' ? 'active' : ''} onClick={() => setActiveTab('browse')}>
+                    <button className={activeTab === 'browse' ? 'active' : ''} onClick={() => { setActiveTab('browse'); setMobileMenuOpen(false); }}>
                         <PlusCircle size={20} /> Browse Courses
                     </button>
-                    <button className={activeTab === 'payments' ? 'active' : ''} onClick={() => setActiveTab('payments')}>
+                    <button className={activeTab === 'payments' ? 'active' : ''} onClick={() => { setActiveTab('payments'); setMobileMenuOpen(false); }}>
                         <CreditCard size={20} /> Billing
                     </button>
                 </nav>
@@ -141,7 +150,7 @@ const StudentDashboard = () => {
                                     <h3 className="mb-6">Continue Learning</h3>
                                     <div className="courses-grid-modern">
                                         {enrolled.slice(0, 2).map(course => (
-                                            <div key={course.ID} className="enrolled-course-card" onClick={() => navigate(`/lms-dashboard/${course.CourseID}`)}>
+                                            <div key={course.ID} className="enrolled-course-card" onClick={() => navigate(`/classroom/${course.Slug}`)}>
                                                 <div className="card-badge">ACTIVE</div>
                                                 <h3>{course.ClassName}</h3>
                                                 <div className="progress-info">
@@ -177,7 +186,7 @@ const StudentDashboard = () => {
                                         <div
                                             key={course.ID}
                                             className={`enrolled-course-card ${course.Status === 'pending' ? 'is-pending' : ''}`}
-                                            onClick={() => course.Status === 'approved' && navigate(`/lms-dashboard/${course.CourseID}`)}
+                                            onClick={() => course.Status === 'approved' && navigate(`/classroom/${course.Slug}`)}
                                         >
                                             <div className={`card-badge ${course.Status}`}>
                                                 {course.Status === 'approved' ? 'ACTIVE' : 'PENDING'}
@@ -260,8 +269,8 @@ const StudentDashboard = () => {
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <button 
-                                                        className="receipt-btn-icon" 
+                                                    <button
+                                                        className="receipt-btn-icon"
                                                         onClick={() => setSelectedReceipt(h.ReceiptUrl)}
                                                         title="View Receipt"
                                                     >

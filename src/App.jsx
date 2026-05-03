@@ -14,6 +14,7 @@ import ResetPassword from './pages/ResetPassword';
 import Courses from './pages/Courses';
 import ContactUs from './pages/ContactUs';
 import AboutUs from './pages/AboutUs';
+import CourseClassroom from './pages/CourseClassroom';
 import NotFound from './pages/NotFound';
 import StudentEnrollment from './components/StudentEnrollment';
 import './index.css';
@@ -56,11 +57,27 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => useContext(AuthContext);
 
+const ProtectedRoute = ({ children, allowedRoles }) => {
+  const { user } = useAuth();
+  const location = useLocation();
+
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(user.Role)) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
 const AppContent = () => {
   const location = useLocation();
   const isDashboardFull = location.pathname.includes('admin-dashboard') || 
                           location.pathname.includes('teacher-dashboard') ||
-                          location.pathname.includes('student-dashboard');
+                          location.pathname.includes('student-dashboard') ||
+                          location.pathname.includes('classroom/');
 
   return (
     <div className="app-container">
@@ -73,9 +90,33 @@ const AppContent = () => {
           <Route path="/courses" element={<Courses />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/student-dashboard" element={<StudentDashboard />} />
-          <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          
+          <Route path="/student-dashboard" element={
+            <ProtectedRoute allowedRoles={['Student']}>
+              <StudentDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/teacher-dashboard" element={
+            <ProtectedRoute allowedRoles={['Teacher']}>
+              <TeacherDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin-dashboard" element={
+            <ProtectedRoute allowedRoles={['Admin']}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/classroom/:slug" element={
+            <ProtectedRoute allowedRoles={['Student', 'Teacher', 'Admin']}>
+              <CourseClassroom />
+            </ProtectedRoute>
+          } />
+          <Route path="/lms-dashboard/:slug" element={
+            <ProtectedRoute allowedRoles={['Student', 'Teacher', 'Admin']}>
+              <CourseClassroom />
+            </ProtectedRoute>
+          } />
+
           <Route path="/course/:slug" element={<CourseDetails />} />
           <Route path="/enroll" element={<StudentEnrollment />} />
           <Route path="/contact-us" element={<ContactUs />} />
