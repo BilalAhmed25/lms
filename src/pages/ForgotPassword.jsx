@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Mail, ArrowLeft, Send } from 'lucide-react';
 import FloatingLabelInput from '../components/FloatingLabelInput';
 
+import api from '../utils/api';
+
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -12,23 +14,13 @@ const ForgotPassword = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/auth/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        alert(error);
-        return;
-      }
+      await api.post('/auth/forgot-password', { email });
 
       alert('OTP sent to your email!');
       navigate('/reset-password', { state: { email } });
     } catch (err) {
       console.error(err);
-      alert('Failed to send OTP');
+      alert(err.message || 'Failed to send OTP');
     } finally {
       setLoading(false);
     }

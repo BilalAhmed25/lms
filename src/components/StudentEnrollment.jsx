@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CreditCard, Upload, CheckCircle, Search, DollarSign } from 'lucide-react';
 import FloatingLabelInput from '../components/FloatingLabelInput';
+import api from '../utils/api';
 
 const StudentEnrollment = ({ onEnrolled }) => {
   const [classes, setClasses] = useState([]);
@@ -15,11 +16,7 @@ const StudentEnrollment = ({ onEnrolled }) => {
 
   const fetchClasses = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:3000/enrollment/classes', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
+      const data = await api.get('/enrollment/classes');
       setClasses(data);
     } catch (err) {
       console.error(err);
@@ -40,26 +37,15 @@ const StudentEnrollment = ({ onEnrolled }) => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:3000/enrollment/request', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
-        },
-        body: JSON.stringify({
-          classId: selectedClass.ID,
-          amountPaid: selectedClass.Fee,
-          receiptBase64: receipt
-        })
+      await api.post('/enrollment/request', {
+        classId: selectedClass.ID,
+        amountPaid: selectedClass.Fee,
+        receiptBase64: receipt
       });
-      if (res.ok) {
-        setStep(3);
-      } else {
-        alert('Submission failed');
-      }
+      setStep(3);
     } catch (err) {
       console.error(err);
+      alert(err.message || 'Submission failed');
     } finally {
       setLoading(false);
     }

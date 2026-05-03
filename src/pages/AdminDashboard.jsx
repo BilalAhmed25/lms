@@ -4,6 +4,7 @@ import {
     BookOpen, PlusCircle, UserCheck, TrendingUp, Search, Bell, Book
 } from 'lucide-react';
 import FloatingLabelInput from '../components/FloatingLabelInput';
+import api from '../utils/api';
 
 const Loader = () => (
     <div className="loader-container">
@@ -32,38 +33,29 @@ const AdminDashboard = () => {
 
     const fetchStats = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/admin/stats', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const data = await res.json();
+            const data = await api.get('/admin/stats');
             setStats(data);
         } catch (err) { console.error(err); }
     };
 
     const fetchTabContent = async () => {
         setLoading(true);
-        const token = localStorage.getItem('token');
-        const headers = { 'Authorization': `Bearer ${token}` };
-
-        // Artificial delay to show skeletons (optional but good for demo)
-        // await new Promise(r => setTimeout(r, 800));
 
         try {
             if (activeTab === 'enrollments') {
-                const res = await fetch('http://localhost:3000/enrollment/admin/pending', { headers });
-                setEnrollments(await res.json());
+                const data = await api.get('/enrollment/admin/pending');
+                setEnrollments(data);
             } else if (activeTab === 'teachers' || activeTab === 'courses' || activeTab === 'add-course') {
-                const res = await fetch('http://localhost:3000/admin/users?role=Teacher', { headers });
-                setTeachers(await res.json());
+                const data = await api.get('/admin/users?role=Teacher');
+                setTeachers(data);
             } 
             
             if (activeTab === 'students') {
-                const res = await fetch('http://localhost:3000/admin/users?role=Student', { headers });
-                setStudents(await res.json());
+                const data = await api.get('/admin/users?role=Student');
+                setStudents(data);
             } else if (activeTab === 'courses') {
-                const res = await fetch('http://localhost:3000/admin/classes', { headers });
-                setClasses(await res.json());
+                const data = await api.get('/admin/classes');
+                setClasses(data);
             }
         } catch (err) { console.error(err); }
         setLoading(false);
@@ -72,18 +64,8 @@ const AdminDashboard = () => {
     const handleStatusUpdate = async (userId, status) => {
         setSubmitting(true);
         try {
-            const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:3000/admin/users/${userId}/status`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ status })
-            });
-            if (res.ok) {
-                await fetchTabContent();
-            }
+            await api.put(`/admin/users/${userId}/status`, { status });
+            await fetchTabContent();
         } catch (err) { console.error(err); }
         setSubmitting(false);
     };
@@ -91,14 +73,8 @@ const AdminDashboard = () => {
     const handleApproveEnrollment = async (id) => {
         setSubmitting(true);
         try {
-            const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:3000/enrollment/admin/approve/${id}`, {
-                method: 'PUT',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (res.ok) {
-                await fetchTabContent();
-            }
+            await api.put(`/enrollment/admin/approve/${id}`);
+            await fetchTabContent();
         } catch (err) { console.error(err); }
         setSubmitting(false);
     };
@@ -107,20 +83,10 @@ const AdminDashboard = () => {
         e.preventDefault();
         setSubmitting(true);
         try {
-            const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/admin/classes', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(courseForm)
-            });
-            if (res.ok) {
-                setCourseForm({ name: '', fee: '', description: '', teacherId: '' });
-                setActiveTab('courses');
-                await fetchTabContent();
-            }
+            await api.post('/admin/classes', courseForm);
+            setCourseForm({ name: '', fee: '', description: '', teacherId: '' });
+            setActiveTab('courses');
+            await fetchTabContent();
         } catch (err) { console.error(err); }
         setSubmitting(false);
     };
@@ -128,18 +94,8 @@ const AdminDashboard = () => {
     const handleUpdateCourse = async (courseId, status, teacherId) => {
         setSubmitting(true);
         try {
-            const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:3000/admin/courses/${courseId}/update`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ status, teacherId })
-            });
-            if (res.ok) {
-                fetchTabContent();
-            }
+            await api.put(`/admin/courses/${courseId}/update`, { status, teacherId });
+            fetchTabContent();
         } catch (err) { console.error(err); }
         setSubmitting(false);
     };

@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../App';
 import { Book, CreditCard, Clock, Star, Search, AlertCircle, PlusCircle, CheckCircle, ChevronRight, Layout, XCircle } from 'lucide-react';
 
+import api from '../utils/api';
+
 const Loader = () => (
     <div className="loader-container">
         <div className="spinner"></div>
@@ -23,17 +25,10 @@ const StudentDashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const coursesRes = await fetch('http://localhost:3000/enrollment/classes', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const courses = await coursesRes.json();
+      const courses = await api.get('/enrollment/classes');
       setAvailableCourses(courses);
 
-      const historyRes = await fetch('http://localhost:3000/enrollment/my-history', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const history = await historyRes.json();
+      const history = await api.get('/enrollment/my-history');
       setEnrollmentHistory(history);
     } catch (err) {
       console.error(err);

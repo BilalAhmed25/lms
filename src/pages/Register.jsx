@@ -5,6 +5,8 @@ import { User, Briefcase, Mail, Lock, UserPlus, FileText } from 'lucide-react';
 import FloatingLabelInput from '../components/FloatingLabelInput';
 import LandingHero from '../components/LandingHero';
 
+import api from '../utils/api';
+
 const Register = () => {
   const [role, setRole] = useState('student');
   const [formData, setFormData] = useState({ name: '', email: '', password: '', profile: '' });
@@ -16,29 +18,18 @@ const Register = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const response = await fetch('http://localhost:3000/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          email: formData.email, 
-          password: formData.password, 
-          role: role.charAt(0).toUpperCase() + role.slice(1), 
-          name: formData.name 
-        }),
+      const data = await api.post('/auth/register', { 
+        email: formData.email, 
+        password: formData.password, 
+        role: role.charAt(0).toUpperCase() + role.slice(1), 
+        name: formData.name 
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        alert(error);
-        return;
-      }
-
-      const data = await response.json();
-      alert(data.message);
+      alert(data.message || 'Registration successful!');
       navigate('/login');
     } catch (err) {
       console.error(err);
-      alert('Failed to register');
+      alert(err.message || 'Failed to register');
     } finally {
       setSubmitting(false);
     }

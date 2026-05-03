@@ -9,6 +9,8 @@ import {
 import FAQSection from '../components/Home/FAQSection';
 import ContactSection from '../components/Home/ContactSection';
 
+import api from '../utils/api';
+
 const Loader = () => (
     <div className="loader-container">
         <div className="spinner"></div>
@@ -25,8 +27,7 @@ const CourseDetails = () => {
     useEffect(() => {
         const fetchCourseDetails = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/enrollment/classes/${slug}`);
-                const data = await response.json();
+                const data = await api.get(`/enrollment/classes/${slug}`);
 
                 // Parse WhatWillILearn if it's a stringified JSON
                 if (data.WhatWillILearn && typeof data.WhatWillILearn === 'string') {

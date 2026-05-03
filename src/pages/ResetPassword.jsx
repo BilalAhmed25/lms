@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Lock, Hash, ShieldCheck, Mail } from 'lucide-react';
 import FloatingLabelInput from '../components/FloatingLabelInput';
 
+import api from '../utils/api';
+
 const ResetPassword = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -23,27 +25,17 @@ const ResetPassword = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/auth/reset-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: formData.email,
-          otp: formData.otp,
-          newPassword: formData.newPassword
-        }),
+      await api.post('/auth/reset-password', {
+        email: formData.email,
+        otp: formData.otp,
+        newPassword: formData.newPassword
       });
-
-      if (!response.ok) {
-        const error = await response.json();
-        alert(error);
-        return;
-      }
 
       alert('Password reset successfully! You can now login.');
       navigate('/login');
     } catch (err) {
       console.error(err);
-      alert('Failed to reset password');
+      alert(err.message || 'Failed to reset password');
     } finally {
       setLoading(false);
     }

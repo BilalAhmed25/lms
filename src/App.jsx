@@ -17,6 +17,8 @@ import AboutUs from './pages/AboutUs';
 import NotFound from './pages/NotFound';
 import './index.css';
 
+import api from './utils/api';
+
 // Context for Auth
 const AuthContext = createContext();
 
@@ -27,22 +29,15 @@ export const AuthProvider = ({ children }) => {
   });
 
   const login = async (email, password) => {
-    const response = await fetch('http://localhost:3000/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-    
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error);
+    try {
+      const data = await api.post('/auth/login', { email, password });
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      setUser(data.user);
+      return data.user;
+    } catch (error) {
+      throw error;
     }
-    
-    const data = await response.json();
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
-    setUser(data.user);
-    return data.user;
   };
 
   const logout = () => {

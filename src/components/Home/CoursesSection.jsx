@@ -3,6 +3,8 @@ import './CoursesSection.css';
 import { Star, Clock, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+import api from '../../utils/api';
+
 const CourseSkeleton = () => (
     <div className="course-card skeleton-card">
         <div className="course-image skeleton-pulse"></div>
@@ -22,9 +24,7 @@ const CoursesSection = ({ limit = 6, showHeader = true }) => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await fetch('http://localhost:3000/enrollment/classes');
-                if (!response.ok) throw new Error('Failed to fetch');
-                const data = await response.json();
+                const data = await api.get('/enrollment/classes');
                 setCourses(data);
             } catch (err) {
                 console.error(err);

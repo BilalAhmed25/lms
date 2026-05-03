@@ -288,10 +288,10 @@
 }
 
 .nav-link {
-    font-weight: 600;
+    /* font-weight: 600; */
     color: var(--text-main);
     transition: var(--transition);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     display: flex;
     align-items: center;
     gap: 10px;
