@@ -193,36 +193,38 @@
 }
 
 /* --- Course Details Specific Transparent Header --- */
-.navbar.is-course-details:not(.scrolled) .nav-link {
-    color: rgba(255, 255, 255, 0.9);
-}
+@media (min-width: 993px) {
+    .navbar.is-course-details:not(.scrolled) .nav-link {
+        color: rgba(255, 255, 255, 0.9);
+    }
 
-.navbar.is-course-details:not(.scrolled) .nav-link:hover {
-    color: var(--accent);
-}
+    .navbar.is-course-details:not(.scrolled) .nav-link:hover {
+        color: var(--accent);
+    }
 
-.navbar.is-course-details:not(.scrolled) .nav-link.active {
-    color: var(--accent);
-}
+    .navbar.is-course-details:not(.scrolled) .nav-link.active {
+        color: var(--accent);
+    }
 
-.navbar.is-course-details:not(.scrolled) .nav-link.active::before {
-    background: var(--accent);
-}
+    .navbar.is-course-details:not(.scrolled) .nav-link.active::before {
+        background: var(--accent);
+    }
 
-.navbar.is-course-details:not(.scrolled) .logo-img {
-    filter: brightness(0) invert(1);
-}
+    .navbar.is-course-details:not(.scrolled) .logo-img {
+        filter: brightness(0) invert(1);
+    }
 
-.navbar.is-course-details:not(.scrolled) .nav-icon {
-    color: rgba(255, 255, 255, 0.8);
-}
+    .navbar.is-course-details:not(.scrolled) .nav-icon {
+        color: rgba(255, 255, 255, 0.8);
+    }
 
-.navbar.is-course-details:not(.scrolled) .auth-link span {
-    color: white;
-}
+    .navbar.is-course-details:not(.scrolled) .auth-link span {
+        color: white;
+    }
 
-.navbar.is-course-details:not(.scrolled) .nav-separator {
-    background: rgba(255, 255, 255, 0.3);
+    .navbar.is-course-details:not(.scrolled) .nav-separator {
+        background: rgba(255, 255, 255, 0.3);
+    }
 }
 
 .nav-content {
@@ -293,7 +295,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    height: 100%;
+    /* height: 100%; */
     position: relative;
 }
 
@@ -314,8 +316,15 @@
 }
 
 @keyframes slideDown {
-    from { transform: translateY(-100%); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .nav-icon {
@@ -402,21 +411,44 @@
         display: block;
     }
 
+    .navbar.mobile-open .logo {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .nav-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
+        opacity: 0;
+        visibility: hidden;
+        transition: 0.4s;
+        z-index: 1500;
+        pointer-events: none;
+    }
+
+    .nav-overlay.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
     .nav-elements {
         position: fixed;
         top: 0;
         right: -100%;
         width: 85%;
-        /* Wider drawer for better layout */
-        max-width: 400px;
+        max-width: 320px;
         height: 100vh;
-        background: rgb(255, 255, 255);
-        backdrop-filter: blur(15px);
+        background: #ffffff;
         flex-direction: column;
         padding: 0;
-        /* Remove fixed padding to use flex space */
-        transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: -15px 0 35px rgba(0, 0, 0, 0.1);
+        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
         z-index: 2000;
         display: flex;
     }

@@ -35,6 +35,8 @@ const Navbar = () => {
                     {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
                 </button>
 
+                <div className={`nav-overlay ${mobileMenuOpen ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}></div>
+
                 <div className={`nav-elements ${mobileMenuOpen ? 'active' : ''}`}>
                     <div className="mobile-menu-header">
                         <img src="/logo.png" alt="Deenova Logo" className="logo-img" />
