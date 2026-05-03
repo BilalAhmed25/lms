@@ -149,8 +149,7 @@ const AdminDashboard = () => {
             {/* Sidebar */}
             <aside className="admin-sidebar">
                 <div className="sidebar-header">
-                    <div className="logo-icon" style={{ fontSize: '1.5rem' }}>🎓</div>
-                    <h3>LMS<span className="text-primary">Admin</span></h3>
+                    <img src="/logo.png" alt="Deenova Logo" className="logo-img sidebar-logo" />
                 </div>
 
                 <nav className="sidebar-nav">

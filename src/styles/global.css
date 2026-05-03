@@ -102,12 +102,12 @@ p {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #e2e8f0;
+    background: #cbd5e1;
     border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #cbd5e1;
+    background: var(--primary);
 }
 
 /* ─── LAYOUT ─────────────────────────────────────────────────────────── */
@@ -168,7 +168,7 @@ p {
 
 .btn-accent {
     background-color: var(--accent);
-    color: var(--text-main);
+    color: var(--text-light);
 }
 
 .btn-accent:hover {

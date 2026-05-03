@@ -1,6 +1,7 @@
 .why-us-section {
-    padding: var(--section-padding);
+    /* padding: var(--section-padding); */
     background-color: white;
+    padding: 10px 0 90px;
 }
 
 
@@ -13,6 +14,8 @@
     font-size: var(--fs-h2);
     font-weight: 800;
     color: var(--text-main);
+    margin-top: -5px;
+    margin-bottom: -20px !important;
 }
 
 .why-us-grid {
@@ -71,19 +74,24 @@
     margin-bottom: 25px;
 }
 
-.learn-more-btn {
-    width: 100%;
-    padding: 15px;
-    background: var(--accent);
-    color: var(--text-main);
-    font-weight: 700;
-    border: none;
-    cursor: pointer;
+.enroll-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--accent);
+    font-size: var(--fs-body);
+    font-weight: 600;
     transition: var(--transition);
+    text-decoration: none;
 }
 
-.learn-more-btn:hover {
-    background: #e5a810;
+.enroll-link:hover {
+    color: var(--primary);
+    gap: 15px;
+}
+
+.enroll-link svg {
+    transition: var(--transition);
 }
 
 @media (max-width: 992px) {

@@ -55,14 +55,14 @@ const AboutSection = () => {
 
                 <div className="about-image-wrapper">
                     <div className="image-container">
-                        <img 
-                            src="https://images.unsplash.com/photo-1584697964400-2af6a2f6204c?auto=format&fit=crop&q=80&w=800" 
-                            alt="Students learning" 
+                        <img
+                            src="https://images.unsplash.com/photo-1584697964400-2af6a2f6204c?auto=format&fit=crop&q=80&w=800"
+                            alt="Students learning"
                             className="main-img"
                         />
                         <div className="experience-badge">
-                            <span className="exp-num">15+</span>
-                            <span className="exp-text">Years Experience</span>
+                            <span className="exp-num text-light">15+</span>
+                            <span className="exp-text text-light">Years Experience</span>
                         </div>
                     </div>
                 </div>

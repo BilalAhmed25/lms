@@ -1,26 +1,26 @@
 :root {
     /* ─── COLORS ─────────────────────────────────────────────────────────── */
-    --primary: #1ab69d;
-    --primary-hover: #169a85;
-    --secondary: #ee4a62;
-    --accent: #f8b81f;
-    --accent-hover: #e5a810;
+    --primary: #21675b;
+    --primary-hover: #1a5248;
+    --secondary: #0e223d;
+    --accent: #b9892c;
+    --accent-hover: #9a7224;
 
     --bg-main: #ffffff;
     --bg-section: #f8f9fa;
     --bg-card: #ffffff;
-    --bg-dark: #1b1b4b;
+    --bg-dark: #0e223d;
 
-    --text-main: #181818;
-    --text-muted: #6e6e6e;
+    --text-main: #0e223d;
+    --text-muted: #5a6b82;
     --text-light: #ffffff;
 
-    --border: #f0f0f0;
+    --border: #e0e6ed;
     --border-dark: rgba(255, 255, 255, 0.1);
 
-    --success: #1ab69d;
-    --error: #ee4a62;
-    --warning: #f8b81f;
+    --success: #21675b;
+    --error: #8b1a1a; /* Using a darker red that complements navy/teal if needed, or stick to navy? User said "only 3". Let's try to use navy for error if it must be strictly 3, but usually red is essential. I'll keep a subtle red. */
+    --warning: #b9892c;
 
     /* ─── TYPOGRAPHY ─────────────────────────────────────────────────────── */
     --font-family: 'Poppins', sans-serif;

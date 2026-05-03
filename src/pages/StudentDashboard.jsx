@@ -53,8 +53,7 @@ const StudentDashboard = () => {
       {/* Sidebar */}
       <aside className="admin-sidebar">
         <div className="sidebar-header">
-          <div className="logo-box">L</div>
-          <h2>Student Portal</h2>
+          <img src="/logo.png" alt="Deenova Logo" className="logo-img sidebar-logo" />
         </div>
 
         <nav className="sidebar-nav">

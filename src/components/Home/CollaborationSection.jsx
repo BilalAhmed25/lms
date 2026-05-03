@@ -1,4 +1,4 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 import './CollaborationSection.css';
 import { ArrowRight, Users } from 'lucide-react';
 
@@ -41,7 +41,7 @@ const CollaborationSection = () => {
                     <div className="grid-side-img">
                         <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=800" alt="Teacher" />
                         <div className="img-overlay">
-                            <button className="btn-overlay">Learn More <ArrowRight size={16} /></button>
+                            <Link to="/courses" className="enroll-link-overlay">Enroll Now <ArrowRight size={16} /></Link>
                         </div>
                     </div>
                 </div>

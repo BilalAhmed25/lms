@@ -1,6 +1,5 @@
-import React from 'react';
-import './WhyChooseUs.css';
-import { Globe, GraduationCap, Laptop } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Globe, GraduationCap, Laptop, ArrowRight } from 'lucide-react';
 
 const WhyChooseUs = () => {
     const cards = [
@@ -48,7 +47,10 @@ const WhyChooseUs = () => {
                             </div>
                             <div className="card-body">
                                 <p>{card.desc}</p>
-                                <button className="learn-more-btn">Learn More</button>
+                                <Link to="/courses" className="enroll-link">
+                                    <span>Enroll Now</span>
+                                    <ArrowRight size={18} />
+                                </Link>
                             </div>
                         </div>
                     ))}

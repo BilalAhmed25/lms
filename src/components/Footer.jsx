@@ -24,8 +24,7 @@ const Footer = () => {
                 <div className="footer-grid mt-12">
                     <div className="footer-brand">
                         <Link to="/" className="logo mb-4">
-                            <span className="logo-icon">🎓</span>
-                            <span className="logo-text">LMS<span className="text-primary">Pro</span></span>
+                            <img src="/logo.png" alt="Deenova Logo" className="logo-img" />
                         </Link>
                         <p className="text-muted mt-4">
                             We are growing your knowledge with our premium learning management system.

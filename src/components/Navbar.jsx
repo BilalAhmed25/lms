@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../App';
 import { LogOut, User, BookOpen, LayoutDashboard, UserPlus, LogIn, Menu, X, Home, Info, Mail, Phone, Users, Heart, ChevronRight } from 'lucide-react';
 
@@ -25,7 +25,7 @@ const Navbar = () => {
         <nav className={`navbar ${scrolled ? 'scrolled' : ''} ${mobileMenuOpen ? 'mobile-open' : ''}`}>
             <div className="container nav-content">
                 <Link to="/" className="logo" onClick={() => setMobileMenuOpen(false)}>
-                    <span className="logo-text">Deenova</span>
+                    <img src="/logo.png" alt="Deenova Logo" className="logo-img" />
                 </Link>
 
                 {/* Mobile Toggle Button */}
@@ -35,41 +35,41 @@ const Navbar = () => {
 
                 <div className={`nav-elements ${mobileMenuOpen ? 'active' : ''}`}>
                     <div className="mobile-menu-header">
-                        <span className="logo-text">Deenova</span>
+                        <img src="/logo.png" alt="Deenova Logo" className="logo-img" />
                         <button className="mobile-close" onClick={() => setMobileMenuOpen(false)}>
                             <X size={24} />
                         </button>
                     </div>
 
                     <div className="nav-links">
-                        <Link to="/" className="nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>
                             <div className="nav-link-left">
                                 <Home size={18} className="nav-icon" />
                                 <span>Home</span>
                             </div>
                             <ChevronRight size={16} className="nav-chevron" />
-                        </Link>
-                        <Link to="/about-us" className="nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        </NavLink>
+                        <NavLink to="/about-us" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>
                             <div className="nav-link-left">
                                 <Info size={18} className="nav-icon" />
                                 <span>About Us</span>
                             </div>
                             <ChevronRight size={16} className="nav-chevron" />
-                        </Link>
-                        <Link to="/courses" className="nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        </NavLink>
+                        <NavLink to="/courses" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>
                             <div className="nav-link-left">
                                 <BookOpen size={18} className="nav-icon" />
                                 <span>Courses</span>
                             </div>
                             <ChevronRight size={16} className="nav-chevron" />
-                        </Link>
-                        <Link to="/contact-us" className="nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        </NavLink>
+                        <NavLink to="/contact-us" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>
                             <div className="nav-link-left">
                                 <Mail size={18} className="nav-icon" />
                                 <span>Contact Us</span>
                             </div>
                             <ChevronRight size={16} className="nav-chevron" />
-                        </Link>
+                        </NavLink>
                     </div>
 
                     <div className="nav-actions">
