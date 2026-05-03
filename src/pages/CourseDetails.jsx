@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './CourseDetails.css';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../App';
 import {
     Play, FileText, CheckCircle, Clock, ChevronRight,
     Star, Users, Shield, Award, Calendar, Share2, Heart,
@@ -20,10 +21,68 @@ const Loader = () => (
 
 const CourseDetails = () => {
     const { slug } = useParams();
+    const { user } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
     const [activeModule, setActiveModule] = useState(null);
+    const [isWishlisted, setIsWishlisted] = useState(false);
+    const [enrollmentStatus, setEnrollmentStatus] = useState(null);
+
+    const handleAction = async (type) => {
+        if (!user) {
+            localStorage.setItem('pendingAction', JSON.stringify({
+                type,
+                courseSlug: slug,
+                courseName: course.Name
+            }));
+            navigate('/login');
+            return;
+        }
+
+        if (type === 'enroll') {
+            navigate(`/enroll?course=${slug}`);
+        } else {
+            if (isWishlisted) {
+                try {
+                    await api.post('/wishlist/remove', { courseId: course.ID });
+                    setIsWishlisted(false);
+                    // alert('Removed from wishlist');
+                } catch (err) {
+                    console.error(err);
+                }
+            } else {
+                try {
+                    await api.post('/wishlist/add', { courseId: course.ID });
+                    setIsWishlisted(true);
+                    // alert('Item added to your wishlist!');
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        }
+    };
+
+    const fetchEnrollmentStatus = async () => {
+        if (!user || !course) return;
+        try {
+            const data = await api.get(`/enrollment/status/${course.ID}`);
+            setEnrollmentStatus(data ? data.Status : null);
+        } catch (err) {
+            console.error('Failed to fetch enrollment status', err);
+        }
+    };
+
+    const fetchWishlist = async () => {
+        if (!user || !course) return;
+        try {
+            const data = await api.get('/wishlist');
+            setIsWishlisted(data.some(item => item.ID === course.ID));
+        } catch (err) {
+            console.error('Failed to fetch wishlist', err);
+        }
+    };
 
     useEffect(() => {
         const fetchCourseDetails = async () => {
@@ -54,13 +113,31 @@ const CourseDetails = () => {
         window.scrollTo(0, 0);
     }, [slug]);
 
+    useEffect(() => {
+        if (user && course) {
+            fetchWishlist();
+            fetchEnrollmentStatus();
+        }
+    }, [user, course]);
+
+    useEffect(() => {
+        if (course && user && location.state?.autoWishlist) {
+            alert(`"${course.Name}" has been added to your wishlist!`);
+            // Clear the state so it doesn't alert again on refresh
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+        if (course && user && location.state?.autoEnroll) {
+            navigate(`/enroll?course=${slug}`);
+        }
+    }, [course, user, location.state, slug, navigate, location.pathname]);
+
     if (loading) return <Loader />;
     if (!course) return <div className="container py-20 text-center"><h2>Course not found</h2><Link to="/courses" className="btn btn-primary mt-4">Back to Courses</Link></div>;
 
     return (
         <div className="course-details-page">
-            <SEO 
-                title={course.Name} 
+            <SEO
+                title={course.Name}
                 description={course.ShortIntro || `Learn ${course.Name} from expert instructors on Deenova Learning Hub.`}
             />
             {/* Header / Hero Section */}
@@ -208,11 +285,29 @@ const CourseDetails = () => {
                                     )}
 
                                     <div className="action-buttons">
-                                        <button className="btn btn-primary btn-full-width" onClick={() => navigate('/courses')} style={{ fontWeight: 400, textTransform: 'none', marginTop: '15px' }}>
-                                            Enroll Now
-                                        </button>
-                                        <button className="btn btn-outline btn-full-width" style={{ fontWeight: 400, textTransform: 'none', marginTop: '15px' }}>
-                                            <Heart size={18} /> Add to Wishlist
+                                        {enrollmentStatus === 'approved' ? (
+                                            <button className="btn btn-primary btn-full-width" onClick={() => navigate('/student-dashboard')} style={{ fontWeight: 400, textTransform: 'none', marginTop: '15px', background: 'var(--success)', borderColor: 'var(--success)' }}>
+                                                Start Learning
+                                            </button>
+                                        ) : enrollmentStatus === 'pending' ? (
+                                            <button className="btn btn-primary btn-full-width" disabled style={{ fontWeight: 400, textTransform: 'none', marginTop: '15px', background: 'var(--text-muted)', borderColor: 'var(--text-muted)', cursor: 'not-allowed' }}>
+                                                Pending Verification
+                                            </button>
+                                        ) : (
+                                            <button className="btn btn-primary btn-full-width" onClick={() => handleAction('enroll')} style={{ fontWeight: 400, textTransform: 'none', marginTop: '15px' }}>
+                                                Enroll Now
+                                            </button>
+                                        )}
+                                        <button className="btn btn-outline btn-full-width" onClick={() => handleAction('wishlist')} style={{ fontWeight: 400, textTransform: 'none', marginTop: '15px', color: isWishlisted ? 'var(--primary)' : '' }}>
+                                            {isWishlisted ? (
+                                                <>
+                                                    <Heart size={18} fill="var(--primary)" /> Added to Wishlist
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Heart size={18} /> Add to Wishlist
+                                                </>
+                                            )}
                                         </button>
                                     </div>
 

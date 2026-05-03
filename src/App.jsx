@@ -15,6 +15,7 @@ import Courses from './pages/Courses';
 import ContactUs from './pages/ContactUs';
 import AboutUs from './pages/AboutUs';
 import NotFound from './pages/NotFound';
+import StudentEnrollment from './components/StudentEnrollment';
 import './index.css';
 
 import api from './utils/api';
@@ -76,6 +77,7 @@ const AppContent = () => {
           <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/course/:slug" element={<CourseDetails />} />
+          <Route path="/enroll" element={<StudentEnrollment />} />
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="*" element={<NotFound />} />

@@ -1535,7 +1535,7 @@
 
 /* --- Enrollment Flow --- */
 .enrollment-container {
-    max-width: 1000px;
+    /* max-width: 1000px; */
     margin: 4rem auto;
     padding: 3rem;
     border-radius: 24px;

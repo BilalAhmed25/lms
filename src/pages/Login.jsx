@@ -18,6 +18,20 @@ const Login = () => {
     setSubmitting(true);
     try {
       const user = await login(email, password);
+      
+      const pendingAction = localStorage.getItem('pendingAction');
+      if (pendingAction && user.Role === 'Student') {
+        const action = JSON.parse(pendingAction);
+        localStorage.removeItem('pendingAction');
+        if (action.type === 'enroll') {
+          navigate(`/enroll?course=${action.courseSlug}`);
+        } else {
+          // For wishlist, go back to course and it will handle it
+          navigate(`/course/${action.courseSlug}`, { state: { autoWishlist: true } });
+        }
+        return;
+      }
+
       if (user.Role === 'Admin') {
         navigate('/admin-dashboard');
       } else if (user.Role === 'Teacher') {

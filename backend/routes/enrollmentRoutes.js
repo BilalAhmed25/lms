@@ -82,6 +82,19 @@ router.get('/my-history', async (req, res) => {
     }
 });
 
+// Check enrollment status for a specific course
+router.get('/status/:courseId', async (req, res) => {
+    try {
+        const [rows] = await con.execute(
+            'SELECT Status, CreatedAt FROM LMS_Enrollments WHERE UserID = ? AND CourseID = ?',
+            [req.user.ID, req.params.courseId]
+        );
+        res.json(rows[0] || null);
+    } catch (err) {
+        res.status(500).json('Check failed');
+    }
+});
+
 // Request enrollment
 router.post('/request', async (req, res) => {
     if (req.user.Role !== 'Student') return res.status(403).json('Students only');

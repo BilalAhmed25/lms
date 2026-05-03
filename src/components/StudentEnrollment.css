@@ -1,0 +1,429 @@
+.enrollment-page {
+    padding: 80px 0;
+    min-height: 80vh;
+}
+
+.enrollment-container {
+    /* max-width: 900px; */
+    margin: 0 auto;
+    border-radius: 24px;
+    padding: 100px 0 40px;
+}
+
+/* Steps Progress Bar */
+.enrollment-steps-v2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 50px;
+    position: relative;
+    /* padding: 0 40px; */
+}
+
+.step-line {
+    flex-grow: 1;
+    height: 2px;
+    border-top: 2px dashed rgba(0, 0, 0, 0.2);
+    margin-top: 25px;
+    margin-left: 10px;
+    margin-right: 10px;
+    transition: all 0.4s ease;
+}
+
+.step-line.completed {
+    border-top: 2px dashed var(--success);
+}
+
+.step-v2 {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.step-icon-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--text-muted);
+}
+
+.step-v2.active .step-icon-circle {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    /* box-shadow: 0 0 20px rgba(78, 205, 196, 0.3); */
+}
+
+.step-v2.completed .step-icon-circle {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+.step-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+}
+
+.step-v2.active .step-label {
+    color: var(--text-main);
+}
+
+/* Step Content Styles */
+.step-content-v2 h2 {
+    font-size: 2rem;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.step-content-v2 .subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Classes Grid */
+.classes-grid-v2 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 1200px) {
+    .classes-grid-v2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 850px) {
+    .classes-grid-v2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+.class-card-v2 {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 18px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.class-card-v2:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.class-card-v2.selected {
+    background: rgba(78, 205, 196, 0.05);
+    border-color: var(--primary);
+    /* box-shadow: inset 0 0 0 1px var(--primary); */
+}
+
+.class-card-v2.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 24px;
+    height: 24px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.class-card-v2 .course-badge {
+    background: rgba(0, 0, 0, 0.1);
+    color: var(--text-main);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    width: fit-content;
+}
+
+.class-card-v2 h3 {
+    font-size: 1.35rem;
+    line-height: 1.4;
+    font-weight: 700;
+}
+
+.course-short-intro-v2 {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.6;
+}
+
+.card-footer-v2 {
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.teacher-info-v2 {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.teacher-name-v2,
+.rating-info-v2 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.teacher-name-v2 span {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.class-card-v2 .price-tag {
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+/* Payment Section */
+.payment-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 40px;
+}
+
+.instruction-panel {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 20px;
+    /* padding: 30px; */
+}
+
+.instruction-panel h3 {
+    font-size: 1.5rem;
+    padding-bottom: 8px;
+}
+
+.bank-details-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    /* padding: 24px; */
+    margin: 20px 0;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-row label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.detail-row span {
+    font-weight: 600;
+}
+
+/* Modern Upload Area */
+.modern-upload {
+    border: 2px dashed rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.modern-upload:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: var(--primary);
+}
+
+.modern-upload h4 {
+    font-size: 1.2rem;
+}
+
+.upload-placeholder {
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.upload-placeholder svg {
+    margin-bottom: 15px;
+    color: var(--primary);
+}
+
+.receipt-preview-v2 {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.receipt-preview-v2 img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.preview-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    color: white;
+}
+
+.receipt-preview-v2:hover .preview-overlay {
+    opacity: 1;
+}
+
+.pdf-preview-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Success Step */
+.success-card-v2 {
+    text-align: center;
+    padding: 40px 0;
+}
+
+.success-blob {
+    width: 120px;
+    height: 120px;
+    background: rgba(76, 175, 80, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 30px;
+    color: var(--success);
+}
+
+@media (max-width: 768px) {
+    .payment-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .enrollment-steps-v2 {
+        padding: 0;
+    }
+
+    .enrollment-steps-v2::before {
+        display: none;
+    }
+}
+
+/* Horizontal Status Display */
+.status-horizontal-v2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    padding: 30px 40px;
+    border-radius: 20px;
+    margin: 0 auto 40px;
+    max-width: 700px;
+}
+
+.status-node {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-align: left;
+}
+
+.node-info {
+    text-align: left;
+}
+
+.node-info h4 {
+    margin: 0;
+    margin-bottom: -5px;
+    font-size: 1rem;
+    color: var(--text-main);
+}
+
+.node-info span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.status-node.pending {
+    opacity: 0.6;
+}
+
+.node-icon-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--text-muted);
+}
+
+@media (max-width: 600px) {
+    .status-horizontal-v2 {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .status-arrow {
+        transform: rotate(90deg);
+    }
+}
