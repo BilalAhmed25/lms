@@ -4,6 +4,7 @@ import { useAuth } from '../App';
 import { Book, CreditCard, Clock, Star, Search, AlertCircle, PlusCircle, CheckCircle, ChevronRight, Layout, XCircle } from 'lucide-react';
 
 import api from '../utils/api';
+import SEO from '../components/SEO';
 
 const Loader = () => (
     <div className="loader-container">
@@ -45,6 +46,10 @@ const StudentDashboard = () => {
 
   return (
     <div className="admin-layout animate-fade-in">
+      <SEO 
+        title="Student Dashboard" 
+        description="Manage your enrolled courses, track your learning progress, and explore new educational opportunities on your Deenova Student Dashboard."
+      />
       {/* Sidebar */}
       <aside className="admin-sidebar">
         <div className="sidebar-header">

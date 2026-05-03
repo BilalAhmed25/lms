@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '../App';
+import SEO from '../components/SEO';
 
 // Import new sections
 import AboutSection from '../components/Home/AboutSection';
@@ -20,6 +21,10 @@ const Home = () => {
 
     return (
         <div className="home-page animate-fade-in">
+            <SEO 
+                title="Empowering the Future of Education" 
+                description="Deenova Learning Hub is a premium LMS platform providing world-class courses, expert instruction, and a collaborative community for lifelong learners."
+            />
             {/* 1. About Section (Intro) */}
             <AboutSection />
 

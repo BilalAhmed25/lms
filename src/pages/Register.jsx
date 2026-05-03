@@ -4,6 +4,7 @@ import { useAuth } from '../App';
 import { User, Briefcase, Mail, Lock, UserPlus, FileText } from 'lucide-react';
 import FloatingLabelInput from '../components/FloatingLabelInput';
 import LandingHero from '../components/LandingHero';
+import SEO from '../components/SEO';
 
 import api from '../utils/api';
 
@@ -37,6 +38,10 @@ const Register = () => {
 
   return (
     <div className="register-page animate-fade-in">
+      <SEO 
+        title="Create Account" 
+        description="Join Deenova Learning Hub as a student or teacher and start your educational journey today."
+      />
       <LandingHero 
         title={<>Experience the <br/> <span className="text-primary">Future</span> of Education.</>}
         description="Join thousands of students and teachers in our world-class educational ecosystem. Start your journey today with our industry-leading platform."

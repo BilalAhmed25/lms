@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Lock, Hash, ShieldCheck, Mail } from 'lucide-react';
 import FloatingLabelInput from '../components/FloatingLabelInput';
+import SEO from '../components/SEO';
 
 import api from '../utils/api';
 
@@ -43,6 +44,10 @@ const ResetPassword = () => {
 
   return (
     <div className="auth-page animate-fade-in">
+      <SEO 
+        title="Reset Password" 
+        description="Securely reset your Deenova Learning Hub password."
+      />
       <div className="auth-container glass">
         <div className="auth-header">
           <h2>Reset Password</h2>

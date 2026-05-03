@@ -18,7 +18,7 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 40%;
+    width: 100%;
     height: 100%;
     background: linear-gradient(135deg, transparent 0%, rgba(33, 103, 91, 0.2) 100%);
     pointer-events: none;

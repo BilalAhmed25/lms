@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, ArrowLeft, Send } from 'lucide-react';
 import FloatingLabelInput from '../components/FloatingLabelInput';
+import SEO from '../components/SEO';
 
 import api from '../utils/api';
 
@@ -28,6 +29,10 @@ const ForgotPassword = () => {
 
   return (
     <div className="auth-page animate-fade-in">
+      <SEO 
+        title="Forgot Password" 
+        description="Reset your Deenova Learning Hub password to regain access to your account."
+      />
       <div className="auth-container glass">
         <Link to="/login" className="back-link">
           <ArrowLeft size={18} /> Back to Login

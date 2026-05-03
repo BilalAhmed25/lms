@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import FloatingLabelInput from '../components/FloatingLabelInput';
 import api from '../utils/api';
+import SEO from '../components/SEO';
 
 const Loader = () => (
     <div className="loader-container">
@@ -102,6 +103,10 @@ const AdminDashboard = () => {
 
     return (
         <div className="admin-layout animate-fade-in">
+            <SEO 
+                title="Admin Dashboard" 
+                description="Comprehensive administration panel for Deenova Learning Hub. Manage users, courses, enrollments, and platform statistics."
+            />
             {/* Sidebar */}
             <aside className="admin-sidebar">
                 <div className="sidebar-header">

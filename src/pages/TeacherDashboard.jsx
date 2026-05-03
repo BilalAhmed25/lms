@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PlusCircle, Users, BookOpen, Settings, BarChart3 } from 'lucide-react';
 import FloatingLabelInput from '../components/FloatingLabelInput';
+import SEO from '../components/SEO';
 
 const TeacherDashboard = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -18,6 +19,10 @@ const TeacherDashboard = () => {
 
   return (
     <div className="dashboard-container container animate-fade-in">
+      <SEO 
+        title="Teacher Dashboard" 
+        description="Manage your courses, track student performance, and grow your teaching business on Deenova Learning Hub's Teacher Dashboard."
+      />
       <header className="dashboard-header">
         <div>
           <h1>Teacher Dashboard</h1>

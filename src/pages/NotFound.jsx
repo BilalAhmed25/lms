@@ -1,11 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 import { Home, ArrowLeft, Search } from 'lucide-react';
 import './NotFound.css';
 
 const NotFound = () => {
     return (
         <div className="not-found-page">
+            <SEO 
+                title="Page Not Found" 
+                description="The page you are looking for could not be found on Deenova Learning Hub."
+            />
             <div className="container">
                 <div className="not-found-content animate-fade-in">
                     <div className="error-code-wrapper">

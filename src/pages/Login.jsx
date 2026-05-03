@@ -4,6 +4,7 @@ import { useAuth } from '../App';
 import { Mail, Lock, LogIn } from 'lucide-react';
 import FloatingLabelInput from '../components/FloatingLabelInput';
 import LandingHero from '../components/LandingHero';
+import SEO from '../components/SEO';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -34,6 +35,10 @@ const Login = () => {
 
   return (
     <div className="login-page animate-fade-in">
+      <SEO 
+        title="Login" 
+        description="Access your Deenova Learning Hub account to continue your educational journey."
+      />
       <LandingHero 
         title={<>Find out the <br/> <span className="text-primary">Best</span> Way to Learn.</>}
         description="Unlock your potential with our award-winning curriculum and expert-led mentorship programs. Join a community of over 50,000 successful students worldwide."

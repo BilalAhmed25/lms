@@ -10,6 +10,7 @@ import FAQSection from '../components/Home/FAQSection';
 import ContactSection from '../components/Home/ContactSection';
 
 import api from '../utils/api';
+import SEO from '../components/SEO';
 
 const Loader = () => (
     <div className="loader-container">
@@ -58,6 +59,10 @@ const CourseDetails = () => {
 
     return (
         <div className="course-details-page">
+            <SEO 
+                title={course.Name} 
+                description={course.ShortIntro || `Learn ${course.Name} from expert instructors on Deenova Learning Hub.`}
+            />
             {/* Header / Hero Section */}
             <div className="course-hero">
                 <div className="container">
