@@ -99,12 +99,24 @@
     padding: 25px;
 }
 
-.course-price {
-    color: #FF782D;
-    font-weight: 700;
-    font-size: 1rem;
-    display: block;
+.course-price-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     margin-bottom: 12px;
+}
+
+.course-price {
+    font-weight: 800;
+    color: var(--secondary);
+    font-size: 1.25rem;
+}
+
+.course-original-price {
+    color: var(--text-muted);
+    text-decoration: line-through;
+    font-size: 0.9rem;
+    font-weight: 500;
 }
 
 .course-card-title {

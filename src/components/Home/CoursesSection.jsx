@@ -63,9 +63,16 @@ const CoursesSection = ({ limit = 6, showHeader = true }) => {
                                         />
                                     </div>
                                     <div className="course-body">
-                                        <span className="course-price">
-                                            {Number(course.Fee) === 0 ? 'Free' : `$${Number(course.Fee).toFixed(2)}`}
-                                        </span>
+                                        <div className="course-price-box">
+                                            <span className="course-price">
+                                                {Number(course.Fee) === 0 ? 'Free' : `$${Number(course.Fee).toFixed(2)}`}
+                                            </span>
+                                            {course.OriginalFee > 0 && (
+                                                <span className="course-original-price">
+                                                    ${Number(course.OriginalFee).toFixed(2)}
+                                                </span>
+                                            )}
+                                        </div>
                                         <h3 className="course-card-title">{course.Name}</h3>
                                         
                                         <p className="course-short-intro">{course.ShortIntro}</p>

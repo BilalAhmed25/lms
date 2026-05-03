@@ -180,24 +180,32 @@ const CourseDetails = () => {
                             <div className="course-preview-card glass">
                                 <div className="preview-image-box">
                                     <img src={course.Thumbnail || "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80&w=800"} alt={course.Name} />
-                                    <div className="play-overlay">
+                                    {/* <div className="play-overlay">
                                         <div className="play-btn-circle"><Play fill="white" /></div>
                                         <span>Preview Course</span>
-                                    </div>
+                                    </div> */}
                                 </div>
 
                                 <div className="sidebar-pricing-box">
                                     <div className="price-row">
                                         <span className="price-main">${course.Fee}</span>
-                                        {course.Fee > 0 && <span className="price-old">${(course.Fee * 1.5).toFixed(2)}</span>}
+                                        {course.OriginalFee > 0 && <span className="price-old">${Number(course.OriginalFee).toFixed(2)}</span>}
                                     </div>
-                                    <p className="price-notice">Limited time offer • 2 days left!</p>
+                                    {course.OfferExpiryDate && new Date(course.OfferExpiryDate) > new Date() && (
+                                        <p className="price-notice">
+                                            Limited time offer • {
+                                                Math.ceil((new Date(course.OfferExpiryDate) - new Date()) / (1000 * 60 * 60 * 24)) === 1
+                                                    ? 'Last day left!'
+                                                    : `${Math.ceil((new Date(course.OfferExpiryDate) - new Date()) / (1000 * 60 * 60 * 24))} days left!`
+                                            }
+                                        </p>
+                                    )}
 
                                     <div className="action-buttons">
-                                        <button className="btn btn-primary btn-full-width" onClick={() => navigate('/courses')}>
+                                        <button className="btn btn-primary btn-full-width" onClick={() => navigate('/courses')} style={{ fontWeight: 400, textTransform: 'none', marginTop: '15px' }}>
                                             Enroll Now
                                         </button>
-                                        <button className="btn btn-outline btn-full-width">
+                                        <button className="btn btn-outline btn-full-width" style={{ fontWeight: 400, textTransform: 'none', marginTop: '15px' }}>
                                             <Heart size={18} /> Add to Wishlist
                                         </button>
                                     </div>
@@ -232,8 +240,8 @@ const CourseDetails = () => {
             </div>
 
             <div className="mt-20">
-                <FAQSection />
                 <ContactSection />
+                <FAQSection />
             </div>
         </div>
     );
