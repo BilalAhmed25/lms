@@ -79,10 +79,14 @@ const Navbar = () => {
                     <div className="nav-actions">
                         {user ? (
                             <div className="user-nav-group">
-                                <Link to={
-                                    user.Role === 'Admin' ? '/admin-dashboard' :
-                                        user.Role === 'Teacher' ? '/teacher-dashboard' : '/student-dashboard'
-                                } className="btn btn-secondary" onClick={() => setMobileMenuOpen(false)}>
+                                <Link
+                                    to={
+                                        user.Role === 'Admin' ? '/admin-dashboard' :
+                                            user.Role === 'Teacher' ? '/teacher-dashboard' : '/student-dashboard'
+                                    }
+                                    className="btn btn-primary" onClick={() => setMobileMenuOpen(false)}
+                                    style={{ padding: '8px 35px', borderRadius: '50px', textTransform: 'none', fontWeight: 500 }}
+                                >
                                     Dashboard
                                 </Link>
                                 <button onClick={handleLogout} className="logout-btn">
