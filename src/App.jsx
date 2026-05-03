@@ -11,6 +11,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import CourseDetails from './pages/CourseDetails';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import Courses from './pages/Courses';
+import ContactUs from './pages/ContactUs';
+import AboutUs from './pages/AboutUs';
 import './index.css';
 
 // Context for Auth
@@ -70,12 +73,15 @@ const AppContent = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/courses" element={<Courses />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/student-dashboard" element={<StudentDashboard />} />
           <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/course/:id" element={<CourseDetails />} />
+          <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/about-us" element={<AboutUs />} />
         </Routes>
       </main>
       {!isDashboardFull && <Footer />}

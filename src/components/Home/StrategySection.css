@@ -1,0 +1,141 @@
+.strategy-section {
+    width: 100%;
+}
+
+.strategy-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 600px;
+}
+
+.strategy-visual {
+    position: relative;
+}
+
+.strategy-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-height: 650px;
+}
+
+.play-btn-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.play-btn {
+    width: 80px;
+    height: 80px;
+    background: var(--glass-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 2px solid white;
+}
+
+.play-btn:hover {
+    transform: scale(1.1);
+    background: white;
+}
+
+.play-btn:hover svg {
+    fill: var(--primary);
+}
+
+.strategy-content {
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 80px;
+}
+
+/* .content-inner {
+    max-width: 550px;
+} */
+
+.strategy-title {
+    font-size: var(--fs-h2);
+    line-height: 1.1;
+    margin-bottom: 30px;
+    color: white;
+}
+
+.strategy-desc {
+    font-size: var(--fs-body);
+    opacity: 0.9;
+    margin-bottom: 40px;
+}
+
+.strategy-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.strategy-list li {
+    display: flex;
+    gap: 20px;
+}
+
+.list-icon {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.list-text h4 {
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+    color: white;
+}
+
+.list-text p {
+    font-size: var(--fs-body);
+    opacity: 0.8;
+}
+
+@media (max-width: 992px) {
+    .strategy-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .strategy-content {
+        padding: 60px 40px;
+    }
+
+    .strategy-visual {
+        height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .strategy-content {
+        padding: 50px 20px;
+    }
+
+    .strategy-title {
+        font-size: 1.8rem;
+    }
+
+    .list-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .list-text h4 {
+        font-size: 1.1rem;
+    }
+}

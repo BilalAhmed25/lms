@@ -1,0 +1,245 @@
+.courses-hero {
+    position: relative;
+    padding: 140px 0 80px;
+    background-color: var(--bg-main);
+    overflow: hidden;
+}
+
+.courses-hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.hero-shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.12;
+}
+
+.shape-1 {
+    width: 450px;
+    height: 450px;
+    background-color: var(--primary);
+    top: -100px;
+    left: -100px;
+}
+
+.shape-2 {
+    width: 350px;
+    height: 350px;
+    background-color: var(--accent);
+    bottom: -50px;
+    right: -50px;
+}
+
+.hero-dot-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(var(--border) 1.5px, transparent 1.5px);
+    background-size: 40px 40px;
+    opacity: 0.5;
+}
+
+.courses-hero-grid {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 80px;
+    align-items: center;
+}
+
+.breadcrumb {
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.breadcrumb .active {
+    color: var(--primary);
+}
+
+.hero-title {
+    font-size: calc(var(--fs-h2) * 1.1);
+    line-height: 1.1;
+    margin-bottom: 25px;
+    color: var(--text-main);
+    font-weight: 800;
+}
+
+.hero-subtitle {
+    font-size: var(--fs-body);
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 45px;
+    max-width: 550px;
+    font-weight: 500;
+}
+
+.quick-stats {
+    display: flex;
+    gap: 30px;
+}
+
+.stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: white;
+    padding: 10px 25px 10px 10px;
+    border-radius: 50px;
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    background: #e7e7e7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-info strong {
+    color: var(--text-main);
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.stat-info span {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+/* Image Area */
+.hero-image-area {
+    position: relative;
+}
+
+.hero-img-wrapper {
+    position: relative;
+    border-radius: var(--br-lg);
+}
+
+.hero-img-wrapper img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: var(--br-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.floating-badge {
+    position: absolute;
+    bottom: 30px;
+    left: -40px;
+    background: white;
+    padding: 20px 30px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: var(--shadow-lg);
+    animation: floatCourses 4s ease-in-out infinite;
+}
+
+@keyframes floatCourses {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+.badge-icon {
+    width: 48px;
+    height: 48px;
+    background: #f0fdf4;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.badge-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.badge-text strong {
+    font-size: 1.1rem;
+    color: var(--text-main);
+}
+
+.badge-text span {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .courses-hero {
+        padding: 120px 0 60px;
+    }
+
+    .courses-hero-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .hero-subtitle {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .quick-stats {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .hero-image-area {
+        margin-top: 40px;
+    }
+
+    .floating-badge {
+        left: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .quick-stats {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .stat-pill {
+        width: 100%;
+        max-width: 250px;
+    }
+}

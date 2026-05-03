@@ -8,13 +8,23 @@ const { uploadToCloudinary } = require('../cloudinaryHelper');
 router.get('/classes', async (req, res) => {
     try {
         const [rows] = await con.execute(`
-            SELECT c.ID, c.Name, c.Fee, c.Description, u.Name as TeacherName
+            SELECT 
+                c.ID, 
+                c.Name, 
+                c.ShortIntro,
+                c.Fee, 
+                c.Thumbnail,
+                c.AverageRating,
+                c.ReviewsCount,
+                u.Name as TeacherName,
+                (SELECT COUNT(*) FROM LMS_Modules WHERE CourseID = c.ID) as ModulesCount
             FROM LMS_Courses c
             LEFT JOIN Users u ON c.TeacherID = u.ID
             WHERE c.Status = "active"
         `);
         res.json(rows);
     } catch (err) {
+        console.error(err);
         res.status(500).json('Fetch failed');
     }
 });

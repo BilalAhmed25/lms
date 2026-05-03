@@ -1,0 +1,229 @@
+.vision-mission-section {
+    background-color: #fff;
+    padding-bottom: 100px;
+}
+
+.vision-header {
+    margin-bottom: 60px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.vision-title {
+    font-size: var(--fs-h1);
+    font-weight: 800;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    color: var(--text-main);
+}
+
+.vision-desc {
+    font-size: var(--fs-body);
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* Bento Grid Core */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto auto;
+    gap: 20px;
+}
+
+.bento-item {
+    background-color: var(--bg-section);
+    border-radius: 24px;
+    padding: 30px;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+}
+
+.bento-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Item Specifics */
+.item-main-image {
+    grid-column: span 2;
+    grid-row: span 2;
+    padding: 0;
+    min-height: 400px;
+}
+
+.item-main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-overlay-text {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 40px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: white;
+}
+
+.image-overlay-text h3 {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.item-stat-card {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 15px;
+}
+
+.item-stat-card.primary-bg {
+    background-color: var(--primary);
+    color: white;
+}
+
+.item-stat-card.secondary-bg {
+    background-color: #f0f7ff;
+    color: var(--primary);
+}
+
+.icon-wrapper {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.secondary-bg .icon-wrapper {
+    background: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-value {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+/* Mission Tall Card */
+.item-mission-tall {
+    grid-row: span 2;
+    background-color: #C0FF4D; /* Lime Green but structured */
+    color: var(--text-main);
+    justify-content: space-between;
+}
+
+.mission-tag {
+    display: inline-block;
+    padding: 6px 12px;
+    background: rgba(0,0,0,0.05);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    width: fit-content;
+}
+
+.mission-heading {
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 20px 0;
+}
+
+.mission-icons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.mini-icon {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+}
+
+/* Detail Cards */
+.item-detail-card {
+    background-color: #fff;
+    border: 1px solid var(--border);
+}
+
+.item-detail-card.dark-bg {
+    background-color: #111;
+    color: white;
+    border: none;
+}
+
+.detail-num {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 15px;
+    display: block;
+}
+
+.dark-bg .detail-num { color: #C0FF4D; }
+
+.item-detail-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.item-detail-card p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+.dark-bg p { color: #999; }
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .bento-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .item-main-image { grid-column: span 2; }
+    .item-mission-tall { grid-column: span 1; grid-row: span 2; }
+}
+
+@media (max-width: 992px) {
+    .bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .bento-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .item-main-image, .item-mission-tall, .item-stat-card, .item-detail-card {
+        grid-column: span 1;
+        grid-row: auto;
+        min-height: auto;
+    }
+}

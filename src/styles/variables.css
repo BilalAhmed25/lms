@@ -1,0 +1,107 @@
+:root {
+    /* ─── COLORS ─────────────────────────────────────────────────────────── */
+    --primary: #1ab69d;
+    --primary-hover: #169a85;
+    --secondary: #ee4a62;
+    --accent: #f8b81f;
+    --accent-hover: #e5a810;
+
+    --bg-main: #ffffff;
+    --bg-section: #f8f9fa;
+    --bg-card: #ffffff;
+    --bg-dark: #1b1b4b;
+
+    --text-main: #181818;
+    --text-muted: #6e6e6e;
+    --text-light: #ffffff;
+
+    --border: #f0f0f0;
+    --border-dark: rgba(255, 255, 255, 0.1);
+
+    --success: #1ab69d;
+    --error: #ee4a62;
+    --warning: #f8b81f;
+
+    /* ─── TYPOGRAPHY ─────────────────────────────────────────────────────── */
+    --font-family: 'Poppins', sans-serif;
+
+    /* Font Sizes (Desktop) */
+    --fs-h1: 3rem;
+    --fs-h2: 2.5rem;
+    --fs-h3: 2rem;
+    --fs-h4: 1.5rem;
+    --fs-h5: 1.25rem;
+    --fs-body: 0.9rem;
+    --fs-small: 0.85rem;
+    --fs-tiny: 0.75rem;
+
+    /* Font Weights */
+    --fw-light: 300;
+    --fw-regular: 400;
+    --fw-medium: 500;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+    --fw-extrabold: 800;
+
+    /* ─── SPACING & LAYOUT ───────────────────────────────────────────────── */
+    --section-padding: 100px 0;
+    --container-width: 1800px;
+    --container-padding: 0 4rem;
+
+    --br-sm: 8px;
+    --br-md: 12px;
+    --br-lg: 20px;
+    --br-xl: 30px;
+    --br-full: 9999px;
+
+    /* ─── EFFECTS ────────────────────────────────────────────────────────── */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+    --shadow-glass: 0 20px 50px rgba(0, 0, 0, 0.1);
+
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-blur: 20px;
+    --glass-border: rgba(255, 255, 255, 0.3);
+
+    --transition: all 0.3s ease-in-out;
+}
+
+/* ─── RESPONSIVE TOKENS ──────────────────────────────────────────────── */
+@media (max-width: 1400px) {
+    :root {
+        --fs-h1: 2.8rem;
+        --fs-h2: 2.2rem;
+        --container-padding: 0 3rem;
+    }
+}
+
+@media (max-width: 992px) {
+    :root {
+        --fs-h1: 2.4rem;
+        --fs-h2: 2rem;
+        --fs-h3: 1.75rem;
+        --container-padding: 0 2rem;
+        --section-padding: 80px 0;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --fs-h1: 2.1rem;
+        --fs-h2: 1.8rem;
+        --fs-h3: 1.5rem;
+        --container-padding: 0 1.5rem;
+        --section-padding: 60px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --fs-h1: 1.8rem;
+        --fs-h2: 1.5rem;
+        --fs-h3: 1.3rem;
+        --container-padding: 0 1rem;
+        --section-padding: 50px 0;
+    }
+}

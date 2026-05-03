@@ -62,7 +62,7 @@ const Footer = () => {
 
                 {/* Bottom Bar */}
                 <div className="footer-bottom mt-12 pt-8">
-                    <p className="text-muted">© 2026 LMSPro Inc.</p>
+                    <p className="text-muted">© 2026 Deenova Inc.</p>
                     <div className="footer-legal">
                         <Link to="/">Terms of Service</Link>
                         <Link to="/">Privacy Policy</Link>

@@ -1,0 +1,244 @@
+.about-hero {
+    position: relative;
+    padding: 140px 0 100px;
+    background-color: var(--bg-main);
+    overflow: hidden;
+}
+
+.about-hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.hero-shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.12;
+}
+
+.shape-1 {
+    width: 450px;
+    height: 450px;
+    background-color: var(--primary);
+    top: -100px;
+    left: -100px;
+}
+
+.shape-2 {
+    width: 350px;
+    height: 350px;
+    background-color: var(--secondary);
+    bottom: -50px;
+    right: -50px;
+}
+
+.hero-dot-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(var(--border) 1.5px, transparent 1.5px);
+    background-size: 40px 40px;
+    opacity: 0.5;
+}
+
+.about-hero-grid {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+}
+
+.breadcrumb {
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.breadcrumb .active {
+    color: var(--primary);
+}
+
+.hero-title {
+    font-size: calc(var(--fs-h1) * 0.95);
+    line-height: 1.1;
+    margin-bottom: 25px;
+    color: var(--text-main);
+    font-weight: 800;
+}
+
+.hero-subtitle {
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 40px;
+}
+
+.about-stats-row {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.about-stat-item {
+    display: flex;
+    gap: 20px;
+}
+
+.stat-icon-box {
+    width: 54px;
+    height: 54px;
+    background: white;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    box-shadow: var(--shadow-md);
+    flex-shrink: 0;
+}
+
+.stat-text strong {
+    display: block;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+
+.stat-text p {
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* Image Stack */
+.hero-image-area {
+    position: relative;
+}
+
+.about-img-stack {
+    position: relative;
+    padding-right: 40px;
+}
+
+.main-img-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+.main-img-wrapper img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 30px;
+    box-shadow: var(--shadow-lg);
+}
+
+.experience-card {
+    position: absolute;
+    bottom: -30px;
+    right: 0;
+    background: var(--primary);
+    color: white;
+    padding: 30px;
+    border-radius: 20px;
+    z-index: 2;
+    box-shadow: 0 20px 40px rgba(26, 182, 157, 0.3);
+}
+
+.exp-num {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.exp-text {
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.4;
+    opacity: 0.9;
+}
+
+.student-badge {
+    position: absolute;
+    top: 40px;
+    left: -40px;
+    background: white;
+    padding: 15px 25px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 2;
+    box-shadow: var(--shadow-lg);
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: var(--fs-small);
+}
+
+.student-badge svg {
+    color: var(--secondary);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .about-hero-grid {
+        gap: 50px;
+    }
+
+    .main-img-wrapper img {
+        height: 450px;
+    }
+
+    .student-badge {
+        left: 20px;
+        top: 20px;
+    }
+}
+
+@media (max-width: 992px) {
+    .about-hero {
+        padding: 120px 0 100px;
+    }
+
+    .about-hero-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .hero-subtitle {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .about-stats-row {
+        align-items: center;
+    }
+
+    .hero-image-area {
+        margin-top: 60px;
+    }
+
+    .about-img-stack {
+        padding-right: 0;
+    }
+
+    .experience-card {
+        bottom: -20px;
+        right: 20px;
+        padding: 20px;
+    }
+
+    .exp-num {
+        font-size: 2rem;
+    }
+}

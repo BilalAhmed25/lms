@@ -1,0 +1,194 @@
+@import './variables.css';
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ─── GLOBAL DEFAULTS ────────────────────────────────────────────────── */
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+}
+
+button,
+.btn,
+input,
+select,
+textarea {
+    font-family: var(--font-family);
+    outline: none;
+    border-radius: 8px;
+    border: none;
+}
+
+.text-light {
+    color: var(--text-light) !important;
+}
+
+.text-light p {
+    color: var(--text-light) !important;
+    opacity: 0.8;
+}
+
+/* ─── TYPOGRAPHY ─────────────────────────────────────────────────────── */
+h1,
+.h1 {
+    font-size: var(--fs-h1);
+    font-weight: var(--fw-extrabold);
+    line-height: 1.1;
+    color: var(--text-main);
+}
+
+h2,
+.h2 {
+    font-size: var(--fs-h2);
+    font-weight: var(--fw-bold);
+    line-height: 1.2;
+    color: var(--text-main);
+}
+
+h3,
+.h3 {
+    font-size: var(--fs-h3);
+    font-weight: var(--fw-bold);
+    line-height: 1.3;
+}
+
+h4,
+.h4 {
+    font-size: var(--fs-h4);
+    font-weight: var(--fw-semibold);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-family);
+    letter-spacing: -0.01em;
+}
+
+p {
+    font-size: var(--fs-body);
+    color: var(--text-muted);
+}
+
+/* ─── SCROLLBAR ──────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-main);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #cbd5e1;
+}
+
+/* ─── LAYOUT ─────────────────────────────────────────────────────────── */
+.container {
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: var(--container-padding);
+}
+
+.section {
+    padding: var(--section-padding);
+}
+
+/* ─── UTILITIES ──────────────────────────────────────────────────────── */
+.section-subtitle-small {
+    display: inline-block;
+    color: var(--primary);
+    font-size: var(--fs-tiny);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+}
+
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+}
+
+/* ─── BUTTONS ────────────────────────────────────────────────────────── */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 30px;
+    font-size: var(--fs-small);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    border-radius: var(--br-sm);
+    transition: var(--transition);
+    cursor: pointer;
+    text-decoration: none;
+    gap: 8px;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: var(--text-light);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.btn-accent {
+    background-color: var(--accent);
+    color: var(--text-main);
+}
+
+.btn-accent:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+}
+
+/* ─── ANIMATIONS ─────────────────────────────────────────────────────── */
+.animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
