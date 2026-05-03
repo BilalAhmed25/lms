@@ -280,16 +280,68 @@
 }
 
 @media (max-width: 992px) {
+    .about-section {
+        padding: 130px 0 60px !important;
+    }
+
     .about-grid {
         grid-template-columns: 1fr;
         gap: 50px;
+        text-align: left;
     }
 
-    .about-title {
-        font-size: 2.5rem;
+    .about-title,
+    .about-desc {
+        max-width: 100%;
     }
 
     .experience-badge {
         right: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-section {
+        padding: 80px 0 40px;
+    }
+
+    .about-title {
+        font-size: 2.1rem;
+    }
+
+    .about-stats-modern {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 30px;
+    }
+
+    .divider-line {
+        display: none;
+    }
+
+    .main-img {
+        height: 300px;
+    }
+
+    .experience-badge {
+        bottom: 10px;
+        right: 10px;
+        padding: 15px 25px;
+    }
+
+    .exp-num {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-title {
+        font-size: 1.8rem;
+    }
+
+    .reviews-horizontal {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
     }
 }
