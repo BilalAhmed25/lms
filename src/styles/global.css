@@ -147,8 +147,8 @@ p {
     justify-content: center;
     padding: 12px 30px;
     font-size: var(--fs-small);
-    font-weight: var(--fw-bold);
-    text-transform: uppercase;
+    font-weight: var(--fw-medium);
+    text-transform: none;
     border-radius: var(--br-sm);
     transition: var(--transition);
     cursor: pointer;

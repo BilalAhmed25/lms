@@ -364,7 +364,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .auth-link .nav-icon {
@@ -758,7 +758,7 @@
     border-radius: 8px;
     background: transparent;
     color: var(--text-muted);
-    font-weight: 600;
+    font-weight: 500;
     transition: var(--transition);
 }
 
@@ -2380,7 +2380,7 @@
     color: #166534;
     padding: 8px 16px;
     border-radius: 10px;
-    font-weight: 600;
+    font-weight: 500;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -2393,7 +2393,7 @@
     color: #991b1b;
     padding: 8px 16px;
     border-radius: 10px;
-    font-weight: 600;
+    font-weight: 500;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -2499,6 +2499,114 @@
     border-radius: 16px;
 }
 
+/* --- Student Dashboard Enhancements --- */
+.dashboard-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.filter-pills {
+    display: flex;
+    gap: 10px;
+    background: #f1f5f9;
+    padding: 6px;
+    border-radius: 12px;
+}
+
+.filter-pills button {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+    border: none;
+    background: transparent;
+}
+
+.filter-pills button:hover {
+    color: var(--primary);
+}
+
+.filter-pills button.active {
+    background: white;
+    color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.enrolled-course-card.is-pending {
+    opacity: 0.85;
+    cursor: default;
+    border-style: dashed;
+    border-width: 2px;
+}
+
+.enrolled-course-card.is-pending:hover {
+    transform: none;
+    border-color: var(--border);
+}
+
+.card-badge.pending {
+    background: #ffedd5;
+    color: #ea580c;
+}
+
+.pending-status-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    padding: 12px;
+    background: #fffaf5;
+    border-radius: 12px;
+    border: 1px solid #ffedd5;
+}
+
+.pending-icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #ffedd5;
+    color: #ea580c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pending-text p {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #9a3412;
+    margin: 0;
+}
+
+.pending-text span {
+    font-size: 0.75rem;
+    color: #ea580c;
+    opacity: 0.8;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+
 .status-item span:first-child {
     font-weight: 500;
     color: var(--text-main);
@@ -2579,6 +2687,7 @@
     color: var(--text-muted);
     font-weight: 500;
     font-size: 1.1rem;
+    margin-bottom: 20px;
 }
 
 
@@ -2914,7 +3023,7 @@
     color: white;
     height: 56px;
     border-radius: 16px;
-    font-weight: 700;
+    font-weight: 500;
     font-size: 1rem;
     transition: var(--transition);
 }
@@ -2925,7 +3034,7 @@
     color: #64748b;
     height: 56px;
     border-radius: 16px;
-    font-weight: 700;
+    font-weight: 500;
     transition: var(--transition);
 }
 
@@ -3038,7 +3147,7 @@
     color: var(--text-main);
     padding: 14px 28px;
     border-radius: 100px;
-    font-weight: 600;
+    font-weight: 500;
     text-decoration: none;
     transition: var(--transition);
 }
@@ -3052,7 +3161,7 @@
     color: #fff;
     padding: 14px 28px;
     border-radius: 100px;
-    font-weight: 600;
+    font-weight: 500;
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -3445,4 +3554,108 @@
     color: #92400e;
     border: 1px solid #fde68a;
     cursor: default;
+}
+
+/* --- Billing & Modal Enhancements --- */
+.text-left-table th,
+.text-left-table td {
+    text-align: left !important;
+}
+
+.receipt-btn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #f1f5f9;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.receipt-btn-icon:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.modal-header-simple {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header-simple h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-modal-btn:hover {
+    color: var(--error);
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 30px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    position: relative;
+}
+
+.modal-content.glass {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.receipt-view {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 4px solid #f8fafc;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.receipt-view img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+@keyframes scaleUp {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.animate-scale-up {
+    animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }

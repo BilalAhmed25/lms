@@ -17,11 +17,17 @@ const CourseSkeleton = () => (
     </div>
 );
 
-const CoursesSection = ({ limit = 6, showHeader = true }) => {
-    const [courses, setCourses] = useState([]);
-    const [loading, setLoading] = useState(true);
+const CoursesSection = ({ limit = 6, showHeader = true, courses: initialCourses = null, isDashboard = false }) => {
+    const [courses, setCourses] = useState(initialCourses || []);
+    const [loading, setLoading] = useState(!initialCourses);
 
     useEffect(() => {
+        if (initialCourses) {
+            setCourses(initialCourses);
+            setLoading(false);
+            return;
+        }
+
         const fetchCourses = async () => {
             try {
                 const data = await api.get('/enrollment/classes');
@@ -33,13 +39,13 @@ const CoursesSection = ({ limit = 6, showHeader = true }) => {
             }
         };
         fetchCourses();
-    }, []);
+    }, [initialCourses]);
 
     const displayedCourses = limit ? courses.slice(0, limit) : courses;
 
     return (
-        <section className="courses-section">
-            <div className="container">
+        <section className={`courses-section ${isDashboard ? 'dashboard-version' : ''}`}>
+            <div className={isDashboard ? 'dashboard-container' : 'container'}>
                 {showHeader && (
                     <div className="section-header courses-header">
                         <div className="header-left">
@@ -53,60 +59,64 @@ const CoursesSection = ({ limit = 6, showHeader = true }) => {
                     {loading ? (
                         Array(limit > 0 ? limit : 8).fill(0).map((_, i) => <CourseSkeleton key={i} />)
                     ) : (
-                        displayedCourses.map((course, index) => (
-                            <Link to={`/course/${course.Slug}`} key={course.ID} className="course-card-link">
-                                <div className="course-card">
-                                    <div className="course-image">
-                                        <img
-                                            src={course.Thumbnail || `https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800`}
-                                            alt={course.Name}
-                                        />
-                                    </div>
-                                    <div className="course-body">
-                                        <div className="course-price-box">
-                                            <span className="course-price">
-                                                {Number(course.Fee) === 0 ? 'Free' : `$${Number(course.Fee).toFixed(2)}`}
-                                            </span>
-                                            {course.OriginalFee > 0 && (
-                                                <span className="course-original-price">
-                                                    ${Number(course.OriginalFee).toFixed(2)}
+                        displayedCourses.length > 0 ? (
+                            displayedCourses.map((course, index) => (
+                                <Link to={`/course/${course.Slug}`} key={course.ID} className="course-card-link">
+                                    <div className="course-card">
+                                        <div className="course-image">
+                                            <img
+                                                src={course.Thumbnail || `https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800`}
+                                                alt={course.Name}
+                                            />
+                                        </div>
+                                        <div className="course-body">
+                                            <div className="course-price-box">
+                                                <span className="course-price">
+                                                    {Number(course.Fee) === 0 ? 'Free' : `$${Number(course.Fee).toFixed(2)}`}
                                                 </span>
-                                            )}
-                                        </div>
-                                        <h3 className="course-card-title">{course.Name}</h3>
-                                        
-                                        <p className="course-short-intro">{course.ShortIntro}</p>
-
-                                        <div className="course-rating">
-                                            <div className="stars">
-                                                {[1, 2, 3, 4, 5].map(s => (
-                                                    <Star 
-                                                        key={s} 
-                                                        size={14} 
-                                                        fill={s <= Math.round(course.AverageRating || 5) ? "#FFB800" : "none"} 
-                                                        color="#FFB800" 
-                                                    />
-                                                ))}
+                                                {course.OriginalFee > 0 && (
+                                                    <span className="course-original-price">
+                                                        ${Number(course.OriginalFee).toFixed(2)}
+                                                    </span>
+                                                )}
                                             </div>
-                                            <span className="review-count">({course.ReviewsCount || 0} Reviews)</span>
-                                        </div>
+                                            <h3 className="course-card-title">{course.Name}</h3>
+                                            
+                                            <p className="course-short-intro">{course.ShortIntro}</p>
 
-                                        <div className="course-meta-footer">
-                                            <div className="meta-item">
-                                                <div className="meta-icon-box">
-                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                                            <div className="course-rating">
+                                                <div className="stars">
+                                                    {[1, 2, 3, 4, 5].map(s => (
+                                                        <Star 
+                                                            key={s} 
+                                                            size={14} 
+                                                            fill={s <= Math.round(course.AverageRating || 5) ? "#FFB800" : "none"} 
+                                                            color="#FFB800" 
+                                                        />
+                                                    ))}
                                                 </div>
-                                                <span>{course.ModulesCount || 0} Modules</span>
+                                                <span className="review-count">({course.ReviewsCount || 0} Reviews)</span>
                                             </div>
-                                            <div className="meta-item">
-                                                <User size={14} />
-                                                <span>{course.TeacherName || 'Expert Tutor'}</span>
+
+                                            <div className="course-meta-footer">
+                                                <div className="meta-item">
+                                                    <div className="meta-icon-box">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                                                    </div>
+                                                    <span>{course.ModulesCount || 0} Modules</span>
+                                                </div>
+                                                <div className="meta-item">
+                                                    <User size={14} />
+                                                    <span>{course.TeacherName || 'Expert Tutor'}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </Link>
-                        ))
+                                </Link>
+                            ))
+                        ) : (
+                            <div className="no-courses">No courses found.</div>
+                        )
                     )}
                 </div>
             </div>

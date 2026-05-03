@@ -187,7 +187,7 @@
     color: #fff;
     padding: 12px 35px;
     border-radius: 4px;
-    font-weight: 700;
+    font-weight: 500;
     font-size: 0.85rem;
     transition: var(--transition);
 }
@@ -259,4 +259,35 @@
     width: 60%;
     height: 20px;
     border-radius: 4px;
+}
+
+/* --- Dashboard Version Styles --- */
+.dashboard-version {
+    padding: 0;
+}
+
+.dashboard-container {
+    width: 100%;
+}
+
+.dashboard-version .courses-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+@media (max-width: 1200px) {
+    .dashboard-version .courses-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.no-courses {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    background: #f9f9f9;
+    border-radius: 12px;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    border: 2px dashed #eee;
 }
