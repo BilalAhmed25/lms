@@ -53,8 +53,9 @@
 .chat-btn {
     margin-top: auto;
     background: var(--accent);
-    color: var(--text-main);
+    color: #ffffff;
     width: fit-content;
+    text-transform: none;
 }
 
 .contact-form-card {
@@ -86,7 +87,7 @@
 
 .submit-btn {
     background: var(--accent);
-    color: var(--text-main);
+    color: #ffffff;
     padding: 14px 40px;
     font-size: var(--fs-body);
     font-weight: 600;
