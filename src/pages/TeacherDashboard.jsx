@@ -199,10 +199,15 @@ const TeacherDashboard = () => {
         }
     };
 
-    const handleAddQuestion = () => {
+    const handleAddQuestion = (type = 'mcq') => {
         setAssignmentForm({
             ...assignmentForm,
-            questions: [...assignmentForm.questions, { text: '', type: 'mcq', options: ['', '', '', ''], correctOption: 0 }]
+            questions: [...assignmentForm.questions, {
+                text: '',
+                type: type,
+                options: type === 'mcq' ? ['', '', '', ''] : [],
+                correctOption: type === 'mcq' ? 0 : null
+            }]
         });
     };
 
@@ -507,7 +512,7 @@ const TeacherDashboard = () => {
                                                     <div className="task-details">
                                                         <div className="detail-row">
                                                             <Calendar size={14} />
-                                                            <span>Due: {item.DueDate ? new Date(item.DueDate).toLocaleDateString() : 'No deadline'}</span>
+                                                            <span>Due: {item.DueDate ? new Date(item.DueDate).toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }) : 'No deadline'}</span>
                                                         </div>
                                                         <div className="detail-row">
                                                             <Target size={14} />
@@ -812,7 +817,8 @@ const TeacherDashboard = () => {
                             icon={Award}
                             options={[
                                 { value: 'assignment', label: 'Assignment' },
-                                { value: 'quiz', label: 'Quiz (MCQs)' },
+                                { value: 'quiz', label: 'Quiz (MCQs Only)' },
+                                { value: 'quiz_mixed', label: 'Quiz (MCQs & Written)' },
                                 { value: 'exam', label: 'Final Exam' }
                             ]}
                             value={assignmentForm.type}
@@ -824,16 +830,23 @@ const TeacherDashboard = () => {
                         </div>
                     </div>
                     <FloatingLabelInput label="Task Description" icon={MessageSquare} type="textarea" value={assignmentForm.description} onChange={e => setAssignmentForm({ ...assignmentForm, description: e.target.value })} required />
-                    {assignmentForm.type === 'quiz' && (
+                    {['quiz', 'quiz_mixed'].includes(assignmentForm.type) && (
                         <div className="quiz-questions-builder">
                             <div className="quiz-builder-header">
                                 <div className="quiz-builder-title">
                                     <h3><Hash className="text-primary" size={22} /> Quiz Builder</h3>
-                                    <p>Design your multiple choice questions below.</p>
+                                    <p>Design your {assignmentForm.type === 'quiz' ? 'multiple choice' : 'mixed'} questions below.</p>
                                 </div>
-                                <button type="button" className="btn-add-question" onClick={handleAddQuestion}>
-                                    <Plus size={18} /> Add Question
-                                </button>
+                                <div className="quiz-actions-group flex items-center gap-3">
+                                    <button type="button" className="btn-add-question" onClick={() => handleAddQuestion('mcq')}>
+                                        <Plus size={16} /> MCQ
+                                    </button>
+                                    {assignmentForm.type === 'quiz_mixed' && (
+                                        <button type="button" className="btn-add-question" onClick={() => handleAddQuestion('written')}>
+                                            <Plus size={16} /> Written
+                                        </button>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="questions-stack">
@@ -842,7 +855,9 @@ const TeacherDashboard = () => {
                                         <div className="question-card-header">
                                             <div className="flex items-center gap-3">
                                                 <span className="question-number-badge">{qIdx + 1}</span>
-                                                <h4 className="font-bold text-slate-700">Question Statement</h4>
+                                                <h4 className="font-bold text-slate-700">
+                                                    {q.type === 'mcq' ? 'Multiple Choice' : 'Written Question'}
+                                                </h4>
                                             </div>
                                             <button
                                                 type="button"
@@ -869,42 +884,51 @@ const TeacherDashboard = () => {
                                             required
                                         />
 
-                                        <div className="options-container">
-                                            {q.options.map((opt, optIdx) => (
-                                                <div
-                                                    key={optIdx}
-                                                    className={`premium-option-item ${q.correctOption === optIdx ? 'selected' : ''}`}
-                                                >
-                                                    <div
-                                                        className="option-selector-trigger"
-                                                        onClick={() => {
-                                                            const newQs = [...assignmentForm.questions];
-                                                            newQs[qIdx].correctOption = optIdx;
-                                                            setAssignmentForm({ ...assignmentForm, questions: newQs });
-                                                        }}
-                                                    >
-                                                        {q.correctOption === optIdx ? <CheckCircle size={20} /> : <span>{String.fromCharCode(65 + optIdx)}</span>}
-                                                    </div>
-                                                    <input
-                                                        type="text"
-                                                        placeholder={`Enter choice ${String.fromCharCode(65 + optIdx)}...`}
-                                                        className="option-input"
-                                                        value={opt}
-                                                        onChange={e => {
-                                                            const newQs = [...assignmentForm.questions];
-                                                            newQs[qIdx].options[optIdx] = e.target.value;
-                                                            setAssignmentForm({ ...assignmentForm, questions: newQs });
-                                                        }}
-                                                        required
-                                                    />
+                                        {q.type === 'mcq' ? (
+                                            <>
+                                                <div className="options-container">
+                                                    {q.options.map((opt, optIdx) => (
+                                                        <div
+                                                            key={optIdx}
+                                                            className={`premium-option-item ${q.correctOption === optIdx ? 'selected' : ''}`}
+                                                        >
+                                                            <div
+                                                                className="option-selector-trigger"
+                                                                onClick={() => {
+                                                                    const newQs = [...assignmentForm.questions];
+                                                                    newQs[qIdx].correctOption = optIdx;
+                                                                    setAssignmentForm({ ...assignmentForm, questions: newQs });
+                                                                }}
+                                                            >
+                                                                {q.correctOption === optIdx ? <CheckCircle size={20} /> : <span>{String.fromCharCode(65 + optIdx)}</span>}
+                                                            </div>
+                                                            <input
+                                                                type="text"
+                                                                placeholder={`Enter choice ${String.fromCharCode(65 + optIdx)}...`}
+                                                                className="option-input"
+                                                                value={opt}
+                                                                onChange={e => {
+                                                                    const newQs = [...assignmentForm.questions];
+                                                                    newQs[qIdx].options[optIdx] = e.target.value;
+                                                                    setAssignmentForm({ ...assignmentForm, questions: newQs });
+                                                                }}
+                                                                required
+                                                            />
+                                                        </div>
+                                                    ))}
                                                 </div>
-                                            ))}
-                                        </div>
 
-                                        <div className="correct-indicator">
-                                            <Target size={14} />
-                                            <span>Marked as correct: Option {String.fromCharCode(65 + q.correctOption)}</span>
-                                        </div>
+                                                <div className="correct-indicator">
+                                                    <Target size={14} />
+                                                    <span>Marked as correct: Option {String.fromCharCode(65 + q.correctOption)}</span>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="written-response-placeholder mt-6 p-5 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 flex items-center justify-center gap-3">
+                                                <MessageSquare size={20} className="text-slate-400" />
+                                                <p className="text-sm text-slate-500 font-medium">Students will provide a text-based response for this question.</p>
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>
@@ -1037,7 +1061,7 @@ const TeacherDashboard = () => {
                             </div>
                             <div className="preview-meta-item">
                                 <span className="label">Due Date</span>
-                                <p>{selectedAssignment.DueDate ? new Date(selectedAssignment.DueDate).toLocaleDateString() : 'No deadline'}</p>
+                                <p>{selectedAssignment.DueDate ? new Date(selectedAssignment.DueDate).toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }) : 'No deadline'}</p>
                             </div>
                         </div>
 
@@ -1048,7 +1072,7 @@ const TeacherDashboard = () => {
                             </div>
                         </div>
 
-                        {selectedAssignment.Type === 'quiz' && selectedAssignment.Questions && (
+                        {['quiz', 'quiz_mixed'].includes(selectedAssignment.Type) && selectedAssignment.Questions && (
                             <div className="preview-section">
                                 <h5 className="font-bold mb-3">Quiz Questions</h5>
                                 <div className="questions-list space-y-3">
@@ -1058,8 +1082,23 @@ const TeacherDashboard = () => {
                                                 ? JSON.parse(selectedAssignment.Questions)
                                                 : selectedAssignment.Questions;
                                             return Array.isArray(qs) ? qs.map((q, idx) => (
-                                                <div key={idx} className="question-preview-item p-3 border rounded-xl bg-slate-50 text-sm">
-                                                    <strong>Q{idx + 1}:</strong> {q.text}
+                                                <div key={idx} className="question-preview-item p-4 border rounded-xl bg-slate-50 text-sm">
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <strong>Question {idx + 1}</strong>
+                                                        <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-1 bg-white border rounded-md text-slate-400">
+                                                            {q.type === 'mcq' ? 'MCQ' : 'Written'}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-slate-700">{q.text}</p>
+                                                    {q.type === 'mcq' && q.options && (
+                                                        <div className="mt-3 grid grid-cols-2 gap-2">
+                                                            {q.options.map((opt, oIdx) => (
+                                                                <div key={oIdx} className={`p-2 rounded-lg border text-xs ${q.correctOption === oIdx ? 'border-primary bg-primary/5 text-primary font-bold' : 'bg-white text-slate-500'}`}>
+                                                                    {String.fromCharCode(65 + oIdx)}. {opt}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
                                                 </div>
                                             )) : <p className="text-muted">No questions found.</p>;
                                         } catch (e) {
