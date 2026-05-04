@@ -362,7 +362,7 @@
 
 .empty-state-container {
     background: white;
-    border-radius: 32px;
+    border-radius: 14px;
     border: 2px dashed #e2e8f0;
 }
 
@@ -793,4 +793,119 @@
 
 .manage-course-link:hover svg {
     transform: translateX(4px);
+}
+
+/* --- Premium Empty State Card --- */
+.premium-empty-state-card {
+    background: white;
+    padding: 60px 40px;
+    border-radius: 24px;
+    text-align: center;
+    margin: 40px auto;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.empty-state-visual {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 30px;
+}
+
+.icon-blob {
+    width: 100%;
+    height: 100%;
+    background: #f0fdf4;
+    color: #10b981;
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: morph-blob 8s ease-in-out infinite;
+}
+
+.floating-dots span {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: var(--primary);
+    border-radius: 50%;
+    opacity: 0.3;
+}
+
+.floating-dots span:nth-child(1) {
+    top: 10px;
+    left: 0;
+    animation: float-dots 3s ease-in-out infinite;
+}
+
+.floating-dots span:nth-child(2) {
+    bottom: 20px;
+    right: 0;
+    animation: float-dots 4s ease-in-out infinite 1s;
+}
+
+.floating-dots span:nth-child(3) {
+    top: 40%;
+    right: -20px;
+    animation: float-dots 5s ease-in-out infinite 0.5s;
+}
+
+@keyframes morph-blob {
+
+    0%,
+    100% {
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    }
+
+    33% {
+        border-radius: 60% 40% 50% 50% / 50% 60% 40% 60%;
+    }
+
+    66% {
+        border-radius: 50% 50% 40% 60% / 60% 40% 60% 40%;
+    }
+}
+
+@keyframes float-dots {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+.premium-empty-state-card h3 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 12px;
+}
+
+.premium-empty-state-card p {
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    font-size: 1rem;
+}
+
+.btn-empty-action {
+    background: var(--primary);
+    color: white;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-empty-action:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(33, 103, 91, 0.3);
 }

@@ -75,19 +75,33 @@ const TeacherDashboard = () => {
     const fetchDashboardData = async () => {
         setLoading(true);
         try {
-            const [coursesData, subs, sessions, content] = await Promise.all([
+            const [coursesData, pendingSubs, sessions, content] = await Promise.all([
                 api.get('/enrollment/classes'),
-                api.get('/lms/submissions/all'),
+                api.get('/lms/submissions/pending'),
                 api.get('/lms/teacher/sessions'),
                 api.get('/lms/teacher/content')
             ]);
 
+            // Attempt to fetch graded submissions with fallbacks
+            let gradedSubs = [];
+            try {
+                gradedSubs = await api.get('/lms/submissions/graded');
+            } catch (e) {
+                try {
+                    // Try alternative teacher-specific endpoint if the general one fails
+                    gradedSubs = await api.get('/lms/teacher/submissions/graded');
+                } catch (e2) {
+                    console.error("Could not fetch graded submissions", e2);
+                }
+            }
+
             setCourses(coursesData);
-            setSubmissions(subs);
+            setSubmissions([...(pendingSubs || []), ...(gradedSubs || [])]);
             setTeacherSessions(sessions);
             setTeacherContent(content);
         } catch (err) {
-            console.error(err);
+            console.error("Dashboard fetch error:", err);
+            toast.error("Failed to refresh dashboard data.");
         }
         setLoading(false);
     };
@@ -579,7 +593,11 @@ const TeacherDashboard = () => {
 
                 {activeTab === 'grading' && (
                     <div className="grading-management animate-slide-up">
-                        {submissions.filter(s => gradingSubTab === 'pending' ? !s.Grade : s.Grade).length > 0 ? (
+                        {submissions.filter(s => {
+                            const gradeVal = s.Grade ?? s.Marks ?? s.marks;
+                            const isGraded = gradeVal !== null && gradeVal !== undefined && gradeVal !== '';
+                            return gradingSubTab === 'pending' ? !isGraded : isGraded;
+                        }).length > 0 ? (
                             <div className="payments-table glass">
                                 <table>
                                     <thead>
@@ -593,7 +611,11 @@ const TeacherDashboard = () => {
                                     </thead>
                                     <tbody>
                                         {submissions
-                                            .filter(s => gradingSubTab === 'pending' ? !s.Grade : s.Grade)
+                                            .filter(s => {
+                                                const gradeVal = s.Grade ?? s.Marks ?? s.marks;
+                                                const isGraded = gradeVal !== null && gradeVal !== undefined && gradeVal !== '';
+                                                return gradingSubTab === 'pending' ? !isGraded : isGraded;
+                                            })
                                             .map(sub => (
                                             <tr key={sub.ID}>
                                                 <td>
@@ -621,7 +643,7 @@ const TeacherDashboard = () => {
                                                         <button className="btn btn-primary btn-sm" onClick={() => { setSelectedSubmission(sub); setShowGradeModal(true); }}>Grade Now</button>
                                                     ) : (
                                                         <div className="score-display font-bold text-primary">
-                                                            {sub.Grade} / {sub.MaxMarks || 100}
+                                                            {sub.Grade ?? sub.Marks ?? sub.marks} / {sub.MaxMarks || 100}
                                                         </div>
                                                     )}
                                                 </td>
@@ -631,12 +653,27 @@ const TeacherDashboard = () => {
                                 </table>
                             </div>
                         ) : (
-                            <div className="admin-empty-state">
-                                <div className="empty-state-icon" style={{ background: '#e6f7f5', color: '#1ab69d' }}>
-                                    <CheckCircle size={40} />
+                            <div className="premium-empty-state-card animate-slide-up">
+                                <div className="empty-state-visual">
+                                    <div className="icon-blob">
+                                        <Award size={48} />
+                                    </div>
+                                    <div className="floating-dots">
+                                        <span></span><span></span><span></span>
+                                    </div>
                                 </div>
-                                <p>All submissions have been graded! Great job.</p>
-                                <button className="btn btn-secondary btn-sm" onClick={() => setActiveTab('overview')}>Back to Overview</button>
+                                <h3>{gradingSubTab === 'pending' ? 'All Caught Up!' : 'No History Yet'}</h3>
+                                <p>
+                                    {gradingSubTab === 'pending' 
+                                        ? "Great job! You've successfully reviewed all pending tasks for your students." 
+                                        : "You haven't graded any submissions yet. Once you grade a task, it will appear here."}
+                                </p>
+                                <button className="btn-empty-action" onClick={() => {
+                                    if (gradingSubTab === 'graded') setGradingSubTab('pending');
+                                    else setActiveTab('overview');
+                                }}>
+                                    {gradingSubTab === 'graded' ? 'Check Pending Tasks' : 'Return to Overview'}
+                                </button>
                             </div>
                         )}
                     </div>
