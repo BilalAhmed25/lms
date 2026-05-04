@@ -20,6 +20,8 @@ import StudentEnrollment from './components/StudentEnrollment';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ScrollToTop from './components/ScrollToTop';
+import WhatsAppButton from './components/WhatsAppButton';
+import ScrollToTopButton from './components/ScrollToTopButton';
 import { Toaster } from 'react-hot-toast';
 import './index.css';
 
@@ -132,6 +134,8 @@ const AppContent = () => {
         </Routes>
       </main>
       {!isDashboardFull && <Footer />}
+      <WhatsAppButton />
+      <ScrollToTopButton />
     </div>
   );
 };

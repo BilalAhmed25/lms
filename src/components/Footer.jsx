@@ -13,8 +13,8 @@ const Footer = () => {
                         <Link to="/" className="logo mb-4">
                             <img src="/logo.png" alt="Deenova Logo" className="logo-img" style={{ filter: 'brightness(0) invert(1)' }} />
                         </Link>
-                        <p className="mt-4">
-                            We are growing your knowledge with our premium learning management system.
+                        <p>
+                            Empowering learners worldwide through a state-of-the-art Islamic LMS. We blend academic excellence with spiritual growth, providing a comprehensive platform for O & A Level students and lifelong learners.
                         </p>
                     </div>
 
