@@ -25,7 +25,7 @@ const WhyChooseUs = () => {
         <section className="why-us-section">
             <div className="container">
                 <div className="section-header">
-                    <span className="section-subtitle-small">WHY DEENOVA</span>
+                    <span className="section-subtitle-small" style={{ margin: 'auto' }}>WHY DEENOVA</span>
                     <h2 className="why-us-title">A platform built by educators, for learners.</h2>
                 </div>
 

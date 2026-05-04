@@ -130,8 +130,7 @@ p {
     font-weight: var(--fw-bold);
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin: auto;
-    margin-bottom: 10px !important;
+    margin-bottom: 6px !important;
 }
 
 .glass {
