@@ -2,15 +2,15 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Search, Check } from 'lucide-react';
 import '../styles/Dropdown.css';
 
-const Dropdown = ({ 
-    label, 
-    options = [], 
-    value, 
-    onChange, 
-    icon: Icon, 
+const Dropdown = ({
+    label,
+    options = [],
+    value,
+    onChange,
+    icon: Icon,
     placeholder = "Select an option",
     searchable = false,
-    className = "" 
+    className = ""
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -28,7 +28,7 @@ const Dropdown = ({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const filteredOptions = options.filter(opt => 
+    const filteredOptions = options.filter(opt =>
         opt.label.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -41,7 +41,7 @@ const Dropdown = ({
     return (
         <div className={`premium-dropdown-group ${className} ${isOpen ? 'is-open' : ''} ${selectedOption ? 'has-value' : ''}`} ref={dropdownRef}>
             <div className="dropdown-container">
-                <button 
+                <button
                     type="button"
                     className={`dropdown-trigger ${Icon ? 'with-icon' : ''} ${!selectedOption ? 'is-placeholder' : ''}`}
                     onClick={() => setIsOpen(!isOpen)}
@@ -61,20 +61,20 @@ const Dropdown = ({
                         {searchable && (
                             <div className="dropdown-search">
                                 <Search size={16} />
-                                <input 
-                                    type="text" 
-                                    placeholder="Search..." 
+                                <input
+                                    type="text"
+                                    placeholder="Search..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     autoFocus
                                 />
                             </div>
                         )}
-                        
+
                         <div className="dropdown-options">
                             {filteredOptions.length > 0 ? (
                                 filteredOptions.map((option) => (
-                                    <div 
+                                    <div
                                         key={option.value}
                                         className={`dropdown-option ${value === option.value ? 'selected' : ''}`}
                                         onClick={() => handleSelect(option)}
