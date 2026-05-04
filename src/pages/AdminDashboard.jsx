@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Users, CheckCircle, XCircle, ChevronRight, AlertCircle, Star, Eye, DollarSign, LayoutDashboard,
+    Users, CheckCircle, XCircle, Pencil, ChevronRight, AlertCircle, Star, Eye, DollarSign, LayoutDashboard,
     BookOpen, PlusCircle, UserCheck, TrendingUp, Search, Bell, Book,
     Image, Target, Award, Zap, Hash, Clock, FileText, AlignLeft, Info, Plus,
     Menu, X
@@ -12,6 +12,7 @@ import SEO from '../components/SEO';
 import Loader from '../components/Loader';
 import Sidebar from '../components/Sidebar';
 import DashboardHeader from '../components/DashboardHeader';
+import Dropdown from '../components/Dropdown';
 import Skeleton from '../components/Skeleton';
 import '../styles/dashboard.css';
 import '../styles/teacher-dashboard.css';
@@ -30,6 +31,19 @@ const AdminDashboard = () => {
     const [submitting, setSubmitting] = useState(false);
     const [selectedReceipt, setSelectedReceipt] = useState(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [editThumbnailPreview, setEditThumbnailPreview] = useState(null);
+
+    const handleEditImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setEditCourse(prev => ({ ...prev, thumbnail: reader.result }));
+                setEditThumbnailPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
     const [editCourse, setEditCourse] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showRejectModal, setShowRejectModal] = useState(false);
@@ -197,6 +211,7 @@ const AdminDashboard = () => {
             status: course.Status,
             whatWillILearn: typeof course.WhatWillILearn === 'string' ? JSON.parse(course.WhatWillILearn) : (course.WhatWillILearn || ['', '', '', ''])
         });
+        setEditThumbnailPreview(course.Thumbnail);
         setShowEditModal(true);
     };
 
@@ -481,7 +496,7 @@ const AdminDashboard = () => {
                                                 <tr key={u.ID}>
                                                     <td><div className="user-cell"><strong>{u.Name}</strong><span>{u.Email}</span></div></td>
                                                     <td><span className={`badge ${u.Status === 'active' ? 'badge-success' : 'badge-primary'}`}>{u.Status}</span></td>
-                                                    <td>{new Date(u.CreatedAt).toLocaleDateString()}</td>
+                                                    <td>{new Date(u.CreatedAt).toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })}</td>
                                                     <td>
                                                         {u.Status === 'pending' || u.Status === 'inactive' ? (
                                                             <button className="btn-approve" onClick={() => handleStatusUpdate(u.ID, 'active')} disabled={submitting}>
@@ -551,7 +566,7 @@ const AdminDashboard = () => {
                                             </div>
                                             <div className="card-actions">
                                                 <button className="btn-icon" onClick={() => handleOpenEdit(cls)} title="Edit Course Details">
-                                                    <PlusCircle size={18} style={{ transform: 'rotate(45deg)' }} />
+                                                    <Pencil size={18} />
                                                 </button>
                                                 <button className="btn-icon" title="View Detailed Stats"><TrendingUp size={18} /></button>
                                             </div>
@@ -742,51 +757,78 @@ const AdminDashboard = () => {
                             <button className="btn-close" onClick={() => setShowEditModal(false)}><X size={24} /></button>
                         </div>
 
-                        <form onSubmit={handleSaveEdit} className="modal-body">
+                                                <form onSubmit={handleSaveEdit} className="modal-body">
                             <div className="form-grid">
-                                <div className="admin-input-group">
-                                    <label>Course Title</label>
-                                    <input className="admin-input" value={editCourse.name} onChange={e => handleEditFormChange('name', e.target.value)} required />
-                                </div>
-                                <div className="admin-input-group">
-                                    <label>Custom Slug</label>
-                                    <input className="admin-input" value={editCourse.slug} onChange={e => handleEditFormChange('slug', e.target.value)} required />
-                                </div>
-                                <div className="admin-input-group">
-                                    <label>Sale Price (PKR)</label>
-                                    <input type="number" className="admin-input" value={editCourse.fee} onChange={e => handleEditFormChange('fee', e.target.value)} required />
-                                </div>
-                                <div className="admin-input-group">
-                                    <label>Original Price</label>
-                                    <input type="number" className="admin-input" value={editCourse.originalFee} onChange={e => handleEditFormChange('originalFee', e.target.value)} />
-                                </div>
-                                <div className="admin-input-group">
-                                    <label>Assigned Teacher</label>
-                                    <select className="admin-select" value={editCourse.teacherId} onChange={e => handleEditFormChange('teacherId', e.target.value)}>
-                                        <option value="">Select Teacher</option>
-                                        {teachers.map(t => <option key={t.ID} value={t.ID}>{t.Name}</option>)}
-                                    </select>
-                                </div>
-                                <div className="admin-input-group">
-                                    <label>Status</label>
-                                    <select className="admin-select" value={editCourse.status} onChange={e => handleEditFormChange('status', e.target.value)}>
-                                        <option value="active">Active</option>
-                                        <option value="inactive">Inactive</option>
-                                    </select>
+                                <FloatingLabelInput
+                                    label="Course Title"
+                                    icon={Book}
+                                    value={editCourse.name}
+                                    onChange={e => handleEditFormChange('name', e.target.value)}
+                                    required
+                                />
+                                <FloatingLabelInput
+                                    label="Custom Slug"
+                                    icon={Hash}
+                                    value={editCourse.slug}
+                                    onChange={e => handleEditFormChange('slug', e.target.value)}
+                                    required
+                                />
+                                <FloatingLabelInput
+                                    label="Sale Price (PKR)"
+                                    type="number"
+                                    icon={DollarSign}
+                                    value={editCourse.fee}
+                                    onChange={e => handleEditFormChange('fee', e.target.value)}
+                                    required
+                                />
+                                <FloatingLabelInput
+                                    label="Original Price"
+                                    type="number"
+                                    icon={Zap}
+                                    value={editCourse.originalFee}
+                                    onChange={e => handleEditFormChange('originalFee', e.target.value)}
+                                />
+                                <Dropdown
+                                    label="Assigned Teacher"
+                                    icon={UserCheck}
+                                    options={teachers.map(t => ({ label: t.Name, value: t.ID }))}
+                                    value={editCourse.teacherId}
+                                    onChange={val => handleEditFormChange('teacherId', val)}
+                                    searchable
+                                />
+                                <Dropdown
+                                    label="Course Status"
+                                    icon={Award}
+                                    options={[
+                                        { label: 'Active', value: 'active' },
+                                        { label: 'Inactive', value: 'inactive' }
+                                    ]}
+                                    value={editCourse.status}
+                                    onChange={val => handleEditFormChange('status', val)}
+                                />
+                                
+                                <FloatingLabelInput
+                                    label="Short Introduction"
+                                    icon={AlignLeft}
+                                    className="full-width"
+                                    value={editCourse.shortIntro}
+                                    onChange={e => handleEditFormChange('shortIntro', e.target.value)}
+                                    required
+                                />
+
+                                <div className="full-width">
+                                    <FloatingLabelInput
+                                        label="Detailed Description"
+                                        type="textarea"
+                                        rows="5"
+                                        value={editCourse.description}
+                                        onChange={e => handleEditFormChange('description', e.target.value)}
+                                        required
+                                    />
                                 </div>
 
-                                <div className="admin-input-group full-width">
-                                    <label>Short Introduction</label>
-                                    <input className="admin-input" value={editCourse.shortIntro} onChange={e => handleEditFormChange('shortIntro', e.target.value)} required />
-                                </div>
-
-                                <div className="admin-input-group full-width">
-                                    <label>Detailed Description</label>
-                                    <textarea className="admin-textarea" rows="5" value={editCourse.description} onChange={e => handleEditFormChange('description', e.target.value)} required></textarea>
-                                </div>
-
-                                <div className="admin-input-group full-width">
-                                    <label>Learning Outcomes</label>
+                                <div className="full-width">
+                                    <label className="admin-label-small mb-3 block">Learning Outcomes</label>
                                     <div className="learning-outcomes-builder">
                                         {editCourse.whatWillILearn.map((outcome, idx) => (
                                             <div key={idx} className="outcome-input-flex">
@@ -801,20 +843,33 @@ const AdminDashboard = () => {
                                                 </button>
                                             </div>
                                         ))}
-                                        <button type="button" className="btn btn-secondary btn-sm mt-2" style={{ width: 'fit-content' }} onClick={addEditLearningOutcome}>
+                                        <button type="button" className="btn btn-secondary btn-sm" style={{ width: 'fit-content' }} onClick={addEditLearningOutcome}>
                                             <Plus size={16} /> Add Another Outcome
                                         </button>
                                     </div>
                                 </div>
 
                                 <div className="admin-input-group">
-                                    <label>Thumbnail URL</label>
-                                    <input className="admin-input" value={editCourse.thumbnail} onChange={e => handleEditFormChange('thumbnail', e.target.value)} />
+                                    <label>Course Thumbnail</label>
+                                    <label className="image-uploader-wrapper">
+                                        <input type="file" hidden accept="image/*" onChange={handleEditImageChange} />
+                                        {editThumbnailPreview ? (
+                                            <img src={editThumbnailPreview} alt="Preview" />
+                                        ) : (
+                                            <div className="upload-placeholder">
+                                                <Image size={32} />
+                                                <span>Click to upload image</span>
+                                            </div>
+                                        )}
+                                    </label>
                                 </div>
-                                <div className="admin-input-group">
-                                    <label>Duration</label>
-                                    <input className="admin-input" value={editCourse.duration} onChange={e => handleEditFormChange('duration', e.target.value)} />
-                                </div>
+                                
+                                <FloatingLabelInput
+                                    label="Duration"
+                                    icon={Clock}
+                                    value={editCourse.duration}
+                                    onChange={e => handleEditFormChange('duration', e.target.value)}
+                                />
                             </div>
 
                             <div className="form-actions mt-8">
@@ -875,6 +930,11 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
+
+
+
+
 
 
 
