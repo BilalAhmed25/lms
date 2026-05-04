@@ -10,6 +10,7 @@ import api from '../utils/api';
 import FloatingLabelInput from '../components/FloatingLabelInput';
 import Modal from '../components/Modal';
 import SEO from '../components/SEO';
+import Loader from '../components/Loader';
 import Sidebar from '../components/Sidebar';
 import DashboardHeader from '../components/DashboardHeader';
 import Dropdown from '../components/Dropdown';
@@ -17,11 +18,7 @@ import { useAuth } from '../App';
 import '../styles/dashboard.css';
 import '../styles/teacher-dashboard.css';
 
-const Loader = () => (
-    <div className="loader-container">
-        <div className="spinner"></div>
-    </div>
-);
+// Loader is now imported from components
 
 const TeacherDashboard = () => {
     const { user, logout } = useAuth();

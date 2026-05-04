@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import FloatingLabelInput from '../components/FloatingLabelInput';
 import api from '../utils/api';
 import SEO from '../components/SEO';
+import Loader from '../components/Loader';
 import Sidebar from '../components/Sidebar';
 import DashboardHeader from '../components/DashboardHeader';
 import Skeleton from '../components/Skeleton';
@@ -16,11 +17,7 @@ import '../styles/dashboard.css';
 import '../styles/teacher-dashboard.css';
 import '../styles/admin-dashboard.css';
 
-const Loader = () => (
-    <div className="loader-container">
-        <div className="spinner"></div>
-    </div>
-);
+// Loader is now imported from components
 
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('overview');

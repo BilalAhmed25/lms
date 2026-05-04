@@ -12,12 +12,9 @@ import ContactSection from '../components/Home/ContactSection';
 
 import api from '../utils/api';
 import SEO from '../components/SEO';
+import Loader from '../components/Loader';
 
-const Loader = () => (
-    <div className="loader-container">
-        <div className="spinner"></div>
-    </div>
-);
+// Loader is now imported from components
 
 const CourseDetails = () => {
     const { slug } = useParams();

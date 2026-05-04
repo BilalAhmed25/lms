@@ -8,14 +8,11 @@ import SEO from '../components/SEO';
 import Sidebar from '../components/Sidebar';
 import DashboardHeader from '../components/DashboardHeader';
 import CoursesSection from '../components/Home/CoursesSection';
+import Loader from '../components/Loader';
 import '../styles/dashboard.css';
 import '../styles/student-dashboard.css';
 
-const Loader = () => (
-    <div className="loader-container">
-        <div className="spinner"></div>
-    </div>
-);
+// Loader is now imported from components
 
 const StudentDashboard = () => {
     const { user, logout } = useAuth();
@@ -25,7 +22,6 @@ const StudentDashboard = () => {
     const [enrollmentHistory, setEnrollmentHistory] = useState([]);
     const [loading, setLoading] = useState(true);
     const [courseFilter, setCourseFilter] = useState('all');
-    const [selectedReceipt, setSelectedReceipt] = useState(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     useEffect(() => {
@@ -201,7 +197,6 @@ const StudentDashboard = () => {
 
                             {enrolled.length > 0 && (
                                 <div className="mb-12">
-                                    <h3 className="mb-6">Continue Learning</h3>
                                     <div className="courses-grid-modern">
                                         {enrolled.map(course => {
                                             const total = course.TotalTasks || 0;
@@ -342,13 +337,15 @@ const StudentDashboard = () => {
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <button
+                                                    <a
+                                                        href={h.ReceiptUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
                                                         className="receipt-btn-icon"
-                                                        onClick={() => setSelectedReceipt(h.ReceiptUrl)}
                                                         title="View Receipt"
                                                     >
                                                         <Eye size={18} />
-                                                    </button>
+                                                    </a>
                                                 </td>
                                             </tr>
                                         ))}
@@ -360,19 +357,7 @@ const StudentDashboard = () => {
                 </div>
             </main>
 
-            {selectedReceipt && (
-                <div className="modal-overlay" onClick={() => setSelectedReceipt(null)}>
-                    <div className="modal-content glass animate-scale-up" onClick={e => e.stopPropagation()}>
-                        <div className="modal-header-simple">
-                            <h3>Payment Receipt</h3>
-                            <button className="close-modal-btn" onClick={() => setSelectedReceipt(null)}><XCircle size={24} /></button>
-                        </div>
-                        <div className="receipt-view">
-                            <img src={selectedReceipt} alt="Payment Receipt" />
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Receipt Modal Removed as requested */}
         </div>
     );
 };

@@ -171,7 +171,7 @@
 /* --- Billing & Others --- */
 .billing-table-card {
     background: white;
-    padding: 2rem;
+    padding: 1.25rem;
     border-radius: 24px;
     border: 1px solid var(--border);
     overflow-x: auto;
@@ -182,11 +182,26 @@
     border-collapse: collapse;
 }
 
-.text-left-table th,
-.text-left-table td {
-    padding: 1.25rem 1rem;
+.text-left-table th {
+    padding: 1rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
     text-align: left;
-    border-bottom: 1px solid #f1f5f9;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.text-left-table td {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    color: #475569;
+    border-bottom: 1px solid #f8fafc;
+}
+
+.text-left-table tr:last-child td {
+    border-bottom: none;
 }
 
 /* --- Course Metrics Grid --- */
@@ -197,7 +212,7 @@
     padding: 12px;
     background: #f8fafc;
     border-radius: 16px;
-    border: 1px solid rgba(0,0,0,0.02);
+    border: 1px solid rgba(0, 0, 0, 0.02);
     z-index: 1;
 }
 
@@ -223,3 +238,48 @@
     margin-top: 2px;
 }
 
+
+/* --- Table Specific Minimal Styles --- */
+.badge-minimal {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+}
+
+.badge-minimal.approved {
+    background: #f0fdf4;
+    color: #10b981;
+}
+
+.badge-minimal.pending {
+    background: #fffbeb;
+    color: #f59e0b;
+}
+
+.badge-minimal.rejected {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+.receipt-btn-icon {
+    width: 36px;
+    height: 36px;
+    background: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.receipt-btn-icon:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}

@@ -9,14 +9,11 @@ import toast from 'react-hot-toast';
 import api from '../utils/api';
 import SEO from '../components/SEO';
 import Skeleton from '../components/Skeleton';
+import Loader from '../components/Loader';
 import '../styles/dashboard.css';
 import '../styles/classroom.css';
 
-const Loader = () => (
-    <div className="loader-container">
-        <div className="spinner"></div>
-    </div>
-);
+// Loader is now imported from components
 
 const CourseClassroom = () => {
     const { slug } = useParams();
