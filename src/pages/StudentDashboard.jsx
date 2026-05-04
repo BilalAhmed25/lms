@@ -5,6 +5,8 @@ import { Book, CreditCard, Clock, Star, Search, AlertCircle, PlusCircle, CheckCi
 
 import api from '../utils/api';
 import SEO from '../components/SEO';
+import Sidebar from '../components/Sidebar';
+import DashboardHeader from '../components/DashboardHeader';
 import CoursesSection from '../components/Home/CoursesSection';
 import '../styles/dashboard.css';
 import '../styles/student-dashboard.css';
@@ -59,6 +61,46 @@ const StudentDashboard = () => {
         return h.Status === courseFilter;
     });
 
+    const getHeaderConfig = () => {
+        switch (activeTab) {
+            case 'overview':
+                return {
+                    tag: "Learning Hub",
+                    title: `Hello, ${user?.Name?.split(' ')[0] || 'Student'}`,
+                    subtitle: "Ready to continue your learning journey?",
+                };
+            case 'my-courses':
+                return {
+                    tag: "Your Education",
+                    title: "My Learning Journey",
+                    subtitle: "Track your progress and access your enrolled materials.",
+                    right: (
+                        <div className="filter-pills">
+                            <button className={courseFilter === 'all' ? 'active' : ''} onClick={() => setCourseFilter('all')}>All</button>
+                            <button className={courseFilter === 'approved' ? 'active' : ''} onClick={() => setCourseFilter('approved')}>Active</button>
+                            <button className={courseFilter === 'pending' ? 'active' : ''} onClick={() => setCourseFilter('pending')}>Pending</button>
+                        </div>
+                    )
+                };
+            case 'browse':
+                return {
+                    tag: "Catalog",
+                    title: "Browse Courses",
+                    subtitle: "Explore new opportunities and expand your skill set.",
+                };
+            case 'payments':
+                return {
+                    tag: "Billing",
+                    title: "Financial History",
+                    subtitle: "Manage your course payments and view receipts.",
+                };
+            default:
+                return { title: "Dashboard", subtitle: "Student Portal" };
+        }
+    };
+
+    const headerConfig = getHeaderConfig();
+
     if (loading) return <Loader />;
 
     return (
@@ -76,59 +118,37 @@ const StudentDashboard = () => {
             </header>
 
             {/* Sidebar */}
-            <aside className={`admin-sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
-                <div className="sidebar-header">
-                    <img src="/logo.png" alt="Deenova Logo" className="logo-img sidebar-logo" />
-                </div>
-
-                <div className="sidebar-user-profile">
-                    <div className="user-avatar-large">
-                        {user?.Name?.charAt(0) || 'S'}
-                    </div>
-                    <div className="user-info">
-                        <h4>{user?.Name || 'Student'}</h4>
-                        <span>{user?.Email || 'student@deenova.edu'}</span>
-                    </div>
-                </div>
-
-                <nav className="sidebar-nav">
-                    <button className={activeTab === 'overview' ? 'active' : ''} onClick={() => { setActiveTab('overview'); setMobileMenuOpen(false); }}>
-                        <Layout size={20} /> Overview
-                    </button>
-                    <button className={activeTab === 'my-courses' ? 'active' : ''} onClick={() => { setActiveTab('my-courses'); setMobileMenuOpen(false); }}>
-                        <Book size={20} /> My Learning
-                        {(enrolled.length + pending.length) > 0 && <span className="badge-sidebar active">{enrolled.length + pending.length}</span>}
-                    </button>
-                    <button className={activeTab === 'browse' ? 'active' : ''} onClick={() => { setActiveTab('browse'); setMobileMenuOpen(false); }}>
-                        <PlusCircle size={20} /> Browse Courses
-                    </button>
-                    <button className={activeTab === 'payments' ? 'active' : ''} onClick={() => { setActiveTab('payments'); setMobileMenuOpen(false); }}>
-                        <CreditCard size={20} /> Billing
-                    </button>
-                </nav>
-
-                <div className="sidebar-footer">
-                    <button className="exit-btn logout-link" onClick={() => { logout(); navigate('/login'); }}>
-                        <XCircle size={20} /> Sign Out
-                    </button>
-                </div>
-            </aside>
+            <Sidebar 
+                user={user}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                logout={() => { logout(); navigate('/login'); }}
+                menuItems={[
+                    { id: 'overview', label: 'Overview', icon: Layout },
+                    { id: 'my-courses', label: 'My Learning', icon: Book, badge: enrolled.length + pending.length },
+                    { id: 'browse', label: 'Browse Courses', icon: PlusCircle },
+                    { id: 'payments', label: 'Billing', icon: CreditCard },
+                ]}
+                mobileMenuOpen={mobileMenuOpen}
+                setMobileMenuOpen={setMobileMenuOpen}
+            />
 
             {/* Main Content */}
             <main className="admin-main">
-                <header className="admin-header">
-                    <div className="header-title">
-                        <h1>Hello, {user.Name}</h1>
-                        <p>Ready to continue your learning journey?</p>
-                    </div>
-                    <div className="admin-profile-nav">
-                        <div className="search-bar">
-                            <Search size={18} />
-                            <input type="text" placeholder="Search lessons..." />
+                <DashboardHeader 
+                    left={
+                        <div className="header-left-content">
+                            <span className="header-badge-tag">{headerConfig.tag}</span>
+                            <div className="header-titles">
+                                <h1>{headerConfig.title}</h1>
+                                <p>{headerConfig.subtitle}</p>
+                            </div>
                         </div>
-                        <div className="admin-avatar">{user.Name.charAt(0)}</div>
-                    </div>
-                </header>
+                    }
+                    right={headerConfig.right}
+                    user={user}
+                    searchPlaceholder="Search courses..."
+                />
 
                 <div className="admin-content">
                     {activeTab === 'overview' && (
@@ -183,14 +203,6 @@ const StudentDashboard = () => {
 
                     {activeTab === 'my-courses' && (
                         <div className="animate-slide-up">
-                            <div className="dashboard-section-header mb-8">
-                                <h2>My Learning Journey</h2>
-                                <div className="filter-pills">
-                                    <button className={courseFilter === 'all' ? 'active' : ''} onClick={() => setCourseFilter('all')}>All Courses</button>
-                                    <button className={courseFilter === 'approved' ? 'active' : ''} onClick={() => setCourseFilter('approved')}>Active</button>
-                                    <button className={courseFilter === 'pending' ? 'active' : ''} onClick={() => setCourseFilter('pending')}>Pending</button>
-                                </div>
-                            </div>
 
                             {filteredMyCourses.length > 0 ? (
                                 <div className="courses-grid-modern">

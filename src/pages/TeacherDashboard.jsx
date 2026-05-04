@@ -3,13 +3,15 @@ import {
     PlusCircle, Users, BookOpen, Clock, Layout, Play,
     MessageSquare, Award, CheckCircle, XCircle, Eye,
     TrendingUp, ExternalLink, Menu, X, Plus, Calendar, Settings, Type, Download, FileText, Bell,
-    UploadCloud, FilePlus, BellRing
+    UploadCloud, FilePlus, BellRing, Target, Hash, ChevronRight, ArrowRight
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
 import FloatingLabelInput from '../components/FloatingLabelInput';
 import Modal from '../components/Modal';
 import SEO from '../components/SEO';
+import Sidebar from '../components/Sidebar';
+import DashboardHeader from '../components/DashboardHeader';
 import { useAuth } from '../App';
 import '../styles/dashboard.css';
 import '../styles/teacher-dashboard.css';
@@ -23,6 +25,8 @@ const Loader = () => (
 const TeacherDashboard = () => {
     const { user, logout } = useAuth();
     const [activeTab, setActiveTab] = useState('overview');
+    const [contentSubTab, setContentSubTab] = useState('assignments'); 
+    const [gradingSubTab, setGradingSubTab] = useState('pending'); // new state for grading sub-tabs
     const [courses, setCourses] = useState([]);
     const [submissions, setSubmissions] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -73,7 +77,7 @@ const TeacherDashboard = () => {
         try {
             const [coursesData, subs, sessions, content] = await Promise.all([
                 api.get('/enrollment/classes'),
-                api.get('/lms/submissions/pending'),
+                api.get('/lms/submissions/all'),
                 api.get('/lms/teacher/sessions'),
                 api.get('/lms/teacher/content')
             ]);
@@ -187,6 +191,93 @@ const TeacherDashboard = () => {
         });
     };
 
+    const getHeaderConfig = () => {
+        switch (activeTab) {
+            case 'overview':
+                return {
+                    tag: "Dashboard Overview",
+                    title: <>Welcome back, <span className="text-primary">{user?.Name?.split(' ')[0] || 'Teacher'}</span>! 👋</>,
+                    subtitle: "Here's what's happening with your courses and students today.",
+                    right: (
+                        <>
+                            <button className="btn btn-primary" onClick={() => setShowSessionModal(true)}>
+                                <Calendar size={18} /> Schedule Class
+                            </button>
+                            <button className="btn btn-secondary" onClick={() => setShowAssignmentModal(true)}>
+                                <PlusCircle size={18} /> New Task
+                            </button>
+                        </>
+                    )
+                };
+            case 'courses':
+                return {
+                    tag: "Teacher Portfolio",
+                    title: "Your Courses",
+                    subtitle: "Manage and track performance for all assigned courses.",
+                    right: (
+                        <div className="filter-pills">
+                            <button className="active">All</button>
+                            <button>Ongoing</button>
+                            <button>Completed</button>
+                        </div>
+                    )
+                };
+            case 'schedule':
+                return {
+                    tag: "Class Calendar",
+                    title: "Teaching Schedule",
+                    subtitle: "View and manage your upcoming live sessions.",
+                    right: (
+                        <button className="btn btn-primary" onClick={() => setShowSessionModal(true)}>
+                            <Plus size={18} /> Add Session
+                        </button>
+                    )
+                };
+            case 'grading':
+                return {
+                    tag: "Assessment Center",
+                    title: "Student Submissions",
+                    subtitle: "Review and grade tasks submitted by your students.",
+                    right: (
+                        <div className="filter-pills">
+                            <button 
+                                className={gradingSubTab === 'pending' ? 'active' : ''} 
+                                onClick={() => setGradingSubTab('pending')}
+                            >
+                                Pending
+                            </button>
+                            <button 
+                                className={gradingSubTab === 'graded' ? 'active' : ''} 
+                                onClick={() => setGradingSubTab('graded')}
+                            >
+                                Graded
+                            </button>
+                        </div>
+                    )
+                };
+            case 'content':
+                return {
+                    tag: "Resource Hub",
+                    title: "Content Management",
+                    subtitle: "Upload and organize learning materials for your students.",
+                    right: (
+                        <div className="flex gap-3">
+                            <button className="btn btn-secondary" onClick={() => setShowResourceModal(true)}>
+                                <UploadCloud size={18} /> Upload Resource
+                            </button>
+                            <button className="btn btn-primary" onClick={() => setShowAssignmentModal(true)}>
+                                <PlusCircle size={18} /> Create Task
+                            </button>
+                        </div>
+                    )
+                };
+            default:
+                return { title: "Dashboard", subtitle: "Welcome back" };
+        }
+    };
+
+    const headerConfig = getHeaderConfig();
+
     if (loading) return <Loader />;
 
     return (
@@ -202,158 +293,154 @@ const TeacherDashboard = () => {
             </header>
 
             {/* Sidebar */}
-            <aside className={`admin-sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
-                <div className="sidebar-header">
-                    <img src="/logo.png" alt="Deenova Logo" className="logo-img sidebar-logo" />
-                </div>
-
-                <div className="sidebar-user-profile">
-                    <div className="user-avatar-large">
-                        {user?.Name?.charAt(0) || 'T'}
-                    </div>
-                    <div className="user-info">
-                        <h4>{user?.Name || 'Teacher'}</h4>
-                        <span>{user?.Email || 'instructor@deenova.edu'}</span>
-                    </div>
-                </div>
-
-                <nav className="sidebar-nav">
-                    <button className={activeTab === 'overview' ? 'active' : ''} onClick={() => { setActiveTab('overview'); setMobileMenuOpen(false); }}>
-                        <Layout size={20} /> Overview
-                    </button>
-                    <button className={activeTab === 'courses' ? 'active' : ''} onClick={() => { setActiveTab('courses'); setMobileMenuOpen(false); }}>
-                        <BookOpen size={20} /> My Courses
-                        {courses.length > 0 && <span className="badge-sidebar">{courses.length}</span>}
-                    </button>
-                    <button className={activeTab === 'content' ? 'active' : ''} onClick={() => { setActiveTab('content'); setMobileMenuOpen(false); }}>
-                        <Play size={20} /> Content Hub
-                    </button>
-                    <button className={activeTab === 'grading' ? 'active' : ''} onClick={() => { setActiveTab('grading'); setMobileMenuOpen(false); }}>
-                        <Award size={20} /> Grading
-                        {submissions.length > 0 && <span className="badge-sidebar active">{submissions.length}</span>}
-                    </button>
-                    <button className={activeTab === 'schedule' ? 'active' : ''} onClick={() => { setActiveTab('schedule'); setMobileMenuOpen(false); }}>
-                        <Calendar size={20} /> Schedule
-                    </button>
-                </nav>
-
-                <div className="sidebar-footer">
-                    <button className="exit-btn logout-link" onClick={() => { logout(); window.location.href = '/'; }}>
-                        <XCircle size={20} /> Sign Out
-                    </button>
-                </div>
-            </aside>
+            <Sidebar
+                user={user}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                logout={logout}
+                menuItems={[
+                    { id: 'overview', label: 'Overview', icon: Layout },
+                    { id: 'courses', label: 'My Courses', icon: BookOpen, badge: courses.length },
+                    { id: 'content', label: 'Content Hub', icon: Play },
+                    { id: 'grading', label: 'Grading', icon: Award, badge: submissions.length },
+                    { id: 'schedule', label: 'Schedule', icon: Calendar },
+                ]}
+                mobileMenuOpen={mobileMenuOpen}
+                setMobileMenuOpen={setMobileMenuOpen}
+            />
 
             {/* Main Content */}
             <main className="admin-main">
-                {activeTab === 'overview' && (
-                    <div className="dashboard-overview animate-slide-up">
-                        <header className="admin-header">
-                            <div className="header-title">
-                                <h1>Teacher Control Center</h1>
-                                <p>Manage your classes, sessions, and student evaluations.</p>
+                <DashboardHeader
+                    left={
+                        <div className="header-left-content">
+                            <span className="header-badge-tag">{headerConfig.tag}</span>
+                            <div className="header-titles">
+                                <h1>{headerConfig.title}</h1>
+                                <p>{headerConfig.subtitle}</p>
                             </div>
-                            <div className="header-actions">
-                                <button className="btn btn-primary" onClick={() => setShowSessionModal(true)}>
-                                    <Plus size={18} /> Schedule Class
-                                </button>
-                                <button className="btn btn-secondary ml-4" onClick={() => setShowAssignmentModal(true)}>
-                                    <Plus size={18} /> Create Task
-                                </button>
-                            </div>
-                        </header>
+                        </div>
+                    }
+                    right={headerConfig.right}
+                    user={user}
+                    searchPlaceholder="Search dashboard..."
+                />
 
-                        <div className="stats-grid">
-                            <div className="stat-card glass-card">
-                                <div className="stat-icon purple"><Users size={24} /></div>
-                                <div className="stat-info">
-                                    <p>Active Students</p>
-                                    <h3>248</h3>
+                <div className="admin-content-wrapper">
+                    {activeTab === 'overview' && (
+                        <div className="dashboard-overview animate-slide-up">
+                            <div className="stats-grid-v2">
+                                <div className="stat-card-v2 purple">
+                                    <div className="stat-icon-wrapper">
+                                        <Users size={28} />
+                                    </div>
+                                    <div className="stat-content">
+                                        <span className="stat-label">Total Students</span>
+                                        <h3 className="stat-value">248</h3>
+                                        <span className="stat-trend positive">
+                                            <TrendingUp size={14} /> +12% this month
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="stat-card-v2 blue">
+                                    <div className="stat-icon-wrapper">
+                                        <BookOpen size={28} />
+                                    </div>
+                                    <div className="stat-content">
+                                        <span className="stat-label">Active Courses</span>
+                                        <h3 className="stat-value">{courses.length}</h3>
+                                        <span className="stat-trend">
+                                            All courses are live
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="stat-card-v2 orange">
+                                    <div className="stat-icon-wrapper">
+                                        <Award size={28} />
+                                    </div>
+                                    <div className="stat-content">
+                                        <span className="stat-label">Pending Grading</span>
+                                        <h3 className="stat-value">{submissions.length}</h3>
+                                        <span className="stat-trend warning">
+                                            Requires your attention
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="stat-card glass-card">
-                                <div className="stat-icon blue"><BookOpen size={24} /></div>
-                                <div className="stat-info">
-                                    <p>Your Courses</p>
-                                    <h3>{courses.length}</h3>
-                                </div>
-                            </div>
-                            <div className="stat-card glass-card">
-                                <div className="stat-icon orange"><Award size={24} /></div>
-                                <div className="stat-info">
-                                    <p>Pending Grading</p>
-                                    <h3>{submissions.length}</h3>
+
+                            <div className="quick-management-section mt-12">
+                                <h3 className="section-title-small mb-6">Quick Management</h3>
+                                <div className="quick-actions-grid">
+                                    <div className="action-card" onClick={() => setActiveTab('schedule')}>
+                                        <div className="action-icon"><Calendar size={24} /></div>
+                                        <div className="action-info">
+                                            <h4>Upcoming Sessions</h4>
+                                            <p>Manage your live class timings</p>
+                                        </div>
+                                        <ExternalLink size={18} className="action-arrow" />
+                                    </div>
+                                    <div className="action-card" onClick={() => setActiveTab('grading')}>
+                                        <div className="action-icon"><Award size={24} /></div>
+                                        <div className="action-info">
+                                            <h4>Review Tasks</h4>
+                                            <p>Grade student submissions</p>
+                                        </div>
+                                        <ExternalLink size={18} className="action-arrow" />
+                                    </div>
+                                    <div className="action-card" onClick={() => setActiveTab('content')}>
+                                        <div className="action-icon"><UploadCloud size={24} /></div>
+                                        <div className="action-info">
+                                            <h4>Upload Handouts</h4>
+                                            <p>Share new resources with class</p>
+                                        </div>
+                                        <ExternalLink size={18} className="action-arrow" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
 
                 {activeTab === 'courses' && (
                     <div className="courses-management animate-slide-up">
-                        <div className="flex-between mb-8">
-                            <h2 className="text-2xl font-bold">Your Active Courses</h2>
-                            <div className="filter-pills">
-                                <button className="active">All Courses</button>
-                                <button>Ongoing</button>
-                                <button>Completed</button>
-                            </div>
-                        </div>
 
-                        <div className="admin-course-grid">
+                        <div className="admin-course-grid-v2">
                             {courses.length > 0 ? (
                                 courses.map(course => (
-                                    <div>
-                                        <div className="course-card-banner">
+                                    <div key={course.ID} className="premium-course-card-v2">
+                                        <div className="course-card-banner-v2">
                                             <img
                                                 src={course.Thumbnail || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop'}
-                                                alt="" // Empty alt to prevent browser-default broken text overlapping
-                                                className="banner-img"
+                                                alt={course.Name}
+                                                className="banner-img-v2"
                                                 onError={(e) => {
                                                     e.target.onerror = null;
                                                     e.target.src = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop';
                                                 }}
                                             />
-                                            <div className="banner-overlay">
-                                                <h3 className="banner-title">{course.Name}</h3>
-                                                <p className="banner-fee">PKR {course.Fee}</p>
-                                            </div>
-                                            <div className="course-status-badge">
-                                                <CheckCircle size={14} /> Active
+                                            <div className="banner-badge">
+                                                <span className="dot animate-pulse"></span>
+                                                Active
                                             </div>
                                         </div>
-                                        <div key={course.ID} className="course-admin-card glass-hover">
-                                            <div className="course-stats-grid">
-                                                <div className="stat-item" title="Enrolled Students">
-                                                    <Users size={18} />
-                                                    <div className="stat-info">
-                                                        <span>{course.StudentCount || 0}</span>
-                                                        <span className="stat-label">Students</span>
-                                                    </div>
+                                        <div className="course-card-body-v2">
+                                            <h3 className="course-title-v2">{course.Name}</h3>
+                                            <div className="course-stats-v2">
+                                                <div className="stat-v2">
+                                                    <Users size={16} />
+                                                    <span>{course.StudentCount || 0} Students</span>
                                                 </div>
-                                                <div className="stat-item" title="Live Sessions">
-                                                    <Play size={18} />
-                                                    <div className="stat-info">
-                                                        <span>{course.SessionCount || 0}</span>
-                                                        <span className="stat-label">Sessions</span>
-                                                    </div>
-                                                </div>
-                                                <div className="stat-item" title="Tasks">
-                                                    <Clock size={18} />
-                                                    <div className="stat-info">
-                                                        <span>{course.TaskCount || 0}</span>
-                                                        <span className="stat-label">Tasks</span>
-                                                    </div>
+                                                <div className="stat-v2">
+                                                    <Play size={16} />
+                                                    <span>{course.SessionCount || 0} Sessions</span>
                                                 </div>
                                             </div>
-
-                                            <div className="course-card-footer mt-auto pt-4">
+                                            <div className="course-card-actions-v2">
                                                 <button
-                                                    className="btn btn-primary w-full flex items-center justify-center gap-2 group transition-all duration-300"
+                                                    className="manage-course-link"
                                                     onClick={() => setActiveTab('content')}
                                                 >
-                                                    <span>Manage Content</span>
-                                                    <ExternalLink size={16} className="transition-transform group-hover:translate-x-1" />
+                                                    Manage Course <ArrowRight size={18} />
                                                 </button>
                                             </div>
                                         </div>
@@ -373,144 +460,141 @@ const TeacherDashboard = () => {
 
                 {activeTab === 'content' && (
                     <div className="content-hub-management animate-slide-up">
-                        <div className="flex-between mb-8">
-                            <div>
-                                <h2 className="text-2xl font-bold">Content Hub</h2>
-                                <p className="text-muted">Manage and monitor all learning assets across your courses.</p>
-                            </div>
-                            <div className="flex gap-4">
-                                <button className="btn btn-secondary" onClick={() => setShowResourceModal(true)}>
-                                    <FilePlus size={18} /> Upload Resource
-                                </button>
-                                <button className="btn btn-primary" onClick={() => setShowAssignmentModal(true)}>
-                                    <PlusCircle size={18} /> Create Task
-                                </button>
-                            </div>
+                        {/* Sub-Tabs for Content Hub */}
+                        <div className="dashboard-sub-tabs mb-8">
+                            <button
+                                className={`sub-tab-btn ${contentSubTab === 'assignments' ? 'active' : ''}`}
+                                onClick={() => setContentSubTab('assignments')}
+                            >
+                                <Award size={18} /> Assignments & Quizzes
+                            </button>
+                            <button
+                                className={`sub-tab-btn ${contentSubTab === 'resources' ? 'active' : ''}`}
+                                onClick={() => setContentSubTab('resources')}
+                            >
+                                <FileText size={18} /> Uploaded Resources
+                            </button>
                         </div>
 
-                        {/* Assignments Section */}
-                        <section className="content-section mb-12">
-                            <div className="section-header-row">
-                                <h3 className="section-title flex items-center gap-2">
-                                    <Award className="text-purple-500" size={24} /> Assignments & Quizzes
-                                </h3>
-                                <span className="badge badge-info">{teacherContent.assignments.length} Total</span>
-                            </div>
+                        {contentSubTab === 'assignments' && (
+                            <section className="content-section">
+                                <div className="section-meta-header mb-6">
+                                    <div className="flex align-center gap-2 text-muted">
+                                        <Award size={18} />
+                                        <span className="font-bold uppercase tracking-wider text-xs">{teacherContent.assignments.length} Total Tasks</span>
+                                    </div>
+                                </div>
 
-                            {teacherContent.assignments.length > 0 ? (
                                 <div className="content-hub-grid">
-                                    {teacherContent.assignments.map(item => (
-                                        <div key={item.ID} className="premium-resource-card">
-                                            <div className={`card-type-indicator indicator-${item.Type}`}></div>
-                                            <div className="card-top">
-                                                <span className="course-tag">{item.CourseName}</span>
-                                                <span className={`badge badge-sm badge-${item.Type === 'exam' ? 'danger' : item.Type === 'quiz' ? 'warning' : 'info'}`}>
-                                                    {item.Type}
-                                                </span>
-                                            </div>
-                                            <h4 className="card-title">{item.Title}</h4>
-                                            <div className="card-meta">
-                                                <div className="meta-item">
-                                                    <Calendar size={14} />
-                                                    <span>Due: {item.DueDate ? new Date(item.DueDate).toLocaleDateString() : 'No deadline'}</span>
+                                    {teacherContent.assignments.length > 0 ? (
+                                        teacherContent.assignments.map(item => (
+                                            <div key={item.ID} className="assignment-premium-card">
+                                                <div className="card-top-meta">
+                                                    <span className={`type-badge ${item.Type}`}>{item.Type || 'Assignment'}</span>
+                                                    <span className="course-name-tag">{item.CourseName || 'General'}</span>
                                                 </div>
-                                                <div className="meta-item">
-                                                    <Award size={14} />
-                                                    <span>Max Score: {item.MaxMarks || 100}</span>
+
+                                                <div className="card-main-info">
+                                                    <h3 className="task-title">{item.Title}</h3>
+                                                    <div className="task-details">
+                                                        <div className="detail-row">
+                                                            <Calendar size={14} />
+                                                            <span>Due: {item.DueDate ? new Date(item.DueDate).toLocaleDateString() : 'No deadline'}</span>
+                                                        </div>
+                                                        <div className="detail-row">
+                                                            <Target size={14} />
+                                                            <span>Max Score: {item.MaxMarks || 100} pts</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="card-footer-actions">
+                                                    <button className="btn-action secondary" onClick={() => { setSelectedAssignment(item); setShowViewModal(true); }}>
+                                                        <Eye size={16} /> Preview
+                                                    </button>
+                                                    <button className="btn-action primary" onClick={() => toast.error('Edit feature coming soon!')}>
+                                                        <Plus size={16} /> Edit Task
+                                                    </button>
                                                 </div>
                                             </div>
-                                            <div className="card-actions">
-                                                <button className="btn-card-action btn-view" onClick={() => { setSelectedAssignment(item); setShowViewModal(true); }}>
-                                                    <Eye size={16} /> Preview
-                                                </button>
-                                                <button className="btn-card-action btn-view" onClick={() => toast.error('Edit feature coming soon!')}>
-                                                    <Settings size={16} /> Edit
-                                                </button>
-                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="empty-state-v2">
+                                            <Award size={48} />
+                                            <p>No assignments or quizzes created yet.</p>
+                                            <button className="btn btn-link mt-2" onClick={() => setShowAssignmentModal(true)}>Create your first task</button>
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
-                            ) : (
-                                <div className="empty-state-v2">
-                                    <Award size={48} />
-                                    <p>No assignments or quizzes created yet.</p>
-                                    <button className="btn btn-link mt-2" onClick={() => setShowAssignmentModal(true)}>Create your first task</button>
+                            </section>
+                        )}
+
+                        {contentSubTab === 'resources' && (
+                            <section className="content-section">
+                                <div className="section-meta-header mb-6">
+                                    <div className="flex align-center gap-2 text-muted">
+                                        <FileText size={18} />
+                                        <span className="font-bold uppercase tracking-wider text-xs">{teacherContent.resources.length} Total Files</span>
+                                    </div>
                                 </div>
-                            )}
-                        </section>
 
-                        {/* Resources Section */}
-                        <section className="content-section">
-                            <div className="section-header-row">
-                                <h3 className="section-title flex items-center gap-2">
-                                    <FileText className="text-blue-500" size={24} /> Uploaded Resources
-                                </h3>
-                                <span className="badge badge-info">{teacherContent.resources.length} Files</span>
-                            </div>
-
-                            {teacherContent.resources.length > 0 ? (
                                 <div className="content-hub-grid">
-                                    {teacherContent.resources.map(item => (
-                                        <div key={item.ID} className="premium-resource-card">
-                                            <div className="card-type-indicator indicator-resource"></div>
-                                            <div className="card-top">
-                                                <span className="course-tag">{item.CourseName}</span>
-                                                <span className="badge badge-sm badge-secondary">{item.FileType}</span>
-                                            </div>
-                                            <h4 className="card-title">{item.Title}</h4>
-                                            <div className="card-meta">
-                                                <div className="meta-item">
-                                                    <Clock size={14} />
-                                                    <span>Uploaded: {new Date(item.CreatedAt).toLocaleDateString()}</span>
+                                    {teacherContent.resources.length > 0 ? (
+                                        teacherContent.resources.map(item => (
+                                            <div key={item.ID} className="premium-resource-card">
+                                                <div className="card-type-indicator indicator-resource"></div>
+                                                <div className="card-top">
+                                                    <span className="course-tag">{item.CourseName}</span>
+                                                    <span className="badge badge-sm badge-secondary">{item.FileType}</span>
                                                 </div>
-                                                <div className="meta-item">
-                                                    <Download size={14} />
-                                                    <span>PDF Handout</span>
+                                                <h4 className="card-title">{item.Title}</h4>
+                                                <div className="card-meta">
+                                                    <div className="meta-item">
+                                                        <Clock size={14} />
+                                                        <span>Uploaded: {new Date(item.CreatedAt).toLocaleDateString()}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="card-actions">
+                                                    <a href={item.FileURL} target="_blank" rel="noreferrer" className="btn-card-action btn-download">
+                                                        <Download size={16} /> Download
+                                                    </a>
+                                                    <a href={item.FileURL} target="_blank" rel="noreferrer" className="btn-card-action btn-view">
+                                                        <Eye size={16} /> View
+                                                    </a>
                                                 </div>
                                             </div>
-                                            <div className="card-actions">
-                                                <a href={item.FileURL} target="_blank" rel="noreferrer" className="btn-card-action btn-download">
-                                                    <Download size={16} /> Download
-                                                </a>
-                                                <a href={item.FileURL} target="_blank" rel="noreferrer" className="btn-card-action btn-view">
-                                                    <Eye size={16} /> View
-                                                </a>
-                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="empty-state-v2">
+                                            <UploadCloud size={48} />
+                                            <p>No resources uploaded yet.</p>
+                                            <button className="btn btn-link mt-2" onClick={() => setShowResourceModal(true)}>Upload PDF Handout</button>
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
-                            ) : (
-                                <div className="empty-state-v2">
-                                    <UploadCloud size={48} />
-                                    <p>No resources uploaded yet.</p>
-                                    <button className="btn btn-link mt-2" onClick={() => setShowResourceModal(true)}>Upload PDF Handout</button>
-                                </div>
-                            )}
-                        </section>
+                            </section>
+                        )}
                     </div>
                 )}
 
                 {activeTab === 'grading' && (
                     <div className="grading-management animate-slide-up">
-                        <div className="flex-between mb-8">
-                            <h2 className="text-2xl font-bold">Submissions to Grade</h2>
-                            <span className="badge-count">{submissions.length} Items Pending</span>
-                        </div>
-
-                        {submissions.length > 0 ? (
+                        {submissions.filter(s => gradingSubTab === 'pending' ? !s.Grade : s.Grade).length > 0 ? (
                             <div className="payments-table glass">
                                 <table>
                                     <thead>
                                         <tr>
                                             <th>Student</th>
                                             <th>Course & Assignment</th>
-                                            <th>Submitted At</th>
+                                            <th>{gradingSubTab === 'pending' ? 'Submitted At' : 'Graded At'}</th>
                                             <th>Status</th>
-                                            <th>Action</th>
+                                            <th>{gradingSubTab === 'pending' ? 'Action' : 'Score'}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {submissions.map(sub => (
+                                        {submissions
+                                            .filter(s => gradingSubTab === 'pending' ? !s.Grade : s.Grade)
+                                            .map(sub => (
                                             <tr key={sub.ID}>
                                                 <td>
                                                     <div className="user-cell">
@@ -525,9 +609,21 @@ const TeacherDashboard = () => {
                                                     </div>
                                                 </td>
                                                 <td>{new Date(sub.SubmittedAt).toLocaleDateString()}</td>
-                                                <td><span className="badge badge-warning animate-pulse">Pending Review</span></td>
                                                 <td>
-                                                    <button className="btn btn-primary btn-sm" onClick={() => { setSelectedSubmission(sub); setShowGradeModal(true); }}>Grade Now</button>
+                                                    {gradingSubTab === 'pending' ? (
+                                                        <span className="badge badge-warning animate-pulse">Pending Review</span>
+                                                    ) : (
+                                                        <span className="badge badge-success">Graded</span>
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    {gradingSubTab === 'pending' ? (
+                                                        <button className="btn btn-primary btn-sm" onClick={() => { setSelectedSubmission(sub); setShowGradeModal(true); }}>Grade Now</button>
+                                                    ) : (
+                                                        <div className="score-display font-bold text-primary">
+                                                            {sub.Grade} / {sub.MaxMarks || 100}
+                                                        </div>
+                                                    )}
                                                 </td>
                                             </tr>
                                         ))}
@@ -548,55 +644,80 @@ const TeacherDashboard = () => {
 
                 {activeTab === 'schedule' && (
                     <div className="schedule-management animate-slide-up">
-                        <div className="flex-between mb-8">
-                            <div>
-                                <h2 className="text-2xl font-bold">Class Schedule</h2>
-                                <p className="text-muted">View and manage your upcoming and past live sessions.</p>
-                            </div>
-                            <button className="btn btn-primary" onClick={() => setShowSessionModal(true)}>
-                                <Plus size={18} /> Schedule New Session
-                            </button>
-                        </div>
+                        {teacherSessions.length > 0 ? (
+                            <div className="session-card-grid">
+                                {teacherSessions.map(session => {
+                                    const sessionDate = new Date(session.SessionDate);
+                                    const isPast = sessionDate < new Date();
+                                    const isToday = sessionDate.toDateString() === new Date().toDateString();
 
-                        <div className="payments-table glass">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Session Title</th>
-                                        <th>Course</th>
-                                        <th>Date & Time</th>
-                                        <th>Duration</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {teacherSessions.length > 0 ? teacherSessions.map(session => {
-                                        const isPast = new Date(session.SessionDate) < new Date();
-                                        return (
-                                            <tr key={session.ID}>
-                                                <td><strong>{session.Title}</strong></td>
-                                                <td>{session.CourseName}</td>
-                                                <td>{new Date(session.SessionDate).toLocaleString()}</td>
-                                                <td>{session.DurationMinutes} Min</td>
-                                                <td>
-                                                    <span className={`badge badge-${isPast ? 'secondary' : 'success'}`}>
-                                                        {isPast ? 'Expired' : 'Scheduled'}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    {!isPast && (
-                                                        <a href={session.ZoomLink} target="_blank" rel="noreferrer" className="btn btn-sm btn-primary">
-                                                            <Play size={14} /> Join Now
+                                    return (
+                                        <div key={session.ID} className={`premium-session-card ${isPast ? 'past' : ''}`}>
+                                            <div className="session-status-badge">
+                                                {isPast ? (
+                                                    <span className="badge badge-secondary">Past Session</span>
+                                                ) : isToday ? (
+                                                    <span className="badge badge-success animate-pulse">Live Today</span>
+                                                ) : (
+                                                    <span className="badge badge-info">Upcoming</span>
+                                                )}
+                                            </div>
+
+                                            <div className="session-content">
+                                                <div className="session-main-info">
+                                                    <div className="course-tag-small">{session.CourseName}</div>
+                                                    <h3 className="session-title-large">{session.Title}</h3>
+                                                </div>
+
+                                                <div className="session-details-row">
+                                                    <div className="detail-item">
+                                                        <Calendar size={16} />
+                                                        <span>{sessionDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                                                    </div>
+                                                    <div className="detail-item">
+                                                        <Clock size={16} />
+                                                        <span>{sessionDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                    </div>
+                                                    <div className="detail-item">
+                                                        <Play size={16} />
+                                                        <span>{session.DurationMinutes} Mins</span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="session-footer">
+                                                    {!isPast ? (
+                                                        <a
+                                                            href={session.ZoomLink}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="btn btn-primary w-full flex items-center justify-center gap-2 group"
+                                                        >
+                                                            <span>Launch Session</span>
+                                                            <ExternalLink size={16} className="transition-transform group-hover:translate-x-1" />
                                                         </a>
+                                                    ) : (
+                                                        <button className="btn btn-secondary w-full cursor-not-allowed" disabled>
+                                                            Session Ended
+                                                        </button>
                                                     )}
-                                                </td>
-                                            </tr>
-                                        );
-                                    }) : <tr><td colSpan="6" className="text-center py-4">No sessions scheduled yet.</td></tr>}
-                                </tbody>
-                            </table>
-                        </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <div className="empty-state-container glass py-20 text-center">
+                                <div className="empty-state-icon-wrapper mb-6">
+                                    <Calendar size={64} className="text-teal-500 opacity-20" />
+                                </div>
+                                <h3 className="text-xl font-bold mb-2">No Sessions Found</h3>
+                                <p className="text-muted mb-8">You haven't scheduled any live sessions yet.</p>
+                                <button className="btn btn-primary" onClick={() => setShowSessionModal(true)}>
+                                    Start Your First Session
+                                </button>
+                            </div>
+                        )}
                     </div>
                 )}
             </main>
@@ -831,8 +952,8 @@ const TeacherDashboard = () => {
                                 <div className="questions-list space-y-3">
                                     {(() => {
                                         try {
-                                            const qs = typeof selectedAssignment.Questions === 'string' 
-                                                ? JSON.parse(selectedAssignment.Questions) 
+                                            const qs = typeof selectedAssignment.Questions === 'string'
+                                                ? JSON.parse(selectedAssignment.Questions)
                                                 : selectedAssignment.Questions;
                                             return Array.isArray(qs) ? qs.map((q, idx) => (
                                                 <div key={idx} className="question-preview-item p-3 border rounded-xl bg-slate-50 text-sm">
@@ -846,7 +967,7 @@ const TeacherDashboard = () => {
                                 </div>
                             </div>
                         )}
-                        
+
                         {selectedAssignment.FileURL && (
                             <div className="preview-section mt-6">
                                 <a href={selectedAssignment.FileURL} target="_blank" rel="noreferrer" className="btn btn-secondary w-full">

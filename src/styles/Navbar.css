@@ -1,0 +1,230 @@
+/* --- Navbar & Mobile Navigation Styles --- */
+
+.navbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    height: 90px;
+    background: transparent;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+}
+
+.navbar.scrolled {
+    position: fixed;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.75) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    backdrop-filter: blur(15px) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transform: translateZ(0);
+}
+
+@media (min-width: 993px) {
+    .navbar.is-course-details:not(.scrolled) .nav-link {
+        color: rgba(255, 255, 255, 0.9);
+    }
+    .navbar.is-course-details:not(.scrolled) .nav-link:hover {
+        color: var(--accent);
+    }
+    .navbar.is-course-details:not(.scrolled) .nav-link.active {
+        color: var(--accent);
+    }
+    .navbar.is-course-details:not(.scrolled) .nav-link.active::before {
+        background: var(--accent);
+    }
+    .navbar.is-course-details:not(.scrolled) .logo-img {
+        filter: brightness(0) invert(1);
+    }
+    .navbar.is-course-details:not(.scrolled) .nav-icon {
+        color: rgba(255, 255, 255, 0.8);
+    }
+    .navbar.is-course-details:not(.scrolled) .auth-link span {
+        color: white;
+    }
+    .navbar.is-course-details:not(.scrolled) .nav-separator {
+        background: rgba(255, 255, 255, 0.3);
+    }
+}
+
+.nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    z-index: 1001;
+}
+
+.logo-img {
+    height: 65px;
+    width: auto;
+    object-fit: contain;
+    transition: var(--transition);
+}
+
+.logo:hover .logo-img {
+    transform: scale(1.05);
+}
+
+.nav-elements {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    height: 100%;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2.5rem;
+    margin-right: 3rem;
+    height: 100%;
+}
+
+.nav-link {
+    color: var(--text-main);
+    transition: var(--transition);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+.nav-link.active {
+    color: var(--primary);
+}
+
+.nav-link.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--primary);
+    border-radius: 0 0 4px 4px;
+    animation: slideDown 0.3s ease-out forwards;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.auth-btns {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0.7;
+}
+
+.auth-link {
+    font-size: 0.9rem !important;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.nav-separator {
+    width: 1.5px;
+    height: 14px;
+    background: var(--border);
+}
+
+/* Mobile Responsive Navbar */
+@media (max-width: 992px) {
+    .mobile-toggle {
+        display: block;
+    }
+
+    .nav-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.4) !important;
+        -webkit-backdrop-filter: blur(4px) !important;
+        backdrop-filter: blur(4px) !important;
+        opacity: 0;
+        visibility: hidden;
+        transition: 0.4s;
+        z-index: 1500;
+        pointer-events: none;
+    }
+
+    .nav-overlay.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .nav-elements {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 85%;
+        max-width: 320px;
+        height: 100vh;
+        background: #ffffff;
+        flex-direction: column;
+        padding: 0;
+        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+        z-index: 2000;
+        display: flex;
+    }
+
+    .nav-elements.active {
+        right: 0;
+    }
+
+    .mobile-menu-header {
+        display: flex;
+        align-items: center;
+        padding: 20px 30px;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        margin: 0;
+        width: 100%;
+        gap: 0;
+    }
+
+    .nav-link {
+        padding: 14px 30px;
+        width: 100%;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        justify-content: space-between;
+    }
+
+    .nav-actions {
+        width: 100%;
+        flex-direction: column;
+        padding: 20px 30px;
+        gap: 15px;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+}

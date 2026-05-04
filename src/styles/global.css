@@ -48,67 +48,19 @@ textarea {
 }
 
 /* ─── TYPOGRAPHY ─────────────────────────────────────────────────────── */
-h1,
-.h1 {
-    font-size: var(--fs-h1);
-    font-weight: var(--fw-extrabold);
-    line-height: 1.1;
-    color: var(--text-main);
-}
+h1, .h1 { font-size: var(--fs-h1); font-weight: var(--fw-extrabold); line-height: 1.1; color: var(--text-main); }
+h2, .h2 { font-size: var(--fs-h2); font-weight: var(--fw-bold); line-height: 1.2; color: var(--text-main); }
+h3, .h3 { font-size: var(--fs-h3); font-weight: var(--fw-bold); line-height: 1.3; }
+h4, .h4 { font-size: var(--fs-h4); font-weight: var(--fw-semibold); }
 
-h2,
-.h2 {
-    font-size: var(--fs-h2);
-    font-weight: var(--fw-bold);
-    line-height: 1.2;
-    color: var(--text-main);
-}
-
-h3,
-.h3 {
-    font-size: var(--fs-h3);
-    font-weight: var(--fw-bold);
-    line-height: 1.3;
-}
-
-h4,
-.h4 {
-    font-size: var(--fs-h4);
-    font-weight: var(--fw-semibold);
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: var(--font-family);
-    letter-spacing: -0.01em;
-}
-
-p {
-    font-size: var(--fs-body);
-    color: var(--text-muted);
-}
+h1, h2, h3, h4, h5, h6 { font-family: var(--font-family); letter-spacing: -0.01em; }
+p { font-size: var(--fs-body); color: var(--text-muted); }
 
 /* ─── SCROLLBAR ──────────────────────────────────────────────────────── */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--bg-main);
-}
-
-::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
-}
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
 /* ─── LAYOUT ─────────────────────────────────────────────────────────── */
 .container {
@@ -148,7 +100,6 @@ p {
     padding: 12px 30px;
     font-size: var(--fs-small);
     font-weight: var(--fw-medium);
-    text-transform: none;
     border-radius: var(--br-sm);
     transition: var(--transition);
     cursor: pointer;
@@ -156,39 +107,69 @@ p {
     gap: 8px;
 }
 
-.btn-primary {
-    background-color: var(--primary);
-    color: var(--text-light);
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-2px);
-}
-
-.btn-accent {
-    background-color: var(--accent);
-    color: var(--text-light);
-}
-
-.btn-accent:hover {
-    background-color: var(--accent-hover);
-    transform: translateY(-2px);
-}
+.btn-primary { background-color: var(--primary); color: var(--text-light); }
+.btn-primary:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
+.btn-accent { background-color: var(--accent); color: var(--text-light); }
+.btn-accent:hover { background-color: var(--accent-hover); transform: translateY(-2px); }
 
 /* ─── ANIMATIONS ─────────────────────────────────────────────────────── */
-.animate-fade-in {
-    animation: fadeIn 0.8s ease-out forwards;
+.animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
+.animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(33, 103, 91, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary);
+    animation: spin 1s linear infinite;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
+/* ─── SHARED FORM COMPONENTS ─────────────────────────────────────────── */
+.floating-input-group {
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.floating-input-group .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.floating-input-group input,
+.floating-input-group textarea {
+    width: 100% !important;
+    height: 60px;
+    padding: 1.5rem 1rem 0.5rem !important;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    background: white;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+    color: var(--text-main);
+    outline: none;
+}
+
+.floating-label {
+    position: absolute;
+    left: 1rem;
+    top: 30px;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+    pointer-events: none;
+    font-size: 1rem;
+}
+
+.floating-input-group input:focus ~ .floating-label,
+.floating-input-group input:not(:placeholder-shown) ~ .floating-label {
+    top: 18px;
+    font-size: 0.75rem;
+    color: var(--primary);
+    font-weight: 600;
 }

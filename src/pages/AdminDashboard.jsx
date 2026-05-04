@@ -9,6 +9,8 @@ import toast from 'react-hot-toast';
 import FloatingLabelInput from '../components/FloatingLabelInput';
 import api from '../utils/api';
 import SEO from '../components/SEO';
+import Sidebar from '../components/Sidebar';
+import DashboardHeader from '../components/DashboardHeader';
 import Skeleton from '../components/Skeleton';
 import '../styles/dashboard.css';
 import '../styles/teacher-dashboard.css';
@@ -229,6 +231,61 @@ const AdminDashboard = () => {
         setEditCourse(prev => ({ ...prev, whatWillILearn: [...prev.whatWillILearn, ''] }));
     };
 
+    const getHeaderConfig = () => {
+        switch (activeTab) {
+            case 'overview':
+                return {
+                    tag: "Platform Overview",
+                    title: "Welcome, Admin",
+                    subtitle: "Here's what's happening with your platform today.",
+                };
+            case 'enrollments':
+                return {
+                    tag: "Financial Management",
+                    title: "Pending Enrollments",
+                    subtitle: "Review and approve student course applications.",
+                };
+            case 'teachers':
+                return {
+                    tag: "User Management",
+                    title: "Faculty Directory",
+                    subtitle: "Manage teacher accounts and access permissions.",
+                };
+            case 'students':
+                return {
+                    tag: "User Management",
+                    title: "Student Directory",
+                    subtitle: "Manage student accounts and enrollment status.",
+                };
+            case 'courses':
+                return {
+                    tag: "Academic Catalog",
+                    title: "Course Management",
+                    subtitle: "Create and update educational content on the platform.",
+                    right: (
+                        <button className="btn btn-primary" onClick={() => setActiveTab('add-course')}>
+                            <Plus size={18} /> Create New Course
+                        </button>
+                    )
+                };
+            case 'add-course':
+                return {
+                    tag: "Content Creator",
+                    title: "Add New Course",
+                    subtitle: "Draft a new course for the Deenova catalog.",
+                    right: (
+                        <button className="btn btn-secondary" onClick={() => setActiveTab('courses')}>
+                            Back to List
+                        </button>
+                    )
+                };
+            default:
+                return { title: "Admin Portal", subtitle: "Management Console" };
+        }
+    };
+
+    const headerConfig = getHeaderConfig();
+
     return (
         <div className="admin-layout animate-fade-in">
             <SEO 
@@ -244,57 +301,38 @@ const AdminDashboard = () => {
             </header>
 
             {/* Sidebar */}
-            <aside className={`admin-sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
-                <div className="sidebar-header">
-                    <img src="/logo.png" alt="Deenova Logo" className="logo-img sidebar-logo" />
-                </div>
-
-                <nav className="sidebar-nav">
-                    <button className={activeTab === 'overview' ? 'active' : ''} onClick={() => { setActiveTab('overview'); setMobileMenuOpen(false); }}>
-                        <TrendingUp size={20} /> Dashboard
-                    </button>
-                    <button className={activeTab === 'enrollments' ? 'active' : ''} onClick={() => { setActiveTab('enrollments'); setMobileMenuOpen(false); }}>
-                        <DollarSign size={20} /> Enrollments
-                        {stats.pendingEnrollments > 0 && <span>{stats.pendingEnrollments}</span>}
-                    </button>
-                    <button className={activeTab === 'teachers' ? 'active' : ''} onClick={() => { setActiveTab('teachers'); setMobileMenuOpen(false); }}>
-                        <Users size={20} /> Teachers
-                    </button>
-                    <button className={activeTab === 'students' ? 'active' : ''} onClick={() => { setActiveTab('students'); setMobileMenuOpen(false); }}>
-                        <UserCheck size={20} /> Students
-                    </button>
-                    <button className={activeTab === 'courses' ? 'active' : ''} onClick={() => { setActiveTab('courses'); setMobileMenuOpen(false); }}>
-                        <BookOpen size={20} /> Courses
-                    </button>
-                </nav>
-
-                <div className="sidebar-footer">
-                    <button className="exit-btn" onClick={() => window.location.href = '/'}>
-                        <XCircle size={20} /> Exit Admin
-                    </button>
-                </div>
-            </aside>
+            <Sidebar 
+                user={{ Name: 'Admin', Email: 'admin@deenova.edu' }}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                logout={() => window.location.href = '/'}
+                menuItems={[
+                    { id: 'overview', label: 'Dashboard', icon: TrendingUp },
+                    { id: 'enrollments', label: 'Enrollments', icon: DollarSign, badge: stats.pendingEnrollments },
+                    { id: 'teachers', label: 'Teachers', icon: Users },
+                    { id: 'students', label: 'Students', icon: UserCheck },
+                    { id: 'courses', label: 'Courses', icon: BookOpen },
+                ]}
+                mobileMenuOpen={mobileMenuOpen}
+                setMobileMenuOpen={setMobileMenuOpen}
+            />
 
             {/* Main Content */}
             <main className="admin-main">
-                <header className="admin-header">
-                    <div className="header-title">
-                        <h1>Welcome, Admin</h1>
-                        <p>Here's what's happening with your platform today.</p>
-                    </div>
-
-                    <div className="admin-profile-nav">
-                        <div className="search-bar">
-                            <Search size={18} />
-                            <input type="text" placeholder="Search data..." />
+                <DashboardHeader 
+                    left={
+                        <div className="header-left-content">
+                            <span className="header-badge-tag">{headerConfig.tag}</span>
+                            <div className="header-titles">
+                                <h1>{headerConfig.title}</h1>
+                                <p>{headerConfig.subtitle}</p>
+                            </div>
                         </div>
-                        <button className="btn-icon relative">
-                            <Bell size={20} />
-                            <span className="notification-dot"></span>
-                        </button>
-                        <div className="admin-avatar">A</div>
-                    </div>
-                </header>
+                    }
+                    right={headerConfig.right}
+                    user={{ Name: 'Admin' }}
+                    searchPlaceholder="Search everything..."
+                />
 
                 <div className="admin-content">
                     {activeTab === 'overview' && (
