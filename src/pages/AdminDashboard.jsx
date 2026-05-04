@@ -5,9 +5,11 @@ import {
     Image, Target, Award, Zap, Hash, Clock, FileText, AlignLeft, Info, Plus,
     Menu, X
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import FloatingLabelInput from '../components/FloatingLabelInput';
 import api from '../utils/api';
 import SEO from '../components/SEO';
+import Skeleton from '../components/Skeleton';
 import '../styles/dashboard.css';
 import '../styles/teacher-dashboard.css';
 import '../styles/admin-dashboard.css';
@@ -31,6 +33,9 @@ const AdminDashboard = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [editCourse, setEditCourse] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
+    const [showRejectModal, setShowRejectModal] = useState(false);
+    const [rejectingEnrollmentId, setRejectingEnrollmentId] = useState(null);
+    const [rejectionForm, setRejectionForm] = useState({ reason: '', remarks: '' });
 
     // New Course Form
     const [courseForm, setCourseForm] = useState({ 
@@ -48,6 +53,17 @@ const AdminDashboard = () => {
         totalLessons: '',
         whatWillILearn: ['', '', '', '']
     });
+
+    const isModalOpen = !!selectedReceipt || showEditModal || showRejectModal;
+
+    useEffect(() => {
+        if (isModalOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => { document.body.style.overflow = 'unset'; };
+    }, [isModalOpen]);
 
     useEffect(() => {
         fetchStats();
@@ -107,8 +123,26 @@ const AdminDashboard = () => {
         setSubmitting(true);
         try {
             await api.put(`/enrollment/admin/approve/${id}`);
+            toast.success('Enrollment approved successfully');
             await fetchTabContent();
-        } catch (err) { console.error(err); }
+        } catch (err) {
+            toast.error('Approval failed');
+        }
+        setSubmitting(false);
+    };
+
+    const handleRejectEnrollment = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        try {
+            await api.put(`/enrollment/admin/reject/${rejectingEnrollmentId}`, rejectionForm);
+            toast.success('Enrollment rejected');
+            setShowRejectModal(false);
+            setRejectionForm({ reason: '', remarks: '' });
+            await fetchTabContent();
+        } catch (err) {
+            toast.error('Rejection failed');
+        }
         setSubmitting(false);
     };
 
@@ -361,7 +395,7 @@ const AdminDashboard = () => {
                                                             <button className="btn-approve" onClick={() => handleApproveEnrollment(req.ID)} disabled={submitting}>
                                                                 {submitting ? 'Please wait...' : <><CheckCircle size={16} /> Approve</>}
                                                             </button>
-                                                            <button className="btn-reject" disabled={submitting}><XCircle size={16} /></button>
+                                                            <button className="btn-reject" onClick={() => { setRejectingEnrollmentId(req.ID); setShowRejectModal(true); }} disabled={submitting}><XCircle size={16} /></button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -721,6 +755,51 @@ const AdminDashboard = () => {
                                 <button type="button" className="btn btn-secondary" onClick={() => setShowEditModal(false)}>Discard Changes</button>
                                 <button type="submit" className="btn btn-primary" disabled={submitting}>
                                     {submitting ? 'Saving...' : 'Save All Changes'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+            
+            {/* Rejection Modal */}
+            {showRejectModal && (
+                <div className="modal-overlay" onClick={() => setShowRejectModal(false)}>
+                    <div className="modal-content animate-scale-up" style={{maxWidth: '500px'}} onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Decline Enrollment</h2>
+                            <button className="btn-close" onClick={() => setShowRejectModal(false)}><X size={24} /></button>
+                        </div>
+                        <form onSubmit={handleRejectEnrollment}>
+                            <div className="form-group mb-4">
+                                <label>Rejection Reason</label>
+                                <select 
+                                    className="admin-select"
+                                    value={rejectionForm.reason}
+                                    onChange={e => setRejectionForm({...rejectionForm, reason: e.target.value})}
+                                    required
+                                >
+                                    <option value="">Select a reason</option>
+                                    <option value="Invalid Payment Proof">Invalid Payment Proof</option>
+                                    <option value="Incomplete Information">Incomplete Information</option>
+                                    <option value="Payment Not Received">Payment Not Received</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div className="form-group mb-6">
+                                <label>Administrative Remarks (Optional)</label>
+                                <textarea 
+                                    className="admin-textarea"
+                                    rows="4"
+                                    placeholder="This will be visible to the student..."
+                                    value={rejectionForm.remarks}
+                                    onChange={e => setRejectionForm({...rejectionForm, remarks: e.target.value})}
+                                ></textarea>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={() => setShowRejectModal(false)}>Cancel</button>
+                                <button type="submit" className="btn btn-reject" disabled={submitting}>
+                                    {submitting ? 'Processing...' : 'Confirm Decline'}
                                 </button>
                             </div>
                         </form>

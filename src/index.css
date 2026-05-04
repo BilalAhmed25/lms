@@ -169,6 +169,24 @@
     animation: fadeIn 0.5s ease forwards;
 }
 
+.spinner-mini {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 /* --- Navigation --- */
 .navbar {
     position: absolute;
@@ -360,7 +378,8 @@
 .auth-btns {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
+    opacity: 0.7;
 }
 
 .auth-link {
@@ -3247,7 +3266,7 @@
 
 .classroom-main {
     flex: 1;
-    padding: 3rem 5rem;
+    padding: 2rem;
     background: #f8fafc;
     min-width: 0;
 }
@@ -3539,3 +3558,68 @@
 }
 
 /* Legal page styles moved to src/styles/legal.css */
+
+/* ─── SKELETON LOADER ────────────────────────────────────────────────── */
+.skeleton-loader {
+    background: var(--skeleton-base);
+    background-image: linear-gradient(90deg,
+            var(--skeleton-base) 0px,
+            var(--skeleton-highlight) 40px,
+            var(--skeleton-base) 80px);
+    background-size: 600px;
+    animation: skeleton-shimmer 1.6s infinite linear;
+}
+
+@keyframes skeleton-shimmer {
+    0% {
+        background-position: -100px;
+    }
+
+    100% {
+        background-position: 500px;
+    }
+}
+
+/* ─── QUIZ INTERFACE ─────────────────────────────────────────────────── */
+.quiz-timer-bubble {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff5f5;
+    color: #e03131;
+    padding: 6px 12px;
+    border-radius: var(--br-full);
+    font-size: var(--fs-small);
+    font-weight: var(--fw-semibold);
+    margin-top: 8px;
+    border: 1px solid #ffc9c9;
+}
+
+.quiz-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: #e9ecef;
+    position: relative;
+    overflow: hidden;
+}
+
+.quiz-progress-bar .fill {
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.4s ease;
+}
+
+.quiz-question-box {
+    padding: 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.quiz-question-box:last-child {
+    border-bottom: none;
+}
+
+.q-text {
+    font-size: var(--fs-h5);
+    margin-bottom: 20px;
+    color: var(--text-main);
+}

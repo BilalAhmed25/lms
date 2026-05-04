@@ -4,10 +4,22 @@ const { con } = require('../database');
 const authenticateToken = require('../authenticateToken');
 const { uploadToCloudinary } = require('../cloudinaryHelper');
 
-// List available courses (Public)
-router.get('/classes', async (req, res) => {
+// Middleware that populates req.user but doesn't block if token is missing
+const optionalAuth = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) return next();
+    const token = authHeader.split(' ')[1];
+    if (!token) return next();
+    require('jsonwebtoken').verify(token, process.env.SECRET_KEY, (err, user) => {
+        if (!err) req.user = user;
+        next();
+    });
+};
+
+// List available courses (Public with optional filtering for Teachers)
+router.get('/classes', optionalAuth, async (req, res) => {
     try {
-        const [rows] = await con.execute(`
+        let sql = `
             SELECT 
                 c.ID, 
                 c.Name, 
@@ -19,11 +31,25 @@ router.get('/classes', async (req, res) => {
                 c.AverageRating,
                 c.ReviewsCount,
                 u.Name as TeacherName,
-                (SELECT COUNT(*) FROM LMS_Modules WHERE CourseID = c.ID) as ModulesCount
+                (SELECT COUNT(*) FROM LMS_Modules WHERE CourseID = c.ID) as ModulesCount,
+                (SELECT COUNT(*) FROM LMS_Enrollments WHERE CourseID = c.ID AND Status = 'approved') as StudentCount,
+                (SELECT COUNT(*) FROM LMS_Sessions WHERE CourseID = c.ID) as SessionCount,
+                (SELECT COUNT(*) FROM LMS_Assignments WHERE CourseID = c.ID) as TaskCount
             FROM LMS_Courses c
             LEFT JOIN Users u ON c.TeacherID = u.ID
             WHERE c.Status = "active"
-        `);
+        `;
+        let params = [];
+
+        // If a user is authenticated and is a Teacher, only show their courses
+        // (Assuming the token is optionally checked here or via middleware)
+        // Since this route is 'Public', we check if req.user exists from authenticateToken
+        if (req.user && req.user.Role === 'Teacher') {
+            sql += " AND c.TeacherID = ?";
+            params.push(req.user.ID);
+        }
+
+        const [rows] = await con.execute(sql, params);
         res.json(rows);
     } catch (err) {
         console.error(err);
@@ -137,6 +163,22 @@ router.put('/admin/approve/:id', async (req, res) => {
         res.json('Approved');
     } catch (err) {
         res.status(500).json('Approval failed');
+    }
+});
+
+// Admin reject
+router.put('/admin/reject/:id', async (req, res) => {
+    if (req.user.Role !== 'Admin') return res.status(403).json('Admin only');
+    const { reason, remarks } = req.body;
+    try {
+        await con.execute(
+            'UPDATE LMS_Enrollments SET Status = "rejected", RejectionReason = ?, AdminRemarks = ? WHERE ID = ?', 
+            [reason || 'Invalid Payment Proof', remarks || '', req.params.id]
+        );
+        res.json('Rejected');
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Rejection failed');
     }
 });
 

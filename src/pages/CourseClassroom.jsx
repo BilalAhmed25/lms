@@ -3,10 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { 
     Play, FileText, Clock, CheckCircle, ChevronRight, 
     MessageSquare, Award, Download, ExternalLink, AlertCircle,
-    Check, X, ArrowLeft
+    Check, X, ArrowLeft, Bell, BookOpen
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import api from '../utils/api';
 import SEO from '../components/SEO';
+import Skeleton from '../components/Skeleton';
 
 const Loader = () => (
     <div className="loader-container">
@@ -20,6 +22,8 @@ const CourseClassroom = () => {
     const [course, setCourse] = useState(null);
     const [sessions, setSessions] = useState([]);
     const [assignments, setAssignments] = useState([]);
+    const [resources, setResources] = useState([]);
+    const [announcements, setAnnouncements] = useState([]);
     const [submissions, setSubmissions] = useState([]);
     const [activeTab, setActiveTab] = useState('overview');
     const [loading, setLoading] = useState(true);
@@ -30,6 +34,8 @@ const CourseClassroom = () => {
     const [textResponse, setTextResponse] = useState('');
     const [fileBase64, setFileBase64] = useState('');
     const [quizAnswers, setQuizAnswers] = useState({});
+    const [timeLeft, setTimeLeft] = useState(null);
+    const [timerActive, setTimerActive] = useState(false);
 
     useEffect(() => {
         fetchClassroomData();
@@ -41,16 +47,22 @@ const CourseClassroom = () => {
             const courseData = await api.get(`/enrollment/classes/${slug}`);
             setCourse(courseData);
             
-            const [sessionsData, assignmentsData] = await Promise.all([
+            const [sessionsData, assignmentsData, resourcesData, announcementsData, mySubmissions] = await Promise.all([
                 api.get(`/lms/sessions/${courseData.ID}`),
-                api.get(`/lms/assignments/${courseData.ID}`)
+                api.get(`/lms/assignments/${courseData.ID}`),
+                api.get(`/lms/resources/${courseData.ID}`),
+                api.get(`/lms/announcements/${courseData.ID}`),
+                api.get(`/lms/my-submissions/${courseData.ID}`)
             ]);
             
             setSessions(sessionsData);
-            setAssignments(assignmentsData);
-            
-            // We'll need a way to fetch the user's specific submissions for these assignments
-            // For now, we'll assume the user is enrolled if they reached here
+            setAssignments(assignmentsData.map(a => ({
+                ...a,
+                Questions: typeof a.Questions === 'string' ? JSON.parse(a.Questions) : a.Questions
+            })));
+            setResources(resourcesData);
+            setAnnouncements(announcementsData);
+            setSubmissions(mySubmissions);
         } catch (err) {
             console.error(err);
             navigate('/student-dashboard');
@@ -83,9 +95,10 @@ const CourseClassroom = () => {
             setFileBase64('');
             setQuizAnswers({});
             // Refresh logic here if needed
-            alert('Your work has been submitted successfully!');
+            fetchClassroomData();
+            toast.success('Your work has been submitted successfully!');
         } catch (err) {
-            alert('Submission failed. Please try again.');
+            toast.error('Submission failed. Please try again.');
         }
         setSubmitting(false);
     };
@@ -94,6 +107,34 @@ const CourseClassroom = () => {
         return new Date(dateString).toLocaleDateString('en-GB', {
             weekday: 'short', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
         });
+    };
+
+    useEffect(() => {
+        let interval;
+        if (timerActive && timeLeft > 0) {
+            interval = setInterval(() => {
+                setTimeLeft(prev => prev - 1);
+            }, 1000);
+        } else if (timeLeft === 0 && timerActive) {
+            setTimerActive(false);
+            handleSubmitWork(new Event('submit'));
+            toast.error('Time is up! Your quiz has been submitted automatically.');
+        }
+        return () => clearInterval(interval);
+    }, [timerActive, timeLeft]);
+
+    const startQuiz = (assignment) => {
+        setSubmitModal(assignment);
+        if (assignment.TimeLimitMinutes > 0) {
+            setTimeLeft(assignment.TimeLimitMinutes * 60);
+            setTimerActive(true);
+        }
+    };
+
+    const formatTime = (seconds) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
     };
 
     if (loading) return <Loader />;
@@ -118,8 +159,15 @@ const CourseClassroom = () => {
                     <button className={activeTab === 'overview' ? 'active' : ''} onClick={() => setActiveTab('overview')}>
                         <FileText size={18} /> Overview
                     </button>
+                    <button className={activeTab === 'announcements' ? 'active' : ''} onClick={() => setActiveTab('announcements')}>
+                        <Bell size={18} /> Announcements
+                        {announcements.length > 0 && <span className="nav-badge">{announcements.length}</span>}
+                    </button>
                     <button className={activeTab === 'sessions' ? 'active' : ''} onClick={() => setActiveTab('sessions')}>
                         <Play size={18} /> Class Sessions
+                    </button>
+                    <button className={activeTab === 'resources' ? 'active' : ''} onClick={() => setActiveTab('resources')}>
+                        <BookOpen size={18} /> Resources
                     </button>
                     <button className={activeTab === 'assignments' ? 'active' : ''} onClick={() => setActiveTab('assignments')}>
                         <Award size={18} /> Assignments & Quizzes
@@ -229,6 +277,63 @@ const CourseClassroom = () => {
                         </div>
                     )}
 
+                    {activeTab === 'announcements' && (
+                        <div className="animate-slide-up">
+                            <div className="announcements-stack">
+                                {announcements.length > 0 ? announcements.map(ann => (
+                                    <div key={ann.ID} className="announcement-card glass">
+                                        <div className="ann-header">
+                                            <div className="ann-author">
+                                                <div className="author-avatar">{ann.AuthorName?.charAt(0)}</div>
+                                                <div>
+                                                    <strong>{ann.AuthorName}</strong>
+                                                    <span>{new Date(ann.CreatedAt).toLocaleDateString()}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h4>{ann.Title}</h4>
+                                        <p>{ann.Content}</p>
+                                    </div>
+                                )) : (
+                                    <div className="admin-empty-state">
+                                        <div className="empty-state-icon"><Bell size={40} /></div>
+                                        <p>No announcements yet.</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'resources' && (
+                        <div className="animate-slide-up">
+                            <div className="resources-grid">
+                                {resources.length > 0 ? resources.map(res => (
+                                    <div key={res.ID} className="resource-item-card glass">
+                                        <div className="resource-icon-box">
+                                            <FileText size={24} />
+                                        </div>
+                                        <div className="resource-details">
+                                            <h4>{res.Title}</h4>
+                                            <p>{res.Description}</p>
+                                            <div className="resource-meta">
+                                                <span>{res.FileType || 'PDF'}</span>
+                                                <span>{new Date(res.CreatedAt).toLocaleDateString()}</span>
+                                            </div>
+                                        </div>
+                                        <a href={res.FileURL} target="_blank" rel="noreferrer" className="btn-icon-only">
+                                            <Download size={20} />
+                                        </a>
+                                    </div>
+                                )) : (
+                                    <div className="admin-empty-state">
+                                        <div className="empty-state-icon"><BookOpen size={40} /></div>
+                                        <p>No resources uploaded for this course.</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
                     {activeTab === 'assignments' && (
                         <div className="animate-slide-up">
                             <div className="assignments-grid">
@@ -252,15 +357,36 @@ const CourseClassroom = () => {
                                             {assignment.TimeLimitMinutes > 0 && <span>Time: {assignment.TimeLimitMinutes}m</span>}
                                         </div>
 
-                                        <div className="card-actions">
+                                        <div className="card-actions mt-auto">
                                             {assignment.FileURL && (
                                                 <a href={assignment.FileURL} target="_blank" rel="noreferrer" className="btn-download">
                                                     <Download size={16} /> Download File
                                                 </a>
                                             )}
-                                            <button className="btn btn-primary" onClick={() => setSubmitModal(assignment)}>
-                                                {assignment.Type === 'quiz' ? 'Start Quiz' : 'Submit Work'}
-                                            </button>
+                                            
+                                            {(() => {
+                                                const sub = submissions.find(s => s.AssignmentID === assignment.ID);
+                                                if (sub) {
+                                                    return (
+                                                        <div className="submission-status-chip">
+                                                            {sub.Status === 'graded' ? (
+                                                                <span className="badge badge-success flex items-center gap-1">
+                                                                    <Award size={14} /> Graded: {sub.Marks}/{assignment.MaxMarks}
+                                                                </span>
+                                                            ) : (
+                                                                <span className="badge badge-info flex items-center gap-1">
+                                                                    <CheckCircle size={14} /> Submitted
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                }
+                                                return (
+                                                    <button className="btn btn-primary" onClick={() => startQuiz(assignment)}>
+                                                        {assignment.Type === 'quiz' ? 'Start Quiz' : 'Submit Work'}
+                                                    </button>
+                                                );
+                                            })()}
                                         </div>
                                     </div>
                                 )) : (
@@ -283,9 +409,23 @@ const CourseClassroom = () => {
                             <div>
                                 <span className="type-badge">{submitModal.Type}</span>
                                 <h2>{submitModal.Title}</h2>
+                                {timerActive && (
+                                    <div className="quiz-timer-bubble">
+                                        <Clock size={16} /> {formatTime(timeLeft)}
+                                    </div>
+                                )}
                             </div>
-                            <button className="btn-close" onClick={() => setSubmitModal(null)}><X size={24} /></button>
+                            {!timerActive && <button className="btn-close" onClick={() => setSubmitModal(null)}><X size={24} /></button>}
                         </div>
+
+                        {submitModal.Type === 'quiz' && (
+                            <div className="quiz-progress-bar">
+                                <div 
+                                    className="fill" 
+                                    style={{ width: `${(Object.keys(quizAnswers).length / submitModal.Questions.length) * 100}%` }}
+                                ></div>
+                            </div>
+                        )}
 
                         <form onSubmit={handleSubmitWork} className="submission-form">
                             {submitModal.Type === 'quiz' ? (

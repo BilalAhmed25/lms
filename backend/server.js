@@ -61,4 +61,5 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 3000;
+server.timeout = 180000; // 3 minutes
 server.listen(PORT, () => console.log(`Minimal LMS server running on port ${PORT}`));

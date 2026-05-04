@@ -20,6 +20,7 @@ import StudentEnrollment from './components/StudentEnrollment';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ScrollToTop from './components/ScrollToTop';
+import { Toaster } from 'react-hot-toast';
 import './index.css';
 
 import api from './utils/api';
@@ -113,12 +114,12 @@ const AppContent = () => {
             </ProtectedRoute>
           } />
           <Route path="/classroom/:slug" element={
-            <ProtectedRoute allowedRoles={['Student', 'Teacher', 'Admin']}>
+            <ProtectedRoute allowedRoles={['Student', 'Admin']}>
               <CourseClassroom />
             </ProtectedRoute>
           } />
           <Route path="/lms-dashboard/:slug" element={
-            <ProtectedRoute allowedRoles={['Student', 'Teacher', 'Admin']}>
+            <ProtectedRoute allowedRoles={['Student', 'Admin']}>
               <CourseClassroom />
             </ProtectedRoute>
           } />
@@ -140,6 +141,7 @@ const App = () => {
     <AuthProvider>
       <Router>
         <ScrollToTop />
+        <Toaster position="top-right" reverseOrder={false} />
         <AppContent />
       </Router>
     </AuthProvider>

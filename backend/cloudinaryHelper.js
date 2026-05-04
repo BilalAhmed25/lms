@@ -15,7 +15,8 @@ const uploadToCloudinary = async (fileData, folder = 'edunex') => {
     try {
         const result = await cloudinary.uploader.upload(fileData, {
             folder: folder,
-            resource_type: 'auto'
+            resource_type: 'auto',
+            timeout: 120000 // 120 seconds
         });
         return result.secure_url;
     } catch (error) {

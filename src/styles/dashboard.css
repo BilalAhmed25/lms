@@ -226,29 +226,102 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 2000;
-    padding: 20px;
+    padding: 30px;
 }
 
 .modal-content {
     background: white;
     width: 100%;
-    max-width: 600px;
+    max-width: 850px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
     border-radius: 32px;
-    padding: 40px;
+    padding: 0;
     position: relative;
     border: 1px solid var(--border);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+.modal-header {
+    padding: 35px 45px 20px;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.modal-header h2 {
+    font-size: 1.5rem !important;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.02em;
+}
+
+.modal-body {
+    padding: 30px 45px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0; /* critical for flex children to scroll */
+}
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.modal-footer {
+    padding: 25px 45px;
+    background: #f8fafc;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 16px;
+    justify-content: flex-end;
+}
+
+/* Custom Scrollbar for Modals */
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
 }
 
 .modal-header {
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1.75rem;
 }
 
 .modal-header h2 {
@@ -321,8 +394,8 @@
 
 .btn-close {
     position: absolute;
-    top: 24px;
-    right: 24px;
+    top: 30px;
+    right: 30px;
     width: 40px;
     height: 40px;
     border-radius: 12px;
