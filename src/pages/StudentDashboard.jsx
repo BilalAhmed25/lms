@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../App';
-import { Book, CreditCard, Clock, Star, Search, AlertCircle, PlusCircle, CheckCircle, ChevronRight, Layout, XCircle, Eye, Menu, X } from 'lucide-react';
+import { Book, CreditCard, Clock, Star, Search, AlertCircle, PlusCircle, CheckCircle, ChevronRight, Layout, XCircle, Eye, Menu, X, TrendingUp, BookOpen, Award, Users } from 'lucide-react';
 
 import api from '../utils/api';
 import SEO from '../components/SEO';
@@ -153,26 +153,48 @@ const StudentDashboard = () => {
                 <div className="admin-content">
                     {activeTab === 'overview' && (
                         <div className="animate-slide-up">
-                            <div className="stats-grid mb-12">
-                                <div className="stat-card glass">
-                                    <div className="stat-icon purple"><Book size={28} /></div>
-                                    <div className="stat-info">
-                                        <p>Enrolled Courses</p>
-                                        <h3>{enrolled.length}</h3>
+                            {/* Premium Stats Grid */}
+                            <div className="stats-grid-v2">
+                                <div className="stat-card-v2 purple">
+                                    <div className="stat-icon-wrapper">
+                                        <BookOpen size={28} />
+                                    </div>
+                                    <div className="stat-content">
+                                        <span className="stat-label">Enrolled Courses</span>
+                                        <h3 className="stat-value">{enrolled.length}</h3>
+                                        <span className="stat-trend positive">
+                                            <TrendingUp size={14} /> Currently Active
+                                        </span>
                                     </div>
                                 </div>
-                                <div className="stat-card glass">
-                                    <div className="stat-icon orange"><Clock size={28} /></div>
-                                    <div className="stat-info">
-                                        <p>Pending Review</p>
-                                        <h3>{pending.length}</h3>
+                                <div className="stat-card-v2 orange">
+                                    <div className="stat-icon-wrapper">
+                                        <Clock size={28} />
+                                    </div>
+                                    <div className="stat-content">
+                                        <span className="stat-label">Pending Review</span>
+                                        <h3 className="stat-value">
+                                            {enrolled.reduce((acc, c) => acc + ((c.SubmittedTasks || 0) - (c.GradedTasks || 0)), 0)}
+                                        </h3>
+                                        <span className="stat-trend warning">
+                                            Waiting for grades
+                                        </span>
                                     </div>
                                 </div>
-                                <div className="stat-card glass">
-                                    <div className="stat-icon blue"><Star size={28} /></div>
-                                    <div className="stat-info">
-                                        <p>Avg. Progress</p>
-                                        <h3>45%</h3>
+                                <div className="stat-card-v2 green">
+                                    <div className="stat-icon-wrapper">
+                                        <Award size={28} />
+                                    </div>
+                                    <div className="stat-content">
+                                        <span className="stat-label">Avg. Progress</span>
+                                        <h3 className="stat-value">
+                                            {enrolled.length > 0
+                                                ? Math.round(enrolled.reduce((acc, c) => acc + (c.TotalTasks > 0 ? (c.SubmittedTasks / c.TotalTasks) * 100 : 0), 0) / enrolled.length)
+                                                : 0}%
+                                        </h3>
+                                        <span className="stat-trend positive">
+                                            <Star size={14} /> Keep it up!
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -186,12 +208,12 @@ const StudentDashboard = () => {
                                             const submitted = course.SubmittedTasks || 0;
                                             const graded = course.GradedTasks || 0;
                                             const progress = total > 0 ? Math.round((submitted / total) * 100) : 0;
-                                            
+
                                             return (
                                                 <div key={course.ID} className="enrolled-course-card" onClick={() => navigate(`/classroom/${course.Slug}`)}>
                                                     <div className="card-badge">ACTIVE</div>
                                                     <h3>{course.ClassName}</h3>
-                                                    
+
                                                     <div className="course-metrics-grid mb-4">
                                                         <div className="metric-item">
                                                             <span className="val">{submitted}</span>
@@ -216,7 +238,7 @@ const StudentDashboard = () => {
                                                             <span className="text-xs font-bold text-primary">{submitted}/{total} Tasks</span>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div className="card-footer">
                                                         <span>Resume Lesson</span>
                                                         <ChevronRight size={18} />

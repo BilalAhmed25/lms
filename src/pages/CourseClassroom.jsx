@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-    Play, FileText, Clock, CheckCircle, ChevronRight, 
+import {
+    Play, FileText, Clock, CheckCircle, ChevronRight,
     MessageSquare, Award, Download, ExternalLink, AlertCircle,
     Check, X, ArrowLeft, Bell, BookOpen
 } from 'lucide-react';
@@ -9,6 +9,8 @@ import toast from 'react-hot-toast';
 import api from '../utils/api';
 import SEO from '../components/SEO';
 import Skeleton from '../components/Skeleton';
+import '../styles/dashboard.css';
+import '../styles/classroom.css';
 
 const Loader = () => (
     <div className="loader-container">
@@ -29,7 +31,7 @@ const CourseClassroom = () => {
     const [loading, setLoading] = useState(true);
     const [submitModal, setSubmitModal] = useState(null); // stores the assignment object
     const [submitting, setSubmitting] = useState(false);
-    
+
     // Form states for submission
     const [textResponse, setTextResponse] = useState('');
     const [fileBase64, setFileBase64] = useState('');
@@ -46,7 +48,7 @@ const CourseClassroom = () => {
         try {
             const courseData = await api.get(`/enrollment/classes/${slug}`);
             setCourse(courseData);
-            
+
             const [sessionsData, assignmentsData, resourcesData, announcementsData, mySubmissions] = await Promise.all([
                 api.get(`/lms/sessions/${courseData.ID}`),
                 api.get(`/lms/assignments/${courseData.ID}`),
@@ -54,7 +56,7 @@ const CourseClassroom = () => {
                 api.get(`/lms/announcements/${courseData.ID}`),
                 api.get(`/lms/my-submissions/${courseData.ID}`)
             ]);
-            
+
             setSessions(sessionsData);
             setAssignments(assignmentsData.map(a => ({
                 ...a,
@@ -142,13 +144,13 @@ const CourseClassroom = () => {
     return (
         <div className="classroom-layout animate-fade-in">
             <SEO title={`${course?.Name} | Classroom`} />
-            
+
             {/* Classroom Sidebar */}
             <aside className="classroom-sidebar">
                 <button className="back-btn" onClick={() => navigate('/student-dashboard')}>
                     <ArrowLeft size={18} /> Back to Dashboard
                 </button>
-                
+
                 <div className="course-mini-info">
                     <img src={course?.Thumbnail} alt={course?.Name} />
                     <h3>{course?.Name}</h3>
@@ -193,7 +195,7 @@ const CourseClassroom = () => {
                                         <h3>About this Course</h3>
                                         <p>{course?.Description}</p>
                                     </section>
-                                    
+
                                     <section className="classroom-section mt-8">
                                         <h3>Next Live Session</h3>
                                         {sessions.find(s => s.Status === 'upcoming') ? (
@@ -215,7 +217,7 @@ const CourseClassroom = () => {
                                         )}
                                     </section>
                                 </div>
-                                
+
                                 <div className="overview-side">
                                     <div className="classroom-stats-card glass">
                                         <div className="c-stat">
@@ -255,7 +257,7 @@ const CourseClassroom = () => {
                                             </div>
                                             <p className="session-date">{formatDate(session.SessionDate)} • {session.DurationMinutes} mins</p>
                                             <p className="session-desc">{session.Description}</p>
-                                            
+
                                             {session.Status === 'upcoming' || session.Status === 'live' ? (
                                                 <a href={session.ZoomLink} target="_blank" rel="noreferrer" className="session-action-btn">
                                                     Join Class <ChevronRight size={16} />
@@ -285,10 +287,13 @@ const CourseClassroom = () => {
                                         <div className="ann-header">
                                             <div className="ann-author">
                                                 <div className="author-avatar">{ann.AuthorName?.charAt(0)}</div>
-                                                <div>
+                                                <div className="ann-author-meta">
                                                     <strong>{ann.AuthorName}</strong>
-                                                    <span>{new Date(ann.CreatedAt).toLocaleDateString()}</span>
+                                                    <span>Instructor • {new Date(ann.CreatedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
                                                 </div>
+                                            </div>
+                                            <div className="ann-badge-icon">
+                                                <Bell size={20} className="text-primary opacity-40" />
                                             </div>
                                         </div>
                                         <h4>{ann.Title}</h4>
@@ -317,7 +322,7 @@ const CourseClassroom = () => {
                                             <p>{res.Description}</p>
                                             <div className="resource-meta">
                                                 <span>{res.FileType || 'PDF'}</span>
-                                                <span>{new Date(res.CreatedAt).toLocaleDateString()}</span>
+                                                <span>{new Date(res.CreatedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
                                             </div>
                                         </div>
                                         <a href={res.FileURL} target="_blank" rel="noreferrer" className="btn-icon-only">
@@ -345,13 +350,13 @@ const CourseClassroom = () => {
                                             </div>
                                             <div className="due-info">
                                                 <span>Due Date</span>
-                                                <strong>{new Date(assignment.DueDate).toLocaleDateString()}</strong>
+                                                <strong>{new Date(assignment.DueDate).toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })}</strong>
                                             </div>
                                         </div>
-                                        
+
                                         <h4>{assignment.Title}</h4>
                                         <p>{assignment.Description}</p>
-                                        
+
                                         <div className="assignment-meta">
                                             <span>Max Marks: {assignment.MaxMarks}</span>
                                             {assignment.TimeLimitMinutes > 0 && <span>Time: {assignment.TimeLimitMinutes}m</span>}
@@ -363,7 +368,7 @@ const CourseClassroom = () => {
                                                     <Download size={16} /> Download File
                                                 </a>
                                             )}
-                                            
+
                                             {(() => {
                                                 const sub = submissions.find(s => s.AssignmentID === assignment.ID);
                                                 if (sub) {
@@ -420,8 +425,8 @@ const CourseClassroom = () => {
 
                         {submitModal.Type === 'quiz' && (
                             <div className="quiz-progress-bar">
-                                <div 
-                                    className="fill" 
+                                <div
+                                    className="fill"
                                     style={{ width: `${(Object.keys(quizAnswers).length / submitModal.Questions.length) * 100}%` }}
                                 ></div>
                             </div>
@@ -433,16 +438,16 @@ const CourseClassroom = () => {
                                     {(submitModal.Questions || []).map((q, qIdx) => (
                                         <div key={qIdx} className="quiz-question-box">
                                             <p className="q-text"><strong>Q{qIdx + 1}:</strong> {q.text}</p>
-                                            
+
                                             {q.type === 'mcq' ? (
                                                 <div className="options-grid">
                                                     {q.options.map((opt, oIdx) => (
                                                         <label key={oIdx} className={`option-label ${quizAnswers[qIdx] === opt ? 'selected' : ''}`}>
-                                                            <input 
-                                                                type="radio" 
-                                                                name={`q-${qIdx}`} 
+                                                            <input
+                                                                type="radio"
+                                                                name={`q-${qIdx}`}
                                                                 value={opt}
-                                                                onChange={() => setQuizAnswers({...quizAnswers, [qIdx]: opt})}
+                                                                onChange={() => setQuizAnswers({ ...quizAnswers, [qIdx]: opt })}
                                                             />
                                                             <span className="radio-custom"></span>
                                                             {opt}
@@ -450,12 +455,12 @@ const CourseClassroom = () => {
                                                     ))}
                                                 </div>
                                             ) : (
-                                                <textarea 
+                                                <textarea
                                                     className="admin-textarea"
                                                     placeholder="Type your answer here..."
                                                     rows="3"
                                                     value={quizAnswers[qIdx] || ''}
-                                                    onChange={(e) => setQuizAnswers({...quizAnswers, [qIdx]: e.target.value})}
+                                                    onChange={(e) => setQuizAnswers({ ...quizAnswers, [qIdx]: e.target.value })}
                                                 ></textarea>
                                             )}
                                         </div>
@@ -465,7 +470,7 @@ const CourseClassroom = () => {
                                 <div className="assignment-submission-fields">
                                     <div className="form-group">
                                         <label>Response / Comments</label>
-                                        <textarea 
+                                        <textarea
                                             className="admin-textarea"
                                             rows="6"
                                             placeholder="Type your response or comments for the teacher..."
@@ -473,7 +478,7 @@ const CourseClassroom = () => {
                                             onChange={e => setTextResponse(e.target.value)}
                                         ></textarea>
                                     </div>
-                                    
+
                                     <div className="form-group mt-6">
                                         <label>Attachment (if required)</label>
                                         <div className="file-upload-box">
