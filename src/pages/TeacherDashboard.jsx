@@ -12,6 +12,7 @@ import Modal from '../components/Modal';
 import SEO from '../components/SEO';
 import Sidebar from '../components/Sidebar';
 import DashboardHeader from '../components/DashboardHeader';
+import Dropdown from '../components/Dropdown';
 import { useAuth } from '../App';
 import '../styles/dashboard.css';
 import '../styles/teacher-dashboard.css';
@@ -57,7 +58,7 @@ const TeacherDashboard = () => {
 
     const [assignmentForm, setAssignmentForm] = useState({
         title: '', type: 'assignment', dueDate: '', maxMarks: '', description: '',
-        questions: [{ text: '', type: 'text', options: [] }]
+        questions: [{ text: '', type: 'mcq', options: ['', '', '', ''], correctOption: 0 }]
     });
 
     const [resourceForm, setResourceForm] = useState({
@@ -124,7 +125,7 @@ const TeacherDashboard = () => {
         try {
             await api.post('/lms/assignments', { ...assignmentForm, courseId: selectedCourseId });
             setShowAssignmentModal(false);
-            setAssignmentForm({ title: '', type: 'assignment', dueDate: '', maxMarks: '', description: '', questions: [{ text: '', type: 'text', options: [] }] });
+            setAssignmentForm({ title: '', type: 'assignment', dueDate: '', maxMarks: '', description: '', questions: [{ text: '', type: 'mcq', options: ['', '', '', ''], correctOption: 0 }] });
             toast.success('Assignment/Quiz created successfully!');
             fetchDashboardData();
         } catch (err) {
@@ -201,7 +202,7 @@ const TeacherDashboard = () => {
     const handleAddQuestion = () => {
         setAssignmentForm({
             ...assignmentForm,
-            questions: [...assignmentForm.questions, { text: '', type: 'text', options: [] }]
+            questions: [...assignmentForm.questions, { text: '', type: 'mcq', options: ['', '', '', ''], correctOption: 0 }]
         });
     };
 
@@ -764,16 +765,15 @@ const TeacherDashboard = () => {
                 </>}
             >
                 <form id="form-session" onSubmit={handleCreateSession}>
-                    <div className="form-group">
-                        <label>Target Course</label>
-                        <div className="input-with-icon">
-                            <BookOpen size={18} />
-                            <select className="admin-select" value={selectedCourseId} onChange={e => setSelectedCourseId(e.target.value)} required>
-                                <option value="">Select a Course</option>
-                                {courses.map(c => <option key={c.ID} value={c.ID}>{c.Name}</option>)}
-                            </select>
-                        </div>
-                    </div>
+                    <Dropdown
+                        label="Target Course"
+                        icon={BookOpen}
+                        options={courses.map(c => ({ value: c.ID, label: c.Name }))}
+                        value={selectedCourseId}
+                        onChange={(val) => setSelectedCourseId(val)}
+                        placeholder="Select a Course"
+                        searchable={true}
+                    />
                     <FloatingLabelInput label="Session Title" icon={Type} value={sessionForm.title} onChange={e => setSessionForm({ ...sessionForm, title: e.target.value })} required />
                     <div className="form-grid">
                         <FloatingLabelInput label="Date & Time" icon={Calendar} type="datetime-local" value={sessionForm.date} onChange={e => setSessionForm({ ...sessionForm, date: e.target.value })} required />
@@ -796,47 +796,121 @@ const TeacherDashboard = () => {
                 </>}
             >
                 <form id="form-assignment" onSubmit={handleCreateAssignment}>
-                    <div className="form-group">
-                        <label>Target Course</label>
-                        <div className="input-with-icon">
-                            <BookOpen size={18} />
-                            <select className="admin-select" value={selectedCourseId} onChange={e => setSelectedCourseId(e.target.value)} required>
-                                <option value="">Select a Course</option>
-                                {courses.map(c => <option key={c.ID} value={c.ID}>{c.Name}</option>)}
-                            </select>
-                        </div>
-                    </div>
+                    <Dropdown
+                        label="Target Course"
+                        icon={BookOpen}
+                        options={courses.map(c => ({ value: c.ID, label: c.Name }))}
+                        value={selectedCourseId}
+                        onChange={(val) => setSelectedCourseId(val)}
+                        placeholder="Select a Course"
+                        searchable={true}
+                    />
                     <FloatingLabelInput label="Task Title" icon={Type} placeholder="e.g. Mid-term Assessment" value={assignmentForm.title} onChange={e => setAssignmentForm({ ...assignmentForm, title: e.target.value })} required />
                     <div className="form-grid">
-                        <div className="form-group">
-                            <label>Task Type</label>
-                            <div className="input-with-icon">
-                                <Award size={18} />
-                                <select className="admin-select" value={assignmentForm.type} onChange={e => setAssignmentForm({ ...assignmentForm, type: e.target.value })}>
-                                    <option value="assignment">Assignment</option>
-                                    <option value="quiz">Quiz (MCQs)</option>
-                                    <option value="exam">Final Exam</option>
-                                </select>
-                            </div>
-                        </div>
+                        <Dropdown
+                            label="Task Type"
+                            icon={Award}
+                            options={[
+                                { value: 'assignment', label: 'Assignment' },
+                                { value: 'quiz', label: 'Quiz (MCQs)' },
+                                { value: 'exam', label: 'Final Exam' }
+                            ]}
+                            value={assignmentForm.type}
+                            onChange={(val) => setAssignmentForm({ ...assignmentForm, type: val })}
+                        />
                         <FloatingLabelInput label="Due Date" icon={Clock} type="date" value={assignmentForm.dueDate} onChange={e => setAssignmentForm({ ...assignmentForm, dueDate: e.target.value })} required />
                     </div>
                     <FloatingLabelInput label="Task Description" icon={MessageSquare} type="textarea" value={assignmentForm.description} onChange={e => setAssignmentForm({ ...assignmentForm, description: e.target.value })} required />
                     {assignmentForm.type === 'quiz' && (
-                        <div className="quiz-questions-builder mt-6">
-                            <div className="flex-between mb-4">
-                                <h3>Quiz Questions</h3>
-                                <button type="button" className="btn btn-secondary btn-sm" onClick={handleAddQuestion}><Plus size={16} /> Add Question</button>
-                            </div>
-                            {assignmentForm.questions.map((q, qIdx) => (
-                                <div key={qIdx} className="question-box p-4 border rounded-2xl mb-4 bg-slate-50">
-                                    <FloatingLabelInput label={`Question ${qIdx + 1}`} value={q.text} onChange={e => {
-                                        const newQs = [...assignmentForm.questions];
-                                        newQs[qIdx].text = e.target.value;
-                                        setAssignmentForm({ ...assignmentForm, questions: newQs });
-                                    }} required />
+                        <div className="quiz-questions-builder mt-8 pt-6 border-t border-slate-100">
+                            <div className="flex items-center justify-between mb-8">
+                                <div>
+                                    <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                        <Hash className="text-primary" size={22} /> Quiz Assessment Builder
+                                    </h3>
+                                    <p className="text-sm text-slate-500 mt-1">Design your multiple choice questions below.</p>
                                 </div>
-                            ))}
+                                <button type="button" className="btn btn-secondary btn-sm h-11 px-6 rounded-xl" onClick={handleAddQuestion}>
+                                    <Plus size={18} /> Add New Question
+                                </button>
+                            </div>
+
+                            <div className="questions-stack space-y-8">
+                                {assignmentForm.questions.map((q, qIdx) => (
+                                    <div key={qIdx} className="question-premium-card bg-slate-50/50 border border-slate-200 rounded-[32px] p-8 transition-all hover:border-primary/30">
+                                        <div className="flex items-center justify-between mb-6">
+                                            <div className="flex items-center gap-3">
+                                                <span className="flex items-center justify-center w-10 h-10 bg-white border border-slate-200 rounded-xl font-bold text-primary shadow-sm">
+                                                    {qIdx + 1}
+                                                </span>
+                                                <h4 className="font-bold text-slate-700">Question Statement</h4>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                className="w-10 h-10 flex items-center justify-center rounded-xl text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all"
+                                                onClick={() => {
+                                                    const newQs = assignmentForm.questions.filter((_, i) => i !== qIdx);
+                                                    setAssignmentForm({ ...assignmentForm, questions: newQs });
+                                                }}
+                                                title="Remove Question"
+                                            >
+                                                <X size={20} />
+                                            </button>
+                                        </div>
+
+                                        <div className="mb-6">
+                                            <FloatingLabelInput
+                                                label="What is the question?"
+                                                icon={MessageSquare}
+                                                value={q.text}
+                                                onChange={e => {
+                                                    const newQs = [...assignmentForm.questions];
+                                                    newQs[qIdx].text = e.target.value;
+                                                    setAssignmentForm({ ...assignmentForm, questions: newQs });
+                                                }}
+                                                required
+                                            />
+                                        </div>
+
+                                        <div className="options-container grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {q.options.map((opt, optIdx) => (
+                                                <div
+                                                    key={optIdx}
+                                                    className={`premium-option-item group relative flex items-center p-1 rounded-2xl border-2 transition-all duration-300 ${q.correctOption === optIdx ? 'border-primary bg-white shadow-lg shadow-primary/5' : 'border-white bg-white hover:border-slate-200'}`}
+                                                >
+                                                    <div
+                                                        className={`option-selector-trigger flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-xl transition-all cursor-pointer ${q.correctOption === optIdx ? 'bg-primary text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200'}`}
+                                                        onClick={() => {
+                                                            const newQs = [...assignmentForm.questions];
+                                                            newQs[qIdx].correctOption = optIdx;
+                                                            setAssignmentForm({ ...assignmentForm, questions: newQs });
+                                                        }}
+                                                    >
+                                                        {q.correctOption === optIdx ? <CheckCircle size={20} /> : <span className="text-sm font-bold">{String.fromCharCode(65 + optIdx)}</span>}
+                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        placeholder={`Enter choice ${String.fromCharCode(65 + optIdx)}...`}
+                                                        className="flex-1 bg-transparent border-none outline-none px-4 py-3 text-sm font-semibold text-slate-700 placeholder:text-slate-400"
+                                                        value={opt}
+                                                        onChange={e => {
+                                                            const newQs = [...assignmentForm.questions];
+                                                            newQs[qIdx].options[optIdx] = e.target.value;
+                                                            setAssignmentForm({ ...assignmentForm, questions: newQs });
+                                                        }}
+                                                        required
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div className="flex items-center gap-2 mt-6 px-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                                            <Target size={14} className="text-primary" />
+                                            <span>Marked as correct: Option {String.fromCharCode(65 + q.correctOption)}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     )}
                 </form>
@@ -856,13 +930,15 @@ const TeacherDashboard = () => {
                 </>}
             >
                 <form id="form-resource" onSubmit={handleCreateResource}>
-                    <div className="form-group mb-5">
-                        <label>Target Course</label>
-                        <select className="admin-select" value={selectedCourseId} onChange={(e) => setSelectedCourseId(e.target.value)} required>
-                            <option value="">Select a course</option>
-                            {courses.map(c => <option key={c.ID} value={c.ID}>{c.Name}</option>)}
-                        </select>
-                    </div>
+                    <Dropdown
+                        label="Target Course"
+                        icon={BookOpen}
+                        options={courses.map(c => ({ value: c.ID, label: c.Name }))}
+                        value={selectedCourseId}
+                        onChange={(val) => setSelectedCourseId(val)}
+                        placeholder="Select a course"
+                        searchable={true}
+                    />
                     <div className="file-upload-wrapper">
                         <label>Upload PDF Document</label>
                         <div className={`file-drop-zone ${selectedFileName ? 'active' : ''}`}>
@@ -896,16 +972,15 @@ const TeacherDashboard = () => {
                 </>}
             >
                 <form id="form-announcement" onSubmit={handleCreateAnnouncement}>
-                    <div className="form-group mb-4">
-                        <label>Target Course</label>
-                        <div className="input-with-icon">
-                            <BellRing size={18} />
-                            <select className="admin-select" value={selectedCourseId} onChange={(e) => setSelectedCourseId(e.target.value)} required>
-                                <option value="">Select a course</option>
-                                {courses.map(c => <option key={c.ID} value={c.ID}>{c.Name}</option>)}
-                            </select>
-                        </div>
-                    </div>
+                    <Dropdown
+                        label="Target Course"
+                        icon={BellRing}
+                        options={courses.map(c => ({ value: c.ID, label: c.Name }))}
+                        value={selectedCourseId}
+                        onChange={(val) => setSelectedCourseId(val)}
+                        placeholder="Select a course"
+                        searchable={true}
+                    />
                     <FloatingLabelInput label="Announcement Title" icon={Type} placeholder="e.g. Class Rescheduled" value={announcementForm.title} onChange={(e) => setAnnouncementForm({ ...announcementForm, title: e.target.value })} required />
                     <FloatingLabelInput label="Message Content" icon={MessageSquare} type="textarea" value={announcementForm.content} onChange={(e) => setAnnouncementForm({ ...announcementForm, content: e.target.value })} required />
                 </form>
