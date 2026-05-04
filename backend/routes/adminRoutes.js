@@ -127,4 +127,22 @@ router.put('/courses/:id/update', isAdmin, async (req, res) => {
     }
 });
 
+
+router.delete('/courses/:id', isAdmin, async (req, res) => {
+    try {
+        // Double check if there are enrollments
+        const [[{ count }]] = await con.execute('SELECT COUNT(*) as count FROM LMS_Enrollments WHERE CourseID = ?', [req.params.id]);
+        if (count > 0) {
+            return res.status(400).json('Cannot delete course with active enrollments');
+        }
+
+        await con.execute('DELETE FROM LMS_Courses WHERE ID = ?', [req.params.id]);
+        res.json('Course deleted successfully');
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Deletion failed');
+    }
+});
+
 module.exports = router;
+

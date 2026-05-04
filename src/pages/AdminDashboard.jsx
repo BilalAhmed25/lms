@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Users, CheckCircle, XCircle, Pencil, ChevronRight, AlertCircle, Star, Eye, DollarSign, LayoutDashboard,
+    Users, CheckCircle, XCircle, Pencil, Trash2, ChevronRight, AlertCircle, Star, Eye, DollarSign, LayoutDashboard,
     BookOpen, PlusCircle, UserCheck, TrendingUp, Search, Bell, Book,
     Image, Target, Award, Zap, Hash, Clock, FileText, AlignLeft, Info, Plus,
     Menu, X
@@ -227,6 +227,23 @@ const AdminDashboard = () => {
             alert('Update failed');
         }
         setSubmitting(false);
+    };
+
+        const handleDeleteCourse = async (courseId, studentCount) => {
+        if (studentCount > 0) {
+            toast.error("Cannot delete course with active enrollments.");
+            return;
+        }
+
+        if (!window.confirm("Are you sure you want to delete this course? This action cannot be undone.")) return;
+
+        try {
+            await api.delete(`/admin/courses/${courseId}`);
+            toast.success("Course deleted successfully!");
+            fetchTabContent();
+        } catch (err) {
+            toast.error("Failed to delete course.");
+        }
     };
 
     const handleEditFormChange = (field, value) => {
@@ -569,6 +586,9 @@ const AdminDashboard = () => {
                                                     <Pencil size={18} />
                                                 </button>
                                                 <button className="btn-icon" title="View Detailed Stats"><TrendingUp size={18} /></button>
+                                                <button className="btn-icon text-red-500 hover:bg-red-50" onClick={() => handleDeleteCourse(cls.ID, cls.StudentCount)} title="Delete Course">
+                                                    <Trash2 size={18} />
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -849,7 +869,7 @@ const AdminDashboard = () => {
                                     </div>
                                 </div>
 
-                                <div className="admin-input-group">
+                                <div className="admin-input-group full-width">
                                     <label>Course Thumbnail</label>
                                     <label className="image-uploader-wrapper">
                                         <input type="file" hidden accept="image/*" onChange={handleEditImageChange} />
@@ -930,6 +950,12 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
+
+
+
+
+
 
 
 
