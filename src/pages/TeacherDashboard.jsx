@@ -25,7 +25,7 @@ const Loader = () => (
 const TeacherDashboard = () => {
     const { user, logout } = useAuth();
     const [activeTab, setActiveTab] = useState('overview');
-    const [contentSubTab, setContentSubTab] = useState('assignments'); 
+    const [contentSubTab, setContentSubTab] = useState('assignments');
     const [gradingSubTab, setGradingSubTab] = useState('pending'); // new state for grading sub-tabs
     const [courses, setCourses] = useState([]);
     const [submissions, setSubmissions] = useState([]);
@@ -254,14 +254,14 @@ const TeacherDashboard = () => {
                     subtitle: "Review and grade tasks submitted by your students.",
                     right: (
                         <div className="filter-pills">
-                            <button 
-                                className={gradingSubTab === 'pending' ? 'active' : ''} 
+                            <button
+                                className={gradingSubTab === 'pending' ? 'active' : ''}
                                 onClick={() => setGradingSubTab('pending')}
                             >
                                 Pending
                             </button>
-                            <button 
-                                className={gradingSubTab === 'graded' ? 'active' : ''} 
+                            <button
+                                className={gradingSubTab === 'graded' ? 'active' : ''}
                                 onClick={() => setGradingSubTab('graded')}
                             >
                                 Graded
@@ -492,13 +492,6 @@ const TeacherDashboard = () => {
 
                         {contentSubTab === 'assignments' && (
                             <section className="content-section">
-                                <div className="section-meta-header mb-6">
-                                    <div className="flex align-center gap-2 text-muted">
-                                        <Award size={18} />
-                                        <span className="font-bold uppercase tracking-wider text-xs">{teacherContent.assignments.length} Total Tasks</span>
-                                    </div>
-                                </div>
-
                                 <div className="content-hub-grid">
                                     {teacherContent.assignments.length > 0 ? (
                                         teacherContent.assignments.map(item => (
@@ -545,13 +538,6 @@ const TeacherDashboard = () => {
 
                         {contentSubTab === 'resources' && (
                             <section className="content-section">
-                                <div className="section-meta-header mb-6">
-                                    <div className="flex align-center gap-2 text-muted">
-                                        <FileText size={18} />
-                                        <span className="font-bold uppercase tracking-wider text-xs">{teacherContent.resources.length} Total Files</span>
-                                    </div>
-                                </div>
-
                                 <div className="content-hub-grid">
                                     {teacherContent.resources.length > 0 ? (
                                         teacherContent.resources.map(item => (
@@ -617,38 +603,38 @@ const TeacherDashboard = () => {
                                                 return gradingSubTab === 'pending' ? !isGraded : isGraded;
                                             })
                                             .map(sub => (
-                                            <tr key={sub.ID}>
-                                                <td>
-                                                    <div className="user-cell">
-                                                        <strong>{sub.StudentName}</strong>
-                                                        <span>{sub.StudentEmail || 'Student'}</span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div className="course-assignment-cell">
-                                                        <span className="course-name-mini">{sub.CourseName}</span>
-                                                        <span className="assignment-title-mini">{sub.AssignmentTitle}</span>
-                                                    </div>
-                                                </td>
-                                                <td>{new Date(sub.SubmittedAt).toLocaleDateString()}</td>
-                                                <td>
-                                                    {gradingSubTab === 'pending' ? (
-                                                        <span className="badge badge-warning animate-pulse">Pending Review</span>
-                                                    ) : (
-                                                        <span className="badge badge-success">Graded</span>
-                                                    )}
-                                                </td>
-                                                <td>
-                                                    {gradingSubTab === 'pending' ? (
-                                                        <button className="btn btn-primary btn-sm" onClick={() => { setSelectedSubmission(sub); setShowGradeModal(true); }}>Grade Now</button>
-                                                    ) : (
-                                                        <div className="score-display font-bold text-primary">
-                                                            {sub.Grade ?? sub.Marks ?? sub.marks} / {sub.MaxMarks || 100}
+                                                <tr key={sub.ID}>
+                                                    <td>
+                                                        <div className="user-cell">
+                                                            <strong>{sub.StudentName}</strong>
+                                                            <span>{sub.StudentEmail || 'Student'}</span>
                                                         </div>
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        ))}
+                                                    </td>
+                                                    <td>
+                                                        <div className="course-assignment-cell">
+                                                            <span className="course-name-mini">{sub.CourseName}</span>
+                                                            <span className="assignment-title-mini">{sub.AssignmentTitle}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>{new Date(sub.SubmittedAt).toLocaleDateString()}</td>
+                                                    <td>
+                                                        {gradingSubTab === 'pending' ? (
+                                                            <span className="badge badge-warning animate-pulse">Pending Review</span>
+                                                        ) : (
+                                                            <span className="badge badge-success">Graded</span>
+                                                        )}
+                                                    </td>
+                                                    <td>
+                                                        {gradingSubTab === 'pending' ? (
+                                                            <button className="btn btn-primary btn-sm" onClick={() => { setSelectedSubmission(sub); setShowGradeModal(true); }}>Grade Now</button>
+                                                        ) : (
+                                                            <div className="score-display font-bold text-primary">
+                                                                {sub.Grade ?? sub.Marks ?? sub.marks} / {sub.MaxMarks || 100}
+                                                            </div>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -664,8 +650,8 @@ const TeacherDashboard = () => {
                                 </div>
                                 <h3>{gradingSubTab === 'pending' ? 'All Caught Up!' : 'No History Yet'}</h3>
                                 <p>
-                                    {gradingSubTab === 'pending' 
-                                        ? "Great job! You've successfully reviewed all pending tasks for your students." 
+                                    {gradingSubTab === 'pending'
+                                        ? "Great job! You've successfully reviewed all pending tasks for your students."
                                         : "You haven't graded any submissions yet. Once you grade a task, it will appear here."}
                                 </p>
                                 <button className="btn-empty-action" onClick={() => {

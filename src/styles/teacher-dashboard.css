@@ -329,11 +329,12 @@
 .session-details-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 34px;
     padding: 20px 0;
     border-top: 1px solid #f1f5f9;
     border-bottom: 1px solid #f1f5f9;
     margin-bottom: 20px;
+    /* justify-content: space-between; */
 }
 
 .detail-item {
@@ -564,6 +565,10 @@
 .empty-state-v2 svg {
     margin-bottom: 16px;
     opacity: 0.3;
+}
+
+.empty-state-v2 p {
+    margin-bottom: 16px;
 }
 
 @media (max-width: 1024px) {
