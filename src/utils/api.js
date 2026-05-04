@@ -1,5 +1,5 @@
-// // const BASE_URL = 'http://localhost:3000';
-const BASE_URL = 'https://deenova-api.creavics.com';
+const BASE_URL = 'http://localhost:3000';
+// const BASE_URL = 'https://deenova-api.creavics.com';
 
 const request = async (endpoint, options = {}) => {
     const token = localStorage.getItem('token');

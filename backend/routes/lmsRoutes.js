@@ -27,6 +27,25 @@ router.get('/submissions/pending', async (req, res) => {
     }
 });
 
+// Get all graded submissions for assignments created by the teacher
+router.get('/submissions/graded', async (req, res) => {
+    if (req.user.Role === 'Student') return res.status(403).json('Forbidden');
+    try {
+        const [rows] = await con.execute(`
+            SELECT s.*, u.Name as StudentName, a.Title as AssignmentTitle, a.MaxMarks
+            FROM LMS_Submissions s
+            JOIN Users u ON s.StudentID = u.ID
+            JOIN LMS_Assignments a ON s.AssignmentID = a.ID
+            WHERE a.TeacherID = ? AND s.Status = 'graded'
+            ORDER BY s.SubmittedAt DESC
+        `, [req.user.ID]);
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Fetch failed');
+    }
+});
+
 // Get all sessions for the teacher (all courses)
 router.get('/teacher/sessions', async (req, res) => {
     if (req.user.Role === 'Student') return res.status(403).json('Forbidden');
@@ -93,10 +112,10 @@ router.post('/sessions', async (req, res) => {
     if (req.user.Role === 'Student') return res.status(403).json('Forbidden');
     try {
         const { courseId, title, description, sessionDate, date, durationMinutes, duration, zoomLink } = req.body;
-        
+
         // Sanitize: replace empty strings / undefined with null or defaults
-        const safeStr  = (v) => (v !== undefined && v !== '' ? v : null);
-        const safeInt  = (v, def) => (v !== undefined && v !== '' && !isNaN(v) ? parseInt(v) : def);
+        const safeStr = (v) => (v !== undefined && v !== '' ? v : null);
+        const safeInt = (v, def) => (v !== undefined && v !== '' && !isNaN(v) ? parseInt(v) : def);
 
         // Map frontend fields (date/duration) to backend fields (sessionDate/durationMinutes) if needed
         const finalDate = safeStr(sessionDate || date);
@@ -154,10 +173,10 @@ router.post('/assignments', async (req, res) => {
     if (req.user.Role === 'Student') return res.status(403).json('Forbidden');
     try {
         const { courseId, type, title, description, questions, fileURL, dueDate, maxMarks, passingMarks, timeLimitMinutes } = req.body;
-        
+
         // Sanitize: replace empty strings / undefined with null or defaults
-        const safeStr  = (v) => (v !== undefined && v !== '' ? v : null);
-        const safeInt  = (v, def) => (v !== undefined && v !== '' && !isNaN(v) ? parseInt(v) : def);
+        const safeStr = (v) => (v !== undefined && v !== '' ? v : null);
+        const safeInt = (v, def) => (v !== undefined && v !== '' && !isNaN(v) ? parseInt(v) : def);
 
         let resolvedFileURL = fileURL || null;
         if (resolvedFileURL && resolvedFileURL.startsWith('data:')) {
@@ -196,7 +215,7 @@ router.post('/submissions', async (req, res) => {
     if (req.user.Role !== 'Student') return res.status(403).json('Students only');
     try {
         const { assignmentId, fileURL, textResponse, answers } = req.body;
-        
+
         let resolvedFileURL = fileURL;
         if (resolvedFileURL && resolvedFileURL.startsWith('data:')) {
             resolvedFileURL = await uploadToCloudinary(resolvedFileURL, 'lms_submissions');
@@ -283,7 +302,7 @@ router.post('/resources', async (req, res) => {
     if (req.user.Role === 'Student') return res.status(403).json('Forbidden');
     try {
         const { courseId, title, description, fileURL, fileType } = req.body;
-        
+
         let resolvedFileURL = fileURL;
         if (resolvedFileURL && resolvedFileURL.startsWith('data:')) {
             resolvedFileURL = await uploadToCloudinary(resolvedFileURL, 'lms_resources');
