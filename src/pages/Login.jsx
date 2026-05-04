@@ -7,105 +7,105 @@ import LandingHero from '../components/LandingHero';
 import SEO from '../components/SEO';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const { login } = useAuth();
-  const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+    const { login } = useAuth();
+    const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    try {
-      const user = await login(email, password);
-      
-      const pendingAction = localStorage.getItem('pendingAction');
-      if (pendingAction && user.Role === 'Student') {
-        const action = JSON.parse(pendingAction);
-        localStorage.removeItem('pendingAction');
-        if (action.type === 'enroll') {
-          navigate(`/enroll?course=${action.courseSlug}`);
-        } else {
-          // For wishlist, go back to course and it will handle it
-          navigate(`/course/${action.courseSlug}`, { state: { autoWishlist: true } });
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        try {
+            const user = await login(email, password);
+
+            const pendingAction = localStorage.getItem('pendingAction');
+            if (pendingAction && user.Role === 'Student') {
+                const action = JSON.parse(pendingAction);
+                localStorage.removeItem('pendingAction');
+                if (action.type === 'enroll') {
+                    navigate(`/enroll?course=${action.courseSlug}`);
+                } else {
+                    // For wishlist, go back to course and it will handle it
+                    navigate(`/course/${action.courseSlug}`, { state: { autoWishlist: true } });
+                }
+                return;
+            }
+
+            if (user.Role === 'Admin') {
+                navigate('/admin-dashboard');
+            } else if (user.Role === 'Teacher') {
+                navigate('/teacher-dashboard');
+            } else {
+                navigate('/student-dashboard');
+            }
+        } catch (err) {
+            console.error(err);
+            alert(err.message || 'Incorrect email or password');
+        } finally {
+            setSubmitting(false);
         }
-        return;
-      }
+    };
 
-      if (user.Role === 'Admin') {
-        navigate('/admin-dashboard');
-      } else if (user.Role === 'Teacher') {
-        navigate('/teacher-dashboard');
-      } else {
-        navigate('/student-dashboard');
-      }
-    } catch (err) {
-      console.error(err);
-      alert(err.message || 'Incorrect email or password');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  return (
-    <div className="login-page animate-fade-in">
-      <SEO 
-        title="Login" 
-        description="Access your Deenova Learning Hub account to continue your educational journey."
-      />
-      <LandingHero 
-        title={<>Find out the <br/> <span className="text-primary">Best</span> Way to Learn.</>}
-        description="Unlock your potential with our award-winning curriculum and expert-led mentorship programs. Join a community of over 50,000 successful students worldwide."
-        image="/hero_banner.png"
-      >
-        <div className="auth-container glass">
-          <div className="auth-header">
-            <h2>Welcome Back</h2>
-            <p>Continue your learning journey</p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="auth-form">
-            <FloatingLabelInput
-              label="Email Address"
-              type="email"
-              icon={Mail}
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mb-6"
+    return (
+        <div className="login-page animate-fade-in">
+            <SEO
+                title="Login"
+                description="Access your Deenova Learning Hub account to continue your educational journey."
             />
+            <LandingHero
+                title={<>Find out the <br /> <span className="text-primary">Best</span> Way to Learn.</>}
+                description="Unlock your potential with our award-winning curriculum and expert-led mentorship programs. Join a community of over 50,000 successful students worldwide."
+                image="/hero_banner.png"
+            >
+                <div className="auth-container glass">
+                    <div className="auth-header">
+                        <h2>Welcome Back</h2>
+                        <p>Continue your learning journey</p>
+                    </div>
 
-            <div className="label-row-wrapper mb-6">
-              <FloatingLabelInput
-                label="Password"
-                type="password"
-                icon={Lock}
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <Link to="/forgot-password" className="text-primary forgot-link-standalone">Forgot Password?</Link>
-            </div>
+                    <form onSubmit={handleSubmit} className="auth-form">
+                        <FloatingLabelInput
+                            label="Email Address"
+                            type="email"
+                            icon={Mail}
+                            required
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="mb-6"
+                        />
 
-            <button type="submit" className="btn btn-primary w-full" disabled={submitting}>
-              {submitting ? (
-                'Please wait...'
-              ) : (
-                <>
-                  <LogIn size={20} />
-                  Log In
-                </>
-              )}
-            </button>
-          </form>
+                        <div className="label-row-wrapper mb-6">
+                            <FloatingLabelInput
+                                label="Password"
+                                type="password"
+                                icon={Lock}
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <Link to="/forgot-password" className="text-primary forgot-link-standalone">Forgot Password?</Link>
+                        </div>
 
-          <p className="auth-footer">
-            Don't have an account? <Link to="/register" className="text-primary">Sign Up</Link>
-          </p>
+                        <button type="submit" className="btn btn-primary w-full" disabled={submitting}>
+                            {submitting ? (
+                                'Please wait...'
+                            ) : (
+                                <>
+                                    <LogIn size={20} />
+                                    Log In
+                                </>
+                            )}
+                        </button>
+                    </form>
+
+                    <p className="auth-footer">
+                        Don't have an account? <Link to="/register" className="text-primary">Sign Up</Link>
+                    </p>
+                </div>
+            </LandingHero>
         </div>
-      </LandingHero>
-    </div>
-  );
+    );
 };
 
 export default Login;
