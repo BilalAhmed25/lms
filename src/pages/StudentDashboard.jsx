@@ -118,7 +118,7 @@ const StudentDashboard = () => {
             </header>
 
             {/* Sidebar */}
-            <Sidebar 
+            <Sidebar
                 user={user}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
@@ -135,7 +135,7 @@ const StudentDashboard = () => {
 
             {/* Main Content */}
             <main className="admin-main">
-                <DashboardHeader 
+                <DashboardHeader
                     left={
                         <div className="header-left-content">
                             <span className="header-badge-tag">{headerConfig.tag}</span>
@@ -181,20 +181,49 @@ const StudentDashboard = () => {
                                 <div className="mb-12">
                                     <h3 className="mb-6">Continue Learning</h3>
                                     <div className="courses-grid-modern">
-                                        {enrolled.slice(0, 2).map(course => (
-                                            <div key={course.ID} className="enrolled-course-card" onClick={() => navigate(`/classroom/${course.Slug}`)}>
-                                                <div className="card-badge">ACTIVE</div>
-                                                <h3>{course.ClassName}</h3>
-                                                <div className="progress-info">
-                                                    <div className="progress-bar-minimal"><div className="fill" style={{ width: '45%' }}></div></div>
-                                                    <span>45% Complete</span>
+                                        {enrolled.map(course => {
+                                            const total = course.TotalTasks || 0;
+                                            const submitted = course.SubmittedTasks || 0;
+                                            const graded = course.GradedTasks || 0;
+                                            const progress = total > 0 ? Math.round((submitted / total) * 100) : 0;
+                                            
+                                            return (
+                                                <div key={course.ID} className="enrolled-course-card" onClick={() => navigate(`/classroom/${course.Slug}`)}>
+                                                    <div className="card-badge">ACTIVE</div>
+                                                    <h3>{course.ClassName}</h3>
+                                                    
+                                                    <div className="course-metrics-grid mb-4">
+                                                        <div className="metric-item">
+                                                            <span className="val">{submitted}</span>
+                                                            <span className="lbl">Submitted</span>
+                                                        </div>
+                                                        <div className="metric-item">
+                                                            <span className="val">{graded}</span>
+                                                            <span className="lbl">Graded</span>
+                                                        </div>
+                                                        <div className="metric-item">
+                                                            <span className="val">{total - submitted}</span>
+                                                            <span className="lbl">Pending</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="progress-info">
+                                                        <div className="progress-bar-minimal">
+                                                            <div className="fill" style={{ width: `${progress}%` }}></div>
+                                                        </div>
+                                                        <div className="flex-between">
+                                                            <span>{progress}% Complete</span>
+                                                            <span className="text-xs font-bold text-primary">{submitted}/{total} Tasks</span>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div className="card-footer">
+                                                        <span>Resume Lesson</span>
+                                                        <ChevronRight size={18} />
+                                                    </div>
                                                 </div>
-                                                <div className="card-footer">
-                                                    <span>Resume Lesson</span>
-                                                    <ChevronRight size={18} />
-                                                </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             )}
@@ -257,7 +286,6 @@ const StudentDashboard = () => {
                     )}
                     {activeTab === 'browse' && (
                         <div className="animate-slide-up">
-                            <h2 className="mb-8">Course Catalog</h2>
                             <CoursesSection
                                 courses={trulyAvailable}
                                 showHeader={false}
@@ -269,7 +297,6 @@ const StudentDashboard = () => {
 
                     {activeTab === 'payments' && (
                         <div className="animate-slide-up">
-                            <h2 className="mb-8">Billing & Receipts</h2>
                             <div className="billing-table-card">
                                 <table className="text-left-table">
                                     <thead>

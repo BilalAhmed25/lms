@@ -96,11 +96,7 @@ router.use(authenticateToken);
 router.get('/my-history', async (req, res) => {
     try {
         const [rows] = await con.execute(`
-            SELECT e.*, c.Name as ClassName, c.Slug
-            FROM LMS_Enrollments e
-            JOIN LMS_Courses c ON e.CourseID = c.ID
-            WHERE e.UserID = ?
-            ORDER BY e.CreatedAt DESC
+            SELECT e.*, c.Name as ClassName, c.Slug, (SELECT COUNT(*) FROM LMS_Assignments a WHERE a.CourseID = e.CourseID) as TotalTasks, (SELECT COUNT(*) FROM LMS_Submissions s JOIN LMS_Assignments a ON s.AssignmentID = a.ID WHERE a.CourseID = e.CourseID AND s.StudentID = e.UserID) as SubmittedTasks, (SELECT COUNT(*) FROM LMS_Submissions s JOIN LMS_Assignments a ON s.AssignmentID = a.ID WHERE a.CourseID = e.CourseID AND s.StudentID = e.UserID AND s.Status = 'graded') as GradedTasks FROM LMS_Enrollments e JOIN LMS_Courses c ON e.CourseID = c.ID WHERE e.UserID = ? ORDER BY e.CreatedAt DESC
         `, [req.user.ID]);
         res.json(rows);
     } catch (err) {
@@ -183,3 +179,4 @@ router.put('/admin/reject/:id', async (req, res) => {
 });
 
 module.exports = router;
+

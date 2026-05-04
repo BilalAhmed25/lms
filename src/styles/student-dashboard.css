@@ -38,43 +38,137 @@
     border: 1px solid rgba(26, 182, 157, 0.2);
 }
 
+/* --- Modern Courses Grid --- */
+.courses-grid-modern {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+    .courses-grid-modern {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .courses-grid-modern {
+        grid-template-columns: 1fr;
+    }
+}
+
 .enrolled-course-card {
     background: white;
+    border-radius: 28px;
     padding: 2rem;
-    border-radius: 24px;
-    border: 1px solid var(--border);
-    transition: all 0.3s ease;
-    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    display: flex;
+    flex-direction: column;
+    min-height: 240px;
     position: relative;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .enrolled-course-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--primary);
+    transform: translateY(-10px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.08);
+    border-color: rgba(26, 182, 157, 0.2);
+}
+
+.enrolled-course-card::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(26, 182, 157, 0.05) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
 }
 
 .enrolled-course-card.is-pending {
-    opacity: 0.85;
+    opacity: 0.7;
     cursor: default;
     border-style: dashed;
     border-width: 2px;
 }
 
+.card-badge {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 4px 10px;
+    background: #f0fdf4;
+    color: #10b981;
+    border-radius: 100px;
+    letter-spacing: 0.5px;
+    z-index: 1;
+}
+
+.enrolled-course-card h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #1e293b;
+    line-height: 1.4;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    z-index: 1;
+}
+
+.progress-info {
+    margin-top: auto;
+    z-index: 1;
+}
+
+.progress-info span {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
 .progress-bar-minimal {
-    height: 8px;
+    height: 6px;
     background: #f1f5f9;
-    border-radius: 4px;
+    border-radius: 10px;
     overflow: hidden;
-    margin: 1rem 0;
+    margin-bottom: 8px;
+    margin-top: 1rem;
 }
 
 .progress-bar-minimal .fill {
     height: 100%;
-    background: var(--primary);
-    border-radius: 4px;
+    background: linear-gradient(90deg, var(--primary), #10b981);
+    border-radius: 10px;
 }
 
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #f1f5f9;
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.85rem;
+    z-index: 1;
+}
+
+.card-footer svg {
+    transition: transform 0.3s ease;
+}
+
+.enrolled-course-card:hover .card-footer svg {
+    transform: translateX(5px);
+}
+
+/* --- Billing & Others --- */
 .billing-table-card {
     background: white;
     padding: 2rem;
@@ -94,3 +188,38 @@
     text-align: left;
     border-bottom: 1px solid #f1f5f9;
 }
+
+/* --- Course Metrics Grid --- */
+.course-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 16px;
+    border: 1px solid rgba(0,0,0,0.02);
+    z-index: 1;
+}
+
+.metric-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.metric-item .val {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.metric-item .lbl {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+

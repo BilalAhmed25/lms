@@ -133,8 +133,8 @@
 }
 
 .course-short-intro {
-    font-size: 0.85rem;
-    color: var(--text-muted);
+    font-size: 0.85rem !important;
+    color: var(--text-muted) !important;
     line-height: 1.5;
     margin-bottom: 20px;
     display: -webkit-box;
@@ -230,8 +230,13 @@
 }
 
 @keyframes skeleton-loading {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 .skeleton-price {
