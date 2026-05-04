@@ -295,7 +295,7 @@ const TeacherDashboard = () => {
 
     const headerConfig = getHeaderConfig();
 
-    if (loading) return <Loader />;
+    if (loading) return <Loader fullPage={false} />;
 
     return (
         <div className="admin-layout animate-fade-in">
@@ -1121,3 +1121,4 @@ const TeacherDashboard = () => {
 };
 
 export default TeacherDashboard;
+

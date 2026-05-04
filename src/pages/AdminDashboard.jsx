@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Users, CheckCircle, XCircle, Eye, DollarSign, LayoutDashboard,
+    Users, CheckCircle, XCircle, ChevronRight, AlertCircle, Star, Eye, DollarSign, LayoutDashboard,
     BookOpen, PlusCircle, UserCheck, TrendingUp, Search, Bell, Book,
     Image, Target, Award, Zap, Hash, Clock, FileText, AlignLeft, Info, Plus,
     Menu, X
@@ -37,13 +37,13 @@ const AdminDashboard = () => {
     const [rejectionForm, setRejectionForm] = useState({ reason: '', remarks: '' });
 
     // New Course Form
-    const [courseForm, setCourseForm] = useState({ 
-        name: '', 
+    const [courseForm, setCourseForm] = useState({
+        name: '',
         slug: '',
-        fee: '', 
+        fee: '',
         originalFee: '',
         shortIntro: '',
-        description: '', 
+        description: '',
         teacherId: '',
         thumbnail: '',
         targetAudience: '',
@@ -86,8 +86,8 @@ const AdminDashboard = () => {
             } else if (activeTab === 'teachers' || activeTab === 'courses' || activeTab === 'add-course') {
                 const data = await api.get('/admin/users?role=Teacher');
                 setTeachers(data);
-            } 
-            
+            }
+
             if (activeTab === 'students') {
                 const data = await api.get('/admin/users?role=Student');
                 setStudents(data);
@@ -154,10 +154,10 @@ const AdminDashboard = () => {
                 whatWillILearn: courseForm.whatWillILearn.filter(item => item.trim() !== '')
             };
             await api.post('/admin/classes', payload);
-            setCourseForm({ 
-                name: '', slug: '', fee: '', originalFee: '', shortIntro: '', 
-                description: '', teacherId: '', thumbnail: '', targetAudience: '', 
-                prerequisites: '', duration: '', totalLessons: '', whatWillILearn: ['', '', '', ''] 
+            setCourseForm({
+                name: '', slug: '', fee: '', originalFee: '', shortIntro: '',
+                description: '', teacherId: '', thumbnail: '', targetAudience: '',
+                prerequisites: '', duration: '', totalLessons: '', whatWillILearn: ['', '', '', '']
             });
             setActiveTab('courses');
             await fetchTabContent();
@@ -169,10 +169,10 @@ const AdminDashboard = () => {
         setSubmitting(true);
         try {
             const course = classes.find(c => c.ID === courseId);
-            await api.put(`/admin/courses/${courseId}/update`, { 
+            await api.put(`/admin/courses/${courseId}/update`, {
                 ...course,
                 name: course.Name,
-                status 
+                status
             });
             fetchTabContent();
         } catch (err) { console.error(err); }
@@ -226,6 +226,11 @@ const AdminDashboard = () => {
 
     const addEditLearningOutcome = () => {
         setEditCourse(prev => ({ ...prev, whatWillILearn: [...prev.whatWillILearn, ''] }));
+    };
+
+    const removeEditLearningOutcome = (index) => {
+        const updatedOutcomes = editCourse.whatWillILearn.filter((_, i) => i !== index);
+        setEditCourse(prev => ({ ...prev, whatWillILearn: updatedOutcomes }));
     };
 
     const getHeaderConfig = () => {
@@ -285,8 +290,8 @@ const AdminDashboard = () => {
 
     return (
         <div className="admin-layout animate-fade-in">
-            <SEO 
-                title="Admin Dashboard" 
+            <SEO
+                title="Admin Dashboard"
                 description="Comprehensive administration panel for Deenova Learning Hub. Manage users, courses, enrollments, and platform statistics."
             />
             {/* Mobile Header */}
@@ -298,7 +303,7 @@ const AdminDashboard = () => {
             </header>
 
             {/* Sidebar */}
-            <Sidebar 
+            <Sidebar
                 user={{ Name: 'Admin', Email: 'admin@deenova.edu' }}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
@@ -316,7 +321,7 @@ const AdminDashboard = () => {
 
             {/* Main Content */}
             <main className="admin-main">
-                <DashboardHeader 
+                <DashboardHeader
                     left={
                         <div className="header-left-content">
                             <span className="header-badge-tag">{headerConfig.tag}</span>
@@ -335,61 +340,85 @@ const AdminDashboard = () => {
                     {activeTab === 'overview' && (
                         <div className="animate-slide-up">
                             {loading ? (
-                                <Loader />
+                                <Loader fullPage={false} />
                             ) : (
                                 <>
-                                    <div className="stats-grid mb-12">
-                                        {[1, 2, 3, 4].map(i => (
-                                            <div key={i} className="stat-card">
-                                                <div className={`stat-icon ${i === 1 ? 'purple' : i === 2 ? 'blue' : i === 3 ? 'green' : 'orange'}`}>
-                                                    {i === 1 ? <Users size={28} /> : i === 2 ? <UserCheck size={28} /> : i === 3 ? <TrendingUp size={28} /> : <DollarSign size={28} />}
-                                                </div>
-                                                <div className="stat-info">
-                                                    <p>{i === 1 ? 'Total Users' : i === 2 ? 'Students' : i === 3 ? 'Teachers' : 'Pending Apps'}</p>
-                                                    <h3>{i === 1 ? stats.totalUsers : i === 2 ? stats.totalStudents : i === 3 ? stats.totalTeachers : stats.pendingEnrollments}</h3>
-                                                </div>
+                                    <div className="stats-grid-v2 admin-stats mb-12">
+                                        <div className="stat-card-v2 purple">
+                                            <div className="stat-icon-wrapper">
+                                                <Users size={28} />
                                             </div>
-                                        ))}
+                                            <div className="stat-content">
+                                                <span className="stat-label">Total Users</span>
+                                                <h3 className="stat-value">{stats.totalUsers}</h3>
+                                                <span className="stat-trend positive">
+                                                    <TrendingUp size={14} /> Overall Growth
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="stat-card-v2 blue">
+                                            <div className="stat-icon-wrapper">
+                                                <UserCheck size={28} />
+                                            </div>
+                                            <div className="stat-content">
+                                                <span className="stat-label">Total Students</span>
+                                                <h3 className="stat-value">{stats.totalStudents}</h3>
+                                                <span className="stat-trend positive">
+                                                    <CheckCircle size={14} /> Active Learners
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="stat-card-v2 green">
+                                            <div className="stat-icon-wrapper">
+                                                <Users size={28} />
+                                            </div>
+                                            <div className="stat-content">
+                                                <span className="stat-label">Total Teachers</span>
+                                                <h3 className="stat-value">{stats.totalTeachers}</h3>
+                                                <span className="stat-trend positive">
+                                                    <Star size={14} /> Expert Educators
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="stat-card-v2 orange">
+                                            <div className="stat-icon-wrapper">
+                                                <Clock size={28} />
+                                            </div>
+                                            <div className="stat-content">
+                                                <span className="stat-label">Pending Apps</span>
+                                                <h3 className="stat-value">{stats.pendingEnrollments}</h3>
+                                                <span className="stat-trend warning">
+                                                    <AlertCircle size={14} /> Review Required
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div className="quick-actions-grid">
-                                        <div className="action-group-card">
-                                            <h3>Quick Actions</h3>
-                                            <div className="inner-grid">
-                                                <button className="action-tile" onClick={() => setActiveTab('add-course')}>
-                                                    <div className="tile-icon">
-                                                        <PlusCircle size={20} />
-                                                    </div>
-                                                    <strong>Add Course</strong>
-                                                    <span>Announce new class</span>
-                                                </button>
-                                                <button className="action-tile secondary-tile" onClick={() => setActiveTab('enrollments')}>
-                                                    <div className="tile-icon">
-                                                        <DollarSign size={20} />
-                                                    </div>
-                                                    <strong>Review Fees</strong>
-                                                    <span>Check pending receipts</span>
-                                                </button>
+                                    <div className="premium-action-grid mb-12">
+                                        <button className="premium-action-tile purple" onClick={() => setActiveTab('add-course')}>
+                                            <div className="action-icon-box">
+                                                <PlusCircle size={28} />
                                             </div>
-                                        </div>
+                                            <div className="action-info">
+                                                <strong>Create New Course</strong>
+                                                <span>Set up a new curriculum and assign teachers</span>
+                                            </div>
+                                            <ChevronRight size={20} className="action-arrow" />
+                                        </button>
 
-                                        <div className="action-group-card">
-                                            <h3>System Status</h3>
-                                            <div className="status-list">
-                                                <div className="status-item">
-                                                    <span>Database Connection</span>
-                                                    <span className="status-badge-active">ACTIVE</span>
-                                                </div>
-                                                <div className="status-item">
-                                                    <span>Storage API</span>
-                                                    <span className="status-badge-active">ACTIVE</span>
-                                                </div>
-                                                <div className="status-item">
-                                                    <span>Email Server</span>
-                                                    <span className="status-badge-active">ACTIVE</span>
-                                                </div>
+                                        <button className="premium-action-tile blue" onClick={() => setActiveTab('enrollments')}>
+                                            <div className="action-icon-box">
+                                                <DollarSign size={28} />
                                             </div>
-                                        </div>
+                                            <div className="action-info">
+                                                <strong>Review Fee Receipts</strong>
+                                                <span>Verify pending student payments and approve enrollments</span>
+                                            </div>
+                                            <ChevronRight size={20} className="action-arrow" />
+                                        </button>
                                     </div>
                                 </>
                             )}
@@ -398,14 +427,9 @@ const AdminDashboard = () => {
 
                     {activeTab === 'enrollments' && (
                         <div className="animate-slide-up">
-                            <div className="flex-between mb-8">
-                                <h2 className="text-2xl font-bold tracking-tight">Fee Verification</h2>
-                                <span className="badge-count">{enrollments.length} Pending Requests</span>
-                            </div>
-
                             <div className="payments-table">
                                 {loading ? (
-                                    <Loader />
+                                    <Loader fullPage={false} />
                                 ) : enrollments.length === 0 ? (
                                     <div className="admin-empty-state">
                                         <div className="empty-state-icon">
@@ -444,10 +468,9 @@ const AdminDashboard = () => {
 
                     {(activeTab === 'teachers' || activeTab === 'students') && (
                         <div className="animate-slide-up">
-                            <h2 className="text-2xl font-bold tracking-tight mb-8">{activeTab === 'teachers' ? 'Teacher' : 'Student'} Directory</h2>
                             <div className="payments-table">
                                 {loading ? (
-                                    <Loader />
+                                    <Loader fullPage={false} />
                                 ) : (
                                     <table>
                                         <thead>
@@ -481,13 +504,9 @@ const AdminDashboard = () => {
 
                     {activeTab === 'courses' && (
                         <div className="animate-slide-up">
-                            <div className="flex-between mb-8">
-                                <h2 className="text-2xl font-bold tracking-tight">Active Courses</h2>
-                                <button className="btn btn-primary" onClick={() => setActiveTab('add-course')}><PlusCircle size={20} /> Add New Course</button>
-                            </div>
                             <div className="admin-course-grid">
                                 {loading ? (
-                                    <Loader />
+                                    <Loader fullPage={false} />
                                 ) : classes.map(cls => (
                                     <div key={cls.ID} className={`course-admin-card ${cls.Status === 'inactive' ? 'status-inactive' : ''}`}>
                                         <div className="course-card-top">
@@ -498,43 +517,47 @@ const AdminDashboard = () => {
                                                 {cls.Status === 'active' ? <><CheckCircle size={14} /> Active</> : <><XCircle size={14} /> Inactive</>}
                                             </div>
                                         </div>
-                                        
+
                                         <h3>{cls.Name}</h3>
-                                        
+
                                         <div className="course-stats-grid">
-                                            <div className="stat-item" title="Enrolled Students">
+                                            <div className="stat-item students" title="Enrolled Students">
                                                 <Users size={18} />
                                                 <div className="stat-info">
-                                                    <span>{cls.EnrollmentCount || 0}</span>
+                                                    <strong>{cls.StudentCount || 0}</strong>
                                                     <span className="stat-label">Students</span>
                                                 </div>
                                             </div>
-                                            <div className="stat-item" title="Published Assignments">
+                                            <div className="stat-item lessons" title="Total Lessons">
                                                 <PlusCircle size={18} />
                                                 <div className="stat-info">
-                                                    <span>{cls.AssignmentCount || 0}</span>
+                                                    <strong>{cls.LessonCount || 0}</strong>
                                                     <span className="stat-label">Lessons</span>
                                                 </div>
                                             </div>
-                                            <div className="stat-item" title="Graded Items">
-                                                <UserCheck size={18} />
+                                            <div className="stat-item graded" title="Graded Items">
+                                                <TrendingUp size={18} />
                                                 <div className="stat-info">
-                                                    <span>{cls.GradedCount || 0}</span>
+                                                    <strong>{cls.GradedCount || 0}</strong>
                                                     <span className="stat-label">Graded</span>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="course-teacher-assign">
-                                            <span>Teacher: {cls.TeacherName || 'Unassigned'}</span>
-                                            <div className="flex gap-2">
+                                        <div className="course-card-footer">
+                                            <div className="teacher-info">
+                                                <span>Instructor</span>
+                                                <strong>{cls.TeacherName || 'Unassigned'}</strong>
+                                            </div>
+                                            <div className="card-actions">
                                                 <button className="btn-icon" onClick={() => handleOpenEdit(cls)} title="Edit Course Details">
-                                                    <PlusCircle size={18} style={{transform: 'rotate(45deg)'}} />
+                                                    <PlusCircle size={18} style={{ transform: 'rotate(45deg)' }} />
                                                 </button>
                                                 <button className="btn-icon" title="View Detailed Stats"><TrendingUp size={18} /></button>
                                             </div>
                                         </div>
                                     </div>
+
                                 ))}
                             </div>
                         </div>
@@ -565,7 +588,7 @@ const AdminDashboard = () => {
                                             onChange={e => setCourseForm({ ...courseForm, slug: e.target.value })}
                                             placeholder="e.g. math-4024"
                                         />
-                                        
+
                                         <div className="form-section-title full-width mt-6">Pricing & Instructor</div>
                                         <FloatingLabelInput
                                             label="Sale Price ($)"
@@ -582,14 +605,14 @@ const AdminDashboard = () => {
                                             value={courseForm.originalFee}
                                             onChange={e => setCourseForm({ ...courseForm, originalFee: e.target.value })}
                                         />
-                                        
+
                                         <div className="full-width">
                                             <div className="custom-select-wrapper">
                                                 <Users className="select-icon" size={18} />
-                                                <select 
+                                                <select
                                                     className="admin-select"
                                                     value={courseForm.teacherId}
-                                                    onChange={e => setCourseForm({...courseForm, teacherId: e.target.value})}
+                                                    onChange={e => setCourseForm({ ...courseForm, teacherId: e.target.value })}
                                                     required
                                                 >
                                                     <option value="">Assign Teacher</option>
@@ -662,8 +685,8 @@ const AdminDashboard = () => {
                                                 {courseForm.whatWillILearn.map((item, idx) => (
                                                     <div key={idx} className="input-with-icon-group">
                                                         <CheckCircle size={16} className="text-primary" />
-                                                        <input 
-                                                            type="text" 
+                                                        <input
+                                                            type="text"
                                                             placeholder={`Outcome ${idx + 1}`}
                                                             value={item}
                                                             onChange={(e) => handleWhatLearnChange(idx, e.target.value)}
@@ -708,84 +731,92 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             )}
-            {/* Edit Course Modal */}
             {showEditModal && editCourse && (
                 <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
                     <div className="modal-content animate-scale-up edit-course-modal" onClick={e => e.stopPropagation()}>
                         <div className="modal-header">
-                            <h2>Edit Course: {editCourse.name}</h2>
+                            <div>
+                                <span className="header-badge-tag">Editor Mode</span>
+                                <h2 className="text-xl font-bold">Edit: {editCourse.name}</h2>
+                            </div>
                             <button className="btn-close" onClick={() => setShowEditModal(false)}><X size={24} /></button>
                         </div>
-                        
-                        <form onSubmit={handleSaveEdit} className="admin-form-container" style={{maxWidth: '100%', margin: '0'}}>
+
+                        <form onSubmit={handleSaveEdit} className="modal-body">
                             <div className="form-grid">
-                                <div className="form-group">
+                                <div className="admin-input-group">
                                     <label>Course Title</label>
                                     <input className="admin-input" value={editCourse.name} onChange={e => handleEditFormChange('name', e.target.value)} required />
                                 </div>
-                                <div className="form-group">
-                                    <label>Custom Slug (url identifier)</label>
+                                <div className="admin-input-group">
+                                    <label>Custom Slug</label>
                                     <input className="admin-input" value={editCourse.slug} onChange={e => handleEditFormChange('slug', e.target.value)} required />
                                 </div>
-                                <div className="form-group">
-                                    <label>Course Fee (PKR)</label>
+                                <div className="admin-input-group">
+                                    <label>Sale Price (PKR)</label>
                                     <input type="number" className="admin-input" value={editCourse.fee} onChange={e => handleEditFormChange('fee', e.target.value)} required />
                                 </div>
-                                <div className="form-group">
-                                    <label>Original Price (Optional)</label>
+                                <div className="admin-input-group">
+                                    <label>Original Price</label>
                                     <input type="number" className="admin-input" value={editCourse.originalFee} onChange={e => handleEditFormChange('originalFee', e.target.value)} />
                                 </div>
-                                <div className="form-group">
+                                <div className="admin-input-group">
                                     <label>Assigned Teacher</label>
                                     <select className="admin-select" value={editCourse.teacherId} onChange={e => handleEditFormChange('teacherId', e.target.value)}>
-                                        <option value="">Select a Teacher</option>
+                                        <option value="">Select Teacher</option>
                                         {teachers.map(t => <option key={t.ID} value={t.ID}>{t.Name}</option>)}
                                     </select>
                                 </div>
-                                <div className="form-group">
-                                    <label>Course Status</label>
+                                <div className="admin-input-group">
+                                    <label>Status</label>
                                     <select className="admin-select" value={editCourse.status} onChange={e => handleEditFormChange('status', e.target.value)}>
                                         <option value="active">Active</option>
                                         <option value="inactive">Inactive</option>
                                     </select>
                                 </div>
-                                <div className="form-group full-width">
+
+                                <div className="admin-input-group full-width">
                                     <label>Short Introduction</label>
                                     <input className="admin-input" value={editCourse.shortIntro} onChange={e => handleEditFormChange('shortIntro', e.target.value)} required />
                                 </div>
-                                <div className="form-group full-width">
+
+                                <div className="admin-input-group full-width">
                                     <label>Detailed Description</label>
-                                    <textarea className="admin-textarea" value={editCourse.description} onChange={e => handleEditFormChange('description', e.target.value)} required></textarea>
+                                    <textarea className="admin-textarea" rows="5" value={editCourse.description} onChange={e => handleEditFormChange('description', e.target.value)} required></textarea>
                                 </div>
-                                
-                                {/* Learning Outcomes */}
-                                <div className="form-group full-width">
-                                    <label>Learning Outcomes (What will I learn?)</label>
+
+                                <div className="admin-input-group full-width">
+                                    <label>Learning Outcomes</label>
                                     <div className="learning-outcomes-builder">
                                         {editCourse.whatWillILearn.map((outcome, idx) => (
-                                            <div key={idx} className="outcome-input-flex mb-2">
-                                                <input 
-                                                    className="admin-input" 
-                                                    value={outcome} 
+                                            <div key={idx} className="outcome-input-flex">
+                                                <input
+                                                    className="admin-input"
+                                                    value={outcome}
                                                     onChange={e => handleEditLearningOutcomeChange(idx, e.target.value)}
                                                     placeholder={`Outcome ${idx + 1}`}
                                                 />
+                                                <button type="button" className="btn-remove-outcome" onClick={() => removeEditLearningOutcome(idx)}>
+                                                    <X size={18} />
+                                                </button>
                                             </div>
                                         ))}
-                                        <button type="button" className="btn btn-secondary btn-sm mt-2" onClick={addEditLearningOutcome}>+ Add More</button>
+                                        <button type="button" className="btn btn-secondary btn-sm mt-2" style={{ width: 'fit-content' }} onClick={addEditLearningOutcome}>
+                                            <Plus size={16} /> Add Another Outcome
+                                        </button>
                                     </div>
                                 </div>
 
-                                <div className="form-group">
+                                <div className="admin-input-group">
                                     <label>Thumbnail URL</label>
                                     <input className="admin-input" value={editCourse.thumbnail} onChange={e => handleEditFormChange('thumbnail', e.target.value)} />
                                 </div>
-                                <div className="form-group">
-                                    <label>Duration (e.g. 8 Weeks)</label>
+                                <div className="admin-input-group">
+                                    <label>Duration</label>
                                     <input className="admin-input" value={editCourse.duration} onChange={e => handleEditFormChange('duration', e.target.value)} />
                                 </div>
                             </div>
-                            
+
                             <div className="form-actions mt-8">
                                 <button type="button" className="btn btn-secondary" onClick={() => setShowEditModal(false)}>Discard Changes</button>
                                 <button type="submit" className="btn btn-primary" disabled={submitting}>
@@ -796,11 +827,9 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             )}
-            
-            {/* Rejection Modal */}
             {showRejectModal && (
                 <div className="modal-overlay" onClick={() => setShowRejectModal(false)}>
-                    <div className="modal-content animate-scale-up" style={{maxWidth: '500px'}} onClick={e => e.stopPropagation()}>
+                    <div className="modal-content animate-scale-up" style={{ maxWidth: '500px' }} onClick={e => e.stopPropagation()}>
                         <div className="modal-header">
                             <h2>Decline Enrollment</h2>
                             <button className="btn-close" onClick={() => setShowRejectModal(false)}><X size={24} /></button>
@@ -808,10 +837,10 @@ const AdminDashboard = () => {
                         <form onSubmit={handleRejectEnrollment}>
                             <div className="form-group mb-4">
                                 <label>Rejection Reason</label>
-                                <select 
+                                <select
                                     className="admin-select"
                                     value={rejectionForm.reason}
-                                    onChange={e => setRejectionForm({...rejectionForm, reason: e.target.value})}
+                                    onChange={e => setRejectionForm({ ...rejectionForm, reason: e.target.value })}
                                     required
                                 >
                                     <option value="">Select a reason</option>
@@ -823,12 +852,12 @@ const AdminDashboard = () => {
                             </div>
                             <div className="form-group mb-6">
                                 <label>Administrative Remarks (Optional)</label>
-                                <textarea 
+                                <textarea
                                     className="admin-textarea"
                                     rows="4"
                                     placeholder="This will be visible to the student..."
                                     value={rejectionForm.remarks}
-                                    onChange={e => setRejectionForm({...rejectionForm, remarks: e.target.value})}
+                                    onChange={e => setRejectionForm({ ...rejectionForm, remarks: e.target.value })}
                                 ></textarea>
                             </div>
                             <div className="modal-footer">
@@ -846,3 +875,16 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
+
+
+
+
+
+
+
+
+
+
+
+

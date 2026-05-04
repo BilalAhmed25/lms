@@ -1,8 +1,8 @@
 import React from 'react';
 
-const Loader = () => {
+const Loader = ({ fullPage = true }) => {
     return (
-        <div className="premium-loader-container">
+        <div className={`premium-loader-container ${fullPage ? "full-page" : "container-fill"}`}>
             <div className="pulse-logo-wrapper">
                 <img src="/logo.png" alt="Loading..." className="pulse-logo" />
                 <div className="pulse-ring"></div>
@@ -12,3 +12,5 @@ const Loader = () => {
 };
 
 export default Loader;
+
+
