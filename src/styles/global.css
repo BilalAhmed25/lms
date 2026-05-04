@@ -130,7 +130,8 @@ p {
     font-weight: var(--fw-bold);
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin-bottom: 15px;
+    margin: auto;
+    margin-bottom: 10px !important;
 }
 
 .glass {
@@ -399,4 +400,3 @@ p {
         opacity: 0;
     }
 }
-
