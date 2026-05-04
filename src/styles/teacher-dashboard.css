@@ -382,24 +382,24 @@
 
 .payments-table th {
     text-align: left;
-    padding: 20px 24px;
+    padding: 14px 20px;
     background: #fcfcfc;
     border-bottom: 1px solid var(--border);
     color: var(--text-muted);
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .payments-table td {
-    padding: 20px 24px;
+    padding: 12px 20px;
     border-bottom: 1px solid var(--border);
 }
 
 .user-cell strong {
     display: block;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 .user-cell span {
@@ -416,7 +416,7 @@
 }
 
 .assignment-title-mini {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 500;
     color: var(--text-main);
 }

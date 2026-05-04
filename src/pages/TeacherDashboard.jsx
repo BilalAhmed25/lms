@@ -616,7 +616,14 @@ const TeacherDashboard = () => {
                                                             <span className="assignment-title-mini">{sub.AssignmentTitle}</span>
                                                         </div>
                                                     </td>
-                                                    <td>{new Date(sub.SubmittedAt).toLocaleDateString()}</td>
+                                                    <td>
+                                                        {new Date(sub.SubmittedAt).toLocaleDateString('en-GB', {
+                                                            weekday: 'long',
+                                                            day: '2-digit',
+                                                            month: 'short',
+                                                            year: 'numeric'
+                                                        })}
+                                                    </td>
                                                     <td>
                                                         {gradingSubTab === 'pending' ? (
                                                             <span className="badge badge-warning animate-pulse">Pending Review</span>

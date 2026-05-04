@@ -154,6 +154,13 @@
     transform: translateX(4px);
 }
 
+.menu-toggle {
+    padding: 6px 7px 3px 7px;
+    color: var(--primary);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 1024px) {
     .dashboard-sidebar {
@@ -170,6 +177,11 @@
 
     .mobile-close-btn {
         display: flex;
+    }
+
+    .sidebar-logo-img {
+        max-width: 160px;
+        height: auto;
     }
 }
 

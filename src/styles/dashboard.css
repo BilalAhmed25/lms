@@ -273,6 +273,12 @@
     align-items: center;
 }
 
+.mobile-logo {
+    height: 45px;
+    max-width: 140px;
+    object-fit: contain;
+}
+
 @media (max-width: 1200px) {
     .stats-grid-v2,
     .quick-actions-grid {
