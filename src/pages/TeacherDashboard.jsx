@@ -818,36 +818,35 @@ const TeacherDashboard = () => {
                             value={assignmentForm.type}
                             onChange={(val) => setAssignmentForm({ ...assignmentForm, type: val })}
                         />
-                        <FloatingLabelInput label="Due Date" icon={Clock} type="date" value={assignmentForm.dueDate} onChange={e => setAssignmentForm({ ...assignmentForm, dueDate: e.target.value })} required />
+                        <div className="form-grid" style={{ gap: '1rem', gridTemplateColumns: '1.2fr 0.8fr' }}>
+                            <FloatingLabelInput label="Due Date" icon={Clock} type="date" value={assignmentForm.dueDate} onChange={e => setAssignmentForm({ ...assignmentForm, dueDate: e.target.value })} required />
+                            <FloatingLabelInput label="Max Score" icon={Target} type="number" placeholder="100" value={assignmentForm.maxMarks} onChange={e => setAssignmentForm({ ...assignmentForm, maxMarks: e.target.value })} required />
+                        </div>
                     </div>
                     <FloatingLabelInput label="Task Description" icon={MessageSquare} type="textarea" value={assignmentForm.description} onChange={e => setAssignmentForm({ ...assignmentForm, description: e.target.value })} required />
                     {assignmentForm.type === 'quiz' && (
-                        <div className="quiz-questions-builder mt-8 pt-6 border-t border-slate-100">
-                            <div className="flex items-center justify-between mb-8">
-                                <div>
-                                    <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                                        <Hash className="text-primary" size={22} /> Quiz Assessment Builder
-                                    </h3>
-                                    <p className="text-sm text-slate-500 mt-1">Design your multiple choice questions below.</p>
+                        <div className="quiz-questions-builder">
+                            <div className="quiz-builder-header">
+                                <div className="quiz-builder-title">
+                                    <h3><Hash className="text-primary" size={22} /> Quiz Builder</h3>
+                                    <p>Design your multiple choice questions below.</p>
                                 </div>
-                                <button type="button" className="btn btn-secondary btn-sm h-11 px-6 rounded-xl" onClick={handleAddQuestion}>
-                                    <Plus size={18} /> Add New Question
+                                <button type="button" className="btn-add-question" onClick={handleAddQuestion}>
+                                    <Plus size={18} /> Add Question
                                 </button>
                             </div>
 
-                            <div className="questions-stack space-y-8">
+                            <div className="questions-stack">
                                 {assignmentForm.questions.map((q, qIdx) => (
-                                    <div key={qIdx} className="question-premium-card bg-slate-50/50 border border-slate-200 rounded-[32px] p-8 transition-all hover:border-primary/30">
-                                        <div className="flex items-center justify-between mb-6">
+                                    <div key={qIdx} className="question-premium-card animate-slide-up">
+                                        <div className="question-card-header">
                                             <div className="flex items-center gap-3">
-                                                <span className="flex items-center justify-center w-10 h-10 bg-white border border-slate-200 rounded-xl font-bold text-primary shadow-sm">
-                                                    {qIdx + 1}
-                                                </span>
+                                                <span className="question-number-badge">{qIdx + 1}</span>
                                                 <h4 className="font-bold text-slate-700">Question Statement</h4>
                                             </div>
                                             <button
                                                 type="button"
-                                                className="w-10 h-10 flex items-center justify-center rounded-xl text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all"
+                                                className="btn-remove-question"
                                                 onClick={() => {
                                                     const newQs = assignmentForm.questions.filter((_, i) => i !== qIdx);
                                                     setAssignmentForm({ ...assignmentForm, questions: newQs });
@@ -858,40 +857,38 @@ const TeacherDashboard = () => {
                                             </button>
                                         </div>
 
-                                        <div className="mb-6">
-                                            <FloatingLabelInput
-                                                label="What is the question?"
-                                                icon={MessageSquare}
-                                                value={q.text}
-                                                onChange={e => {
-                                                    const newQs = [...assignmentForm.questions];
-                                                    newQs[qIdx].text = e.target.value;
-                                                    setAssignmentForm({ ...assignmentForm, questions: newQs });
-                                                }}
-                                                required
-                                            />
-                                        </div>
+                                        <FloatingLabelInput
+                                            label="What is the question?"
+                                            icon={MessageSquare}
+                                            value={q.text}
+                                            onChange={e => {
+                                                const newQs = [...assignmentForm.questions];
+                                                newQs[qIdx].text = e.target.value;
+                                                setAssignmentForm({ ...assignmentForm, questions: newQs });
+                                            }}
+                                            required
+                                        />
 
-                                        <div className="options-container grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="options-container">
                                             {q.options.map((opt, optIdx) => (
                                                 <div
                                                     key={optIdx}
-                                                    className={`premium-option-item group relative flex items-center p-1 rounded-2xl border-2 transition-all duration-300 ${q.correctOption === optIdx ? 'border-primary bg-white shadow-lg shadow-primary/5' : 'border-white bg-white hover:border-slate-200'}`}
+                                                    className={`premium-option-item ${q.correctOption === optIdx ? 'selected' : ''}`}
                                                 >
                                                     <div
-                                                        className={`option-selector-trigger flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-xl transition-all cursor-pointer ${q.correctOption === optIdx ? 'bg-primary text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200'}`}
+                                                        className="option-selector-trigger"
                                                         onClick={() => {
                                                             const newQs = [...assignmentForm.questions];
                                                             newQs[qIdx].correctOption = optIdx;
                                                             setAssignmentForm({ ...assignmentForm, questions: newQs });
                                                         }}
                                                     >
-                                                        {q.correctOption === optIdx ? <CheckCircle size={20} /> : <span className="text-sm font-bold">{String.fromCharCode(65 + optIdx)}</span>}
+                                                        {q.correctOption === optIdx ? <CheckCircle size={20} /> : <span>{String.fromCharCode(65 + optIdx)}</span>}
                                                     </div>
                                                     <input
                                                         type="text"
                                                         placeholder={`Enter choice ${String.fromCharCode(65 + optIdx)}...`}
-                                                        className="flex-1 bg-transparent border-none outline-none px-4 py-3 text-sm font-semibold text-slate-700 placeholder:text-slate-400"
+                                                        className="option-input"
                                                         value={opt}
                                                         onChange={e => {
                                                             const newQs = [...assignmentForm.questions];
@@ -904,8 +901,8 @@ const TeacherDashboard = () => {
                                             ))}
                                         </div>
 
-                                        <div className="flex items-center gap-2 mt-6 px-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                                            <Target size={14} className="text-primary" />
+                                        <div className="correct-indicator">
+                                            <Target size={14} />
                                             <span>Marked as correct: Option {String.fromCharCode(65 + q.correctOption)}</span>
                                         </div>
                                     </div>
