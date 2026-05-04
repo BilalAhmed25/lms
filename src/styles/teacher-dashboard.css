@@ -1,0 +1,146 @@
+/* --- Teacher & Admin Shared Dashboard Styles --- */
+
+.admin-course-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 32px;
+}
+
+@media (max-width: 1400px) {
+    .admin-course-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-course-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.course-admin-card {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    position: relative;
+}
+
+.course-admin-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+}
+
+.course-admin-card h3 {
+    font-size: 1.05rem;
+    color: var(--text-main);
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.4;
+    min-height: 2.8rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.course-fee-tag {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin: -10px 0 0 0;
+}
+
+.course-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 8px 0;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.2px;
+    font-weight: 400;
+    opacity: 0.8;
+    color: inherit;
+}
+
+.payments-table {
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.payments-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.payments-table th {
+    text-align: left;
+    padding: 20px 24px;
+    background: #fcfcfc;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.payments-table td {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.user-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.course-assignment-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.course-name-mini {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.assignment-title-mini {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-main);
+}

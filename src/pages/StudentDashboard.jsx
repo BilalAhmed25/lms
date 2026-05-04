@@ -6,6 +6,8 @@ import { Book, CreditCard, Clock, Star, Search, AlertCircle, PlusCircle, CheckCi
 import api from '../utils/api';
 import SEO from '../components/SEO';
 import CoursesSection from '../components/Home/CoursesSection';
+import '../styles/dashboard.css';
+import '../styles/student-dashboard.css';
 
 const Loader = () => (
     <div className="loader-container">
@@ -79,13 +81,23 @@ const StudentDashboard = () => {
                     <img src="/logo.png" alt="Deenova Logo" className="logo-img sidebar-logo" />
                 </div>
 
+                <div className="sidebar-user-profile">
+                    <div className="user-avatar-large">
+                        {user?.Name?.charAt(0) || 'S'}
+                    </div>
+                    <div className="user-info">
+                        <h4>{user?.Name || 'Student'}</h4>
+                        <span>{user?.Email || 'student@deenova.edu'}</span>
+                    </div>
+                </div>
+
                 <nav className="sidebar-nav">
                     <button className={activeTab === 'overview' ? 'active' : ''} onClick={() => { setActiveTab('overview'); setMobileMenuOpen(false); }}>
                         <Layout size={20} /> Overview
                     </button>
                     <button className={activeTab === 'my-courses' ? 'active' : ''} onClick={() => { setActiveTab('my-courses'); setMobileMenuOpen(false); }}>
                         <Book size={20} /> My Learning
-                        {(enrolled.length + pending.length) > 0 && <span>{enrolled.length + pending.length}</span>}
+                        {(enrolled.length + pending.length) > 0 && <span className="badge-sidebar active">{enrolled.length + pending.length}</span>}
                     </button>
                     <button className={activeTab === 'browse' ? 'active' : ''} onClick={() => { setActiveTab('browse'); setMobileMenuOpen(false); }}>
                         <PlusCircle size={20} /> Browse Courses
@@ -96,7 +108,7 @@ const StudentDashboard = () => {
                 </nav>
 
                 <div className="sidebar-footer">
-                    <button className="exit-btn" onClick={() => { logout(); navigate('/login'); }}>
+                    <button className="exit-btn logout-link" onClick={() => { logout(); navigate('/login'); }}>
                         <XCircle size={20} /> Sign Out
                     </button>
                 </div>
@@ -122,21 +134,21 @@ const StudentDashboard = () => {
                     {activeTab === 'overview' && (
                         <div className="animate-slide-up">
                             <div className="stats-grid mb-12">
-                                <div className="stat-card">
+                                <div className="stat-card glass">
                                     <div className="stat-icon purple"><Book size={28} /></div>
                                     <div className="stat-info">
                                         <p>Enrolled Courses</p>
                                         <h3>{enrolled.length}</h3>
                                     </div>
                                 </div>
-                                <div className="stat-card">
+                                <div className="stat-card glass">
                                     <div className="stat-icon orange"><Clock size={28} /></div>
                                     <div className="stat-info">
                                         <p>Pending Review</p>
                                         <h3>{pending.length}</h3>
                                     </div>
                                 </div>
-                                <div className="stat-card">
+                                <div className="stat-card glass">
                                     <div className="stat-icon blue"><Star size={28} /></div>
                                     <div className="stat-info">
                                         <p>Avg. Progress</p>

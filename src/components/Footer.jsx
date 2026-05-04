@@ -63,9 +63,9 @@ const Footer = () => {
                 <div className="footer-bottom mt-12 pt-8">
                     <p className="text-muted">© 2026 Deenova Inc.</p>
                     <div className="footer-legal">
-                        <Link to="/">Terms of Service</Link>
-                        <Link to="/">Privacy Policy</Link>
-                        <Link to="/">Cookies</Link>
+                        <Link to="/terms-and-condition">Terms and Conditions</Link>
+                        <Link to="/privacy-policy">Privacy Policy</Link>
+                        <Link to="/privacy-policy#cookies">Cookies</Link>
                     </div>
                 </div>
             </div>

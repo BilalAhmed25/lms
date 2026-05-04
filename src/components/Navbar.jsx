@@ -7,7 +7,7 @@ const Navbar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
-    const isCourseDetails = location.pathname.includes('/course/');
+    const isDarkHeader = location.pathname.includes('/course/') || location.pathname === '/terms-and-condition' || location.pathname === '/privacy-policy';
     const [scrolled, setScrolled] = React.useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
@@ -24,7 +24,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className={`navbar ${scrolled ? 'scrolled' : ''} ${mobileMenuOpen ? 'mobile-open' : ''} ${isCourseDetails ? 'is-course-details' : ''}`}>
+        <nav className={`navbar ${scrolled ? 'scrolled' : ''} ${mobileMenuOpen ? 'mobile-open' : ''} ${isDarkHeader ? 'is-course-details' : ''}`}>
             <div className="container nav-content">
                 <Link to="/" className="logo" onClick={() => setMobileMenuOpen(false)}>
                     <img src="/logo.png" alt="Deenova Logo" className="logo-img" />

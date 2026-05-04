@@ -8,6 +8,9 @@ import {
 import FloatingLabelInput from '../components/FloatingLabelInput';
 import api from '../utils/api';
 import SEO from '../components/SEO';
+import '../styles/dashboard.css';
+import '../styles/teacher-dashboard.css';
+import '../styles/admin-dashboard.css';
 
 const Loader = () => (
     <div className="loader-container">

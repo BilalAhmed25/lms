@@ -17,6 +17,9 @@ import AboutUs from './pages/AboutUs';
 import CourseClassroom from './pages/CourseClassroom';
 import NotFound from './pages/NotFound';
 import StudentEnrollment from './components/StudentEnrollment';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import ScrollToTop from './components/ScrollToTop';
 import './index.css';
 
 import api from './utils/api';
@@ -88,6 +91,9 @@ const AppContent = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/courses" element={<Courses />} />
+          <Route path="/terms-and-condition" element={<TermsOfService />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/course/:slug" element={<CourseDetails />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           
@@ -133,6 +139,7 @@ const App = () => {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop />
         <AppContent />
       </Router>
     </AuthProvider>
