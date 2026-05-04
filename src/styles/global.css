@@ -139,13 +139,42 @@ p { font-size: var(--fs-body); color: var(--text-muted); }
     position: relative;
     display: flex;
     align-items: center;
+    width: 100%;
+}
+
+.input-icon {
+    position: absolute;
+    left: 1.25rem;
+    color: var(--text-muted);
+    pointer-events: none;
+    z-index: 2;
+    transition: var(--transition);
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 1.25rem;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    z-index: 2;
+    transition: var(--transition);
+}
+
+.password-toggle-btn:hover {
+    color: var(--primary);
 }
 
 .floating-input-group input,
 .floating-input-group textarea {
     width: 100% !important;
     height: 60px;
-    padding: 1.5rem 1rem 0.5rem !important;
+    padding: 1.5rem 1.25rem 0.5rem !important;
     border: 1.5px solid var(--border);
     border-radius: 14px;
     background: white;
@@ -153,23 +182,48 @@ p { font-size: var(--fs-body); color: var(--text-muted); }
     font-size: 1rem;
     color: var(--text-main);
     outline: none;
+    position: relative;
+    z-index: 1;
+}
+
+.floating-input-group input.with-icon,
+.floating-input-group textarea.with-icon {
+    padding-left: 3.5rem !important;
+}
+
+.floating-input-group input:focus,
+.floating-input-group textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(33, 103, 91, 0.1);
 }
 
 .floating-label {
     position: absolute;
-    left: 1rem;
-    top: 30px;
+    left: 1.25rem;
+    top: 50%;
     transform: translateY(-50%);
     color: var(--text-muted);
     transition: all 0.2s ease;
     pointer-events: none;
     font-size: 1rem;
+    z-index: 2;
+}
+
+.with-icon ~ .floating-label {
+    left: 3.5rem;
 }
 
 .floating-input-group input:focus ~ .floating-label,
-.floating-input-group input:not(:placeholder-shown) ~ .floating-label {
+.floating-input-group input:not(:placeholder-shown) ~ .floating-label,
+.floating-input-group textarea:focus ~ .floating-label,
+.floating-input-group textarea:not(:placeholder-shown) ~ .floating-label {
     top: 18px;
     font-size: 0.75rem;
     color: var(--primary);
     font-weight: 600;
+}
+
+.floating-input-group input:focus ~ .input-icon,
+.floating-input-group textarea:focus ~ .input-icon {
+    color: var(--primary);
 }
