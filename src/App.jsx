@@ -78,10 +78,10 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
 const AppContent = () => {
   const location = useLocation();
-  const isDashboardFull = location.pathname.includes('admin-dashboard') || 
-                          location.pathname.includes('teacher-dashboard') ||
-                          location.pathname.includes('student-dashboard') ||
-                          location.pathname.includes('classroom/');
+  const isDashboardFull = location.pathname.includes('admin-dashboard') ||
+    location.pathname.includes('teacher-dashboard') ||
+    location.pathname.includes('student-dashboard') ||
+    location.pathname.includes('classroom/');
 
   return (
     <div className="app-container">
@@ -97,7 +97,7 @@ const AppContent = () => {
           <Route path="/course/:slug" element={<CourseDetails />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          
+
           <Route path="/student-dashboard" element={
             <ProtectedRoute allowedRoles={['Student']}>
               <StudentDashboard />
