@@ -1,6 +1,4 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 import SEO from '../components/SEO';
 import { Shield, Lock, Eye, Database, Globe, UserCheck, Bell, Mail, Info } from 'lucide-react';
 import '../styles/legal.css';
@@ -12,7 +10,7 @@ const PrivacyPolicy = () => {
                 title="Privacy Policy | Deenova Learning Hub" 
                 description="Learn about how we collect, safeguard and disclose information that results from your use of our Service."
             />
-            <Navbar />
+            
             
             <header className="legal-header">
                 <div className="container">
@@ -161,7 +159,6 @@ const PrivacyPolicy = () => {
                     </div>
                 </div>
             </main>
-            <Footer />
         </div>
     );
 };

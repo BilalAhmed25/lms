@@ -1,6 +1,4 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 import SEO from '../components/SEO';
 import { Shield, Book, User, Info, Scale, CreditCard, AlertCircle } from 'lucide-react';
 import '../styles/legal.css';
@@ -12,7 +10,6 @@ const TermsOfService = () => {
                 title="Terms and Conditions | Deenova Learning Hub"
                 description="Read our terms and conditions for using the Deenova Learning Hub platform."
             />
-            <Navbar />
 
             <header className="legal-header">
                 <div className="container">
@@ -138,7 +135,6 @@ const TermsOfService = () => {
                     </div>
                 </div>
             </main>
-            <Footer />
         </div>
     );
 };

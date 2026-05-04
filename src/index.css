@@ -11,6 +11,7 @@
 @import './styles/dashboard.css';
 @import './styles/modal.css';
 @import './styles/Dropdown.css';
+@import './styles/Footer.css';
 
 /* ─── GLOBAL CORE DEFAULTS ───────────────────────────────────────────── */
 
@@ -77,6 +78,14 @@
 
 .mt-12 {
     margin-top: 3rem;
+}
+
+.pt-8 {
+    padding-top: 2rem;
+}
+
+.pt-12 {
+    padding-top: 3rem;
 }
 
 .mb-4 {

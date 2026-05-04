@@ -1,67 +1,85 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, ArrowRight } from 'lucide-react';
+import { Mail, Phone, MapPin, ChevronRight } from 'lucide-react';
+import '../styles/Footer.css';
 
 const Footer = () => {
     return (
         <footer className="footer">
             <div className="container">
-                {/* Newsletter Section */}
-                <div className="footer-newsletter glass">
-                    <div className="newsletter-content">
-                        <h3>Join our newsletter to keep up to date with us!</h3>
-                    </div>
-                    <div className="newsletter-form">
-                        <div className="newsletter-input-wrapper">
-                            <Mail size={18} className="input-icon" />
-                            <input type="email" placeholder="Enter your email" />
-                        </div>
-                        <button className="btn btn-primary">Subscribe</button>
-                    </div>
-                </div>
-
                 {/* Main Footer Links */}
-                <div className="footer-grid mt-12">
+                <div className="footer-grid">
                     <div className="footer-brand">
                         <Link to="/" className="logo mb-4">
-                            <img src="/logo.png" alt="Deenova Logo" className="logo-img" />
+                            <img src="/logo.png" alt="Deenova Logo" className="logo-img" style={{ filter: 'brightness(0) invert(1)' }} />
                         </Link>
-                        <p className="text-muted mt-4">
+                        <p className="mt-4">
                             We are growing your knowledge with our premium learning management system.
                         </p>
                     </div>
 
                     <div className="footer-links-column">
-                        <h4>Platform</h4>
+                        <h4>Pricing</h4>
                         <ul>
-                            <li><Link to="/">Plans & Pricing</Link></li>
-                            <li><Link to="/">Personal AI Manager</Link></li>
-                            <li><Link to="/">AI Business Writer</Link></li>
+                            <li>
+                                <ChevronRight size={14} className="link-chevron" />
+                                <Link to="/courses">O Level Pricing</Link>
+                            </li>
+                            <li>
+                                <ChevronRight size={14} className="link-chevron" />
+                                <Link to="/courses">A Level Pricing</Link>
+                            </li>
+                            <li>
+                                <ChevronRight size={14} className="link-chevron" />
+                                <Link to="/courses">Islamic Courses</Link>
+                            </li>
                         </ul>
                     </div>
 
                     <div className="footer-links-column">
-                        <h4>Company</h4>
+                        <h4>Quick Links</h4>
                         <ul>
-                            <li><Link to="/">Blog</Link></li>
-                            <li><Link to="/">Careers</Link></li>
-                            <li><Link to="/">News</Link></li>
+                            <li>
+                                <ChevronRight size={14} className="link-chevron" />
+                                <Link to="/">Home</Link>
+                            </li>
+                            <li>
+                                <ChevronRight size={14} className="link-chevron" />
+                                <Link to="/about-us">About Us</Link>
+                            </li>
+                            <li>
+                                <ChevronRight size={14} className="link-chevron" />
+                                <Link to="/courses">Our Courses</Link>
+                            </li>
+                            <li>
+                                <ChevronRight size={14} className="link-chevron" />
+                                <Link to="/contact-us">Contact Us</Link>
+                            </li>
                         </ul>
                     </div>
 
                     <div className="footer-links-column">
-                        <h4>Resources</h4>
+                        <h4>Contact Details</h4>
                         <ul>
-                            <li><Link to="/">Documentation</Link></li>
-                            <li><Link to="/">Papers</Link></li>
-                            <li><Link to="/">Press Conferences</Link></li>
+                            <li>
+                                <Mail size={16} className="contact-icon" />
+                                <span>info@deenova.com</span>
+                            </li>
+                            <li>
+                                <Phone size={16} className="contact-icon" />
+                                <span>+92 300 1234567</span>
+                            </li>
+                            <li>
+                                <MapPin size={16} className="contact-icon" />
+                                <span>Islamabad, Pakistan</span>
+                            </li>
                         </ul>
                     </div>
                 </div>
 
                 {/* Bottom Bar */}
                 <div className="footer-bottom mt-12 pt-8">
-                    <p className="text-muted">© 2026 Deenova Inc.</p>
+                    <p style={{ color: 'rgba(255,255,255,0.5)' }}>© 2026 Deenova Inc.</p>
                     <div className="footer-legal">
                         <Link to="/terms-and-condition">Terms and Conditions</Link>
                         <Link to="/privacy-policy">Privacy Policy</Link>
