@@ -406,17 +406,32 @@
 
 @media (max-width: 992px) {
     .landing-hero {
-        flex-direction: column;
-        padding: 8rem 5%;
+        padding: 8rem 0 !important;
         text-align: center;
+        min-height: auto;
+    }
+
+    .hero-container {
+        flex-direction: column;
+        gap: 3rem;
+        text-align: left;
     }
 
     .hero-left {
-        align-items: center;
+        align-items: left;
+    }
+
+    .hero-left h1 {
+        font-size: 1.85rem !important;
+        min-width: 100%;
+        text-align: left;
+        margin-bottom: -20px;
     }
 
     .hero-left .description {
-        margin: 0 auto;
+        text-align: left;
+        min-width: 100%;
+        font-size: var(--fs-body);
     }
 
     .hero-right {
@@ -426,6 +441,10 @@
     .community-section {
         flex-direction: column;
         gap: 1.5rem;
+    }
+
+    .community-avatars-group {
+        min-width: 100%;
     }
 
     .community-separator {
