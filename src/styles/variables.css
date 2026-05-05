@@ -1,9 +1,9 @@
 :root {
     /* ─── COLORS ─────────────────────────────────────────────────────────── */
-    --primary: #21675b;
+    --primary: #1b6b5e;
     --primary-hover: #1a5248;
-    --secondary: #0e223d;
-    --accent: #b9892c;
+    --secondary: #0b1d3a;
+    --accent: #d4af37;
     --accent-hover: #9a7224;
 
     --bg-main: #ffffff;
@@ -13,13 +13,14 @@
 
     --text-main: #0e223d;
     --text-muted: #5a6b82;
-    --text-light: #ffffff;
+    --text-light: #f7f6f1;
 
     --border: #e0e6ed;
     --border-dark: rgba(255, 255, 255, 0.1);
 
     --success: #21675b;
-    --error: #8b1a1a; /* Using a darker red that complements navy/teal if needed, or stick to navy? User said "only 3". Let's try to use navy for error if it must be strictly 3, but usually red is essential. I'll keep a subtle red. */
+    --error: #8b1a1a;
+    /* Using a darker red that complements navy/teal if needed, or stick to navy? User said "only 3". Let's try to use navy for error if it must be strictly 3, but usually red is essential. I'll keep a subtle red. */
     --warning: #b9892c;
 
     /* ─── TYPOGRAPHY ─────────────────────────────────────────────────────── */

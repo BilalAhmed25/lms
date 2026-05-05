@@ -3,7 +3,7 @@
 }
 
 .impact-main {
-    background: linear-gradient(135deg, #1ab69d 0%, #169a85 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
     padding: 100px 0 150px;
     color: white;
     position: relative;
